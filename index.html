@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,11 +81,6 @@
   .badge-chip.locked { background:#e3ddc9; color:#b0a888; border-color:#cfc7a9; }
   .badge-count { position:absolute; bottom:-4px; right:-4px; background:#d9a520; color:#4a3300; font-size:10px; font-weight:800; border-radius:8px; padding: 0 4px; border: 1px solid #fffdf5; }
 
-  .arsenal-strip { display:flex; gap:8px; flex-wrap:wrap; }
-  .tool-chip { width: 44px; height: 44px; border-radius: 8px; display:flex; align-items:center; justify-content:center; font-size: 20px; border: 2px solid; }
-  .tool-chip.earned { background: radial-gradient(circle at 35% 30%, #ffe8a8, #d9a520 75%); border-color:#8b5e0f; color:#5c3d08; }
-  .tool-chip.locked { background:#e3ddc9; border-color:#cfc7a9; color:#b0a888; }
-
   .footer-link { text-align:center; font-size:12px; margin-top: 8px; }
   .footer-link a { color:#8b6f3e; }
 
@@ -136,8 +132,15 @@
 
   #quizScreen { display: none; }
   .quiz-topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; font-size: 14px; color:#5a4a30;}
-  .progress-bar { height: 10px; background:#e3ddc9; border-radius: 6px; overflow:hidden; margin-bottom:16px; }
-  .progress-fill { height:100%; background:#a3d977; width:0%; transition: width .3s; }
+  .mini-territory { display:flex; gap:6px; margin: 8px 0 4px; }
+  .mini-node {
+    flex:1; aspect-ratio:1; border-radius: 6px; display:flex; align-items:center; justify-content:center;
+    font-size: 12px; font-weight:700; border: 2px solid #cfc7a9; background:#e3ddc9; color:#b0a888;
+    transition: all 0.25s;
+  }
+  .mini-node.correct { background: radial-gradient(circle at 35% 30%,#c8e89f,#8fc95a 80%); border-color:#4a7a28; color:#223e0e; }
+  .mini-node.wrong { background: radial-gradient(circle at 35% 30%,#f4b5ab,#e2887a 80%); border-color:#a3382a; color:#5a180f; }
+  .mini-node.current { border-color:#d9a520; background:#ffe8a8; color:#6b4a06; animation: pulse 1.6s infinite; }
 
   .knight-scene { text-align:center; font-size:44px; margin: 4px 0 10px; color:#6b4f24; }
   .knight-scene i { background: radial-gradient(circle, #f3e6c4 0%, transparent 70%); border-radius: 50%; padding: 6px; }
@@ -145,6 +148,7 @@
 
   .question-box { text-align:center; margin-bottom: 20px; }
   .question-box .q { font-family: 'Cinzel', serif; font-size: 38px; font-weight: 700; color:#3c2f1e; text-shadow: 0 1px 0 rgba(255,255,255,0.6); }
+  .question-box .word-q { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 17px; font-weight: 600; color:#3c2f1e; line-height:1.5; padding: 0 4px; }
 
   .options { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .opt-btn {
@@ -233,7 +237,7 @@
       </svg>
     </div>
     <h1>The knight's number quest</h1>
-    <p id="headerSubtitle">Help the knight reach the castle!</p>
+    <p id="headerSubtitle">A quest to master arithmetic and become a legendary knight</p>
     <div class="footer-link" id="editNameWrap" style="display:none">
       <a href="#" id="editNameLink"><i class="ti ti-edit"></i> Change name</a>
       &nbsp;·&nbsp;
@@ -241,19 +245,32 @@
     </div>
   </div>
 
-  <div id="nameScreen" class="card" style="text-align:center">
-    <div style="font-size:56px;margin-bottom:8px"><i class="ti ti-shield-half-filled" style="color:#d9a520"></i></div>
-    <h2 style="font-family:'Cinzel',serif;color:#3c2f1e;margin:0 0 4px">What's your name, brave knight?</h2>
-    <p style="color:#6b5730;font-size:14px;margin:0 0 16px">Every quest, badge and tool will be yours.</p>
-    <input id="nameInput" type="text" placeholder="Type your name" maxlength="20"
+  <div id="introScreen" class="card" style="text-align:center">
+    <svg viewBox="0 0 200 90" width="180" height="81" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="margin-bottom:8px">
+      <rect x="0" y="55" width="200" height="35" fill="#7a8a6a"/>
+      <rect x="60" y="15" width="80" height="75" fill="#a3906b"/>
+      <rect x="55" y="0" width="10" height="18" fill="#a3906b"/>
+      <rect x="70" y="0" width="10" height="18" fill="#a3906b"/>
+      <rect x="85" y="0" width="10" height="18" fill="#a3906b"/>
+      <rect x="100" y="0" width="10" height="18" fill="#a3906b"/>
+      <rect x="115" y="0" width="10" height="18" fill="#a3906b"/>
+      <rect x="130" y="0" width="10" height="18" fill="#a3906b"/>
+      <polygon points="100,55 88,75 112,75" fill="#5a4a30"/>
+      <rect x="82" y="4" width="3" height="14" fill="#5a4a30"/>
+      <polygon points="85,4 98,9 85,14" fill="#d9a520"/>
+    </svg>
+    <h2 style="font-family:'Cinzel',serif;color:#3c2f1e;margin:0 0 8px;font-size:22px">A Kingdom in Need</h2>
+    <p style="color:#5a4a30;font-size:14px;line-height:1.6;margin:0 0 16px">Across the realm, numbers have grown wild and tangled — tables scrambled, sums forgotten, sums fallen into disorder. The King calls for a new knight: someone brave, sharp-minded, and ready to bring order back to the land through the ancient art of arithmetic.</p>
+    <p style="color:#6b5730;font-size:14px;font-weight:700;margin:0 0 8px">Every legend begins with a name. What shall the kingdom call you?</p>
+    <input id="nameInput" type="text" placeholder="Type your name" maxlength="20" autocomplete="off"
       style="width:100%;padding:12px;font-size:18px;text-align:center;border-radius:12px;border:3px solid #8b6f3e;margin-bottom:12px" />
-    <button class="primary" id="nameSubmitBtn"><i class="ti ti-sword"></i> Begin the quest</button>
+    <button class="primary" id="nameSubmitBtn"><i class="ti ti-sword"></i> Answer the Call</button>
   </div>
 
   <div id="companionScreen" class="card" style="display:none;text-align:center">
     <div style="font-size:56px;margin-bottom:8px"><i class="ti ti-paw" style="color:#8b6f3e"></i></div>
-    <h2 style="font-family:'Cinzel',serif;color:#3c2f1e;margin:0 0 4px">Choose a loyal companion</h2>
-    <p style="color:#6b5730;font-size:14px;margin:0 0 16px">It will grow alongside you on every quest.</p>
+    <h2 style="font-family:'Cinzel',serif;color:#3c2f1e;margin:0 0 4px">No knight rides alone</h2>
+    <p style="color:#6b5730;font-size:14px;margin:0 0 16px">Choose a loyal companion to walk this road with you.</p>
     <div style="display:flex;gap:12px;margin-bottom:14px">
       <div class="companion-choice" id="chooseHorse" data-type="horse" style="flex:1;padding:16px 8px;border-radius:12px;border:3px solid #cfc7a9;background:#f1e6c8;cursor:pointer">
         <div style="font-size:40px;color:#8b5e0f"><i class="ti ti-horse"></i></div>
@@ -266,7 +283,14 @@
     </div>
     <input id="companionNameInput" type="text" placeholder="Give it a name" maxlength="16"
       style="width:100%;padding:12px;font-size:18px;text-align:center;border-radius:12px;border:3px solid #8b6f3e;margin-bottom:12px" />
-    <button class="primary" id="companionSubmitBtn"><i class="ti ti-sword"></i> Set off together</button>
+    <button class="primary" id="companionSubmitBtn"><i class="ti ti-sword"></i> Continue</button>
+  </div>
+
+  <div id="missionScreen" class="card" style="display:none;text-align:center">
+    <div style="font-size:56px;margin-bottom:8px"><i class="ti ti-scroll" style="color:#8b5e0f"></i></div>
+    <h2 style="font-family:'Cinzel',serif;color:#3c2f1e;margin:0 0 8px;font-size:22px" id="missionTitle">Your Quest, Sir Knight</h2>
+    <p style="color:#5a4a30;font-size:14px;line-height:1.6;margin:0 0 18px" id="missionBody"></p>
+    <button class="primary" id="missionAcceptBtn"><i class="ti ti-flag-3"></i> Accept the Quest</button>
   </div>
 
   <div id="mapScreen" class="card" style="display:none">
@@ -293,19 +317,20 @@
       </button>
     </div>
 
+    <div style="background:#fff4d6;border:2px solid #d9a520;border-radius:10px;padding:10px 12px;margin-bottom:10px">
+      <div id="conquestEraLine" style="font-size:12px;font-weight:700;color:#8b5e0f;text-transform:uppercase;letter-spacing:0.03em"></div>
+      <div id="dailyStreakLine" style="font-size:14px;font-weight:700;color:#5c3d08;margin-top:2px"></div>
+      <div id="weekStampRow" style="display:flex;gap:5px;margin:8px 0"></div>
+      <div style="font-size:11px;color:#8b6f3e;margin:4px 0 6px">Today's minimum: one quest passed in each subject</div>
+      <div id="dailyStreakChecklist"></div>
+    </div>
+
     <div class="footer-link" style="font-size:14px;font-weight:700;color:#c85c00;margin-bottom:4px" id="bestStreakLine"></div>
 
-    <div class="section-label"><i class="ti ti-award"></i> Badges</div>
-    <div class="badges-strip" id="badgesStrip"></div>
-    <div class="footer-link"><a href="#" id="galleryLink"><i class="ti ti-layout-grid"></i> View all badges</a></div>
-
-    <div class="section-label"><i class="ti ti-sword"></i> Knight's arsenal</div>
-    <div class="arsenal-strip" id="arsenalStrip"></div>
-    <div class="footer-link"><a href="#" id="arsenalLink"><i class="ti ti-tools"></i> View arsenal · spend badges on any tool</a></div>
-
-    <div class="section-label"><i class="ti ti-scroll"></i> History scrapbook</div>
-    <div class="badges-strip" id="scrapbookStrip"></div>
-    <div class="footer-link"><a href="#" id="scrapbookLink"><i class="ti ti-book"></i> View scrapbook · learn a fact with every badge</a></div>
+    <div style="background:#fff4d6;border:2px solid #d9a520;border-radius:10px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <div id="hallSummaryLine" style="font-size:12px;font-weight:700;color:#5c3d08;line-height:1.6"></div>
+      <a href="#" id="hallLink" style="font-size:12px;font-weight:700;color:#8b5e0f;white-space:nowrap;flex-shrink:0"><i class="ti ti-books"></i> Hall of Records</a>
+    </div>
 
     <div class="section-label"><i class="ti ti-map"></i> The kingdom</div>
     <div id="kingdomMap" class="kingdom-map"></div>
@@ -332,11 +357,55 @@
         <button id="saveBtn" style="flex:1;padding:10px;font-size:13px;font-weight:700;border-radius:10px;border:2px solid #6b9c3c;background:#eaf6e0;color:#2c4a12;cursor:pointer">Save progress <i class="ti ti-device-floppy"></i></button>
         <button id="resetBtn" style="flex:1;padding:10px;font-size:13px;font-weight:700;border-radius:10px;border:2px solid #c85c4d;background:#faece7;color:#8a2d1f;cursor:pointer">Reset progress <i class="ti ti-refresh"></i></button>
       </div>
+      <div id="resetConfirmBox" style="display:none;margin-top:8px;background:#faece7;border:2px solid #c85c4d;border-radius:10px;padding:10px 12px;text-align:center">
+        <p style="font-size:12px;font-weight:700;color:#8a2d1f;margin:0 0 8px">Reset EVERYTHING — name, companion, and all progress? This can't be undone.</p>
+        <div style="display:flex;gap:8px">
+          <button id="resetConfirmBtn" style="flex:1;padding:8px;font-size:12px;font-weight:700;border-radius:8px;border:2px solid #a3382a;background:#e2887a;color:#3a0f08;cursor:pointer">Yes, reset everything</button>
+          <button id="resetCancelBtn" style="flex:1;padding:8px;font-size:12px;font-weight:700;border-radius:8px;border:2px solid #cfc7a9;background:#fffdf5;color:#6b5730;cursor:pointer">Cancel</button>
+        </div>
+      </div>
       <div style="text-align:center;font-size:12px;color:#6b9c3c;font-weight:700;min-height:16px;margin-top:6px" id="saveFeedback"></div>
+
+      <div style="margin-top:10px;border-top:1px dashed #cfc7a9;padding-top:10px">
+        <div style="display:flex;gap:8px">
+          <button id="exportBtn" style="flex:1;padding:8px;font-size:12px;font-weight:700;border-radius:10px;border:2px solid #8b6f3e;background:#f1e6c8;color:#5c3d08;cursor:pointer">Export progress <i class="ti ti-copy"></i></button>
+          <button id="importBtn" style="flex:1;padding:8px;font-size:12px;font-weight:700;border-radius:10px;border:2px solid #378add;background:#e6f1fb;color:#185fa5;cursor:pointer">Import progress <i class="ti ti-upload"></i></button>
+        </div>
+        <textarea id="progressTextarea" placeholder="Exported progress will appear here — or paste progress data here to import it" style="width:100%;margin-top:8px;padding:8px;font-size:11px;font-family:monospace;border-radius:8px;border:2px solid #cfc7a9;min-height:80px;box-sizing:border-box"></textarea>
+        <div style="text-align:center;font-size:12px;color:#378add;font-weight:700;min-height:16px;margin-top:4px" id="importFeedback"></div>
+      </div>
     </div>
   </div>
 
-  <div id="galleryScreen" class="card">
+  <div id="hallScreen" class="card" style="display:none">
+    <h2 style="font-family:'Cinzel',serif;text-align:center;color:#3c2f1e;margin-top:0">Hall of Records</h2>
+    <p style="text-align:center;font-size:13px;color:#6b5730">Everything he's earned, in one place.</p>
+    <div style="display:flex;flex-direction:column;gap:10px;margin:12px 0">
+      <a href="#" id="hallBadgesLink" style="display:flex;align-items:center;gap:12px;background:#fffdf5;border:2px solid #b9963f;border-radius:10px;padding:12px;text-decoration:none">
+        <div style="width:40px;height:40px;border-radius:50%;background:#a3d977;border:2px solid #6b9c3c;display:flex;align-items:center;justify-content:center;font-size:18px;color:#2c4a12;flex-shrink:0"><i class="ti ti-award"></i></div>
+        <div style="flex:1"><div style="font-family:'Cinzel',serif;font-weight:700;color:#3c2f1e;font-size:14px">Badges</div><div id="hallBadgesSummary" style="font-size:12px;color:#6b5730"></div></div>
+        <i class="ti ti-chevron-right" style="color:#b0a888"></i>
+      </a>
+      <a href="#" id="hallTreasuryLink" style="display:flex;align-items:center;gap:12px;background:#fffdf5;border:2px solid #b9963f;border-radius:10px;padding:12px;text-decoration:none">
+        <div style="width:40px;height:40px;border-radius:50%;background:#ffd166;border:2px solid #d9a520;display:flex;align-items:center;justify-content:center;font-size:18px;color:#6b4a06;flex-shrink:0"><i class="ti ti-building-bank"></i></div>
+        <div style="flex:1"><div style="font-family:'Cinzel',serif;font-weight:700;color:#3c2f1e;font-size:14px">Treasury</div><div id="hallTreasurySummary" style="font-size:12px;color:#6b5730"></div></div>
+        <i class="ti ti-chevron-right" style="color:#b0a888"></i>
+      </a>
+      <a href="#" id="hallScrapbookLink" style="display:flex;align-items:center;gap:12px;background:#fffdf5;border:2px solid #b9963f;border-radius:10px;padding:12px;text-decoration:none">
+        <div style="width:40px;height:40px;border-radius:50%;background:#e6f1fb;border:2px solid #378add;display:flex;align-items:center;justify-content:center;font-size:18px;color:#185fa5;flex-shrink:0"><i class="ti ti-book"></i></div>
+        <div style="flex:1"><div style="font-family:'Cinzel',serif;font-weight:700;color:#3c2f1e;font-size:14px">History Scrapbook</div><div id="hallScrapbookSummary" style="font-size:12px;color:#6b5730"></div></div>
+        <i class="ti ti-chevron-right" style="color:#b0a888"></i>
+      </a>
+      <a href="#" id="hallMasteryLink" style="display:flex;align-items:center;gap:12px;background:#fffdf5;border:2px solid #b9963f;border-radius:10px;padding:12px;text-decoration:none">
+        <div style="width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff2c8,#d9a520 80%);border:2px solid #8b5e0f;display:flex;align-items:center;justify-content:center;font-size:18px;color:#5c3d08;flex-shrink:0"><i class="ti ti-star-filled"></i></div>
+        <div style="flex:1"><div style="font-family:'Cinzel',serif;font-weight:700;color:#3c2f1e;font-size:14px">Mastery Board</div><div id="hallMasterySummary" style="font-size:12px;color:#6b5730"></div></div>
+        <i class="ti ti-chevron-right" style="color:#b0a888"></i>
+      </a>
+    </div>
+    <button class="primary" id="hallBackBtn">Back to the map</button>
+  </div>
+
+  <div id="galleryScreen" class="card" style="display:none">
     <h2 style="font-family:'Cinzel',serif;text-align:center;color:#3c2f1e;margin-top:0">Badge collection</h2>
     <p style="text-align:center;font-size:13px;color:#6b5730">Earn a badge again and it stacks — watch the number grow!</p>
     <div class="gallery-grid" id="galleryGrid"></div>
@@ -350,9 +419,16 @@
     <button class="primary" id="scrapbookBackBtn">Back to the map</button>
   </div>
 
-  <div id="arsenalScreen" class="card">
-    <h2 style="font-family:'Cinzel',serif;text-align:center;color:#3c2f1e;margin-top:0">Knight's arsenal</h2>
-    <p style="text-align:center;font-size:13px;color:#6b5730">Every badge you earn adds to your savings — spend them on any tool, but the mightiest ones cost more.</p>
+  <div id="masteryScreen" class="card" style="display:none">
+    <h2 style="font-family:'Cinzel',serif;text-align:center;color:#3c2f1e;margin-top:0">Mastery board</h2>
+    <p style="text-align:center;font-size:13px;color:#6b5730">A topic is Passed once you clear it, and Mastered once you've nailed it (7/8 or better) twice — that's real exam-ready recall.</p>
+    <div id="masteryGrid" style="display:flex;flex-direction:column;gap:6px;margin:12px 0"></div>
+    <button class="primary" id="masteryBackBtn">Back to the map</button>
+  </div>
+
+  <div id="arsenalScreen" class="card" style="display:none">
+    <h2 style="font-family:'Cinzel',serif;text-align:center;color:#3c2f1e;margin-top:0">The Treasury</h2>
+    <p style="text-align:center;font-size:13px;color:#6b5730">Every correct answer earns coins for the treasury — spend them on any tool, but the mightiest ones cost more.</p>
     <p style="text-align:center;font-size:13px;font-weight:700" id="arsenalPoints"></p>
     <div class="arsenal-grid" id="arsenalGrid"></div>
     <button class="primary" id="arsenalBackBtn">Back to the map</button>
@@ -364,7 +440,8 @@
       <span id="quizCount">1 / 8</span>
     </div>
     <div class="footer-link" style="margin-bottom:8px"><a href="#" id="exitQuizLink"><i class="ti ti-door-exit"></i> Leave quest (won't be counted)</a></div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="mini-territory" id="miniTerritory"></div>
+    <p style="text-align:center;font-size:11px;color:#8b6f3e;margin:0 0 10px">Answer a question, conquer a circle!</p>
     <div class="knight-scene" id="knightScene"><i class="ti ti-horse-toy"></i></div>
     <div class="streak-flame" id="streakFlame"></div>
     <div class="question-box"><div class="q" id="questionText">3 × 4</div></div>
@@ -384,10 +461,27 @@
       <div class="icon" style="color:#4a7a28"><i class="ti ti-meat"></i></div>
       <div class="t" id="foodBannerText" style="color:#3c5a1a">Food is ready for your companion!</div>
     </div>
+    <div class="tool-banner" id="deckBanner" style="background:#fff4d6;border-color:#d9a520">
+      <div class="icon" id="deckBannerIcon" style="color:#8b5e0f"><i class="ti ti-building-bank"></i></div>
+      <div class="t" id="deckBannerText" style="color:#5c3d08">New scrapbook deck unlocked!</div>
+    </div>
+    <div class="tool-banner" id="masteryBanner" style="background:#fff4d6;border-color:#d9a520">
+      <div class="icon" style="color:#8b5e0f"><i class="ti ti-star-filled"></i></div>
+      <div class="t" id="masteryBannerText" style="color:#5c3d08">Mastered!</div>
+    </div>
+    <div class="tool-banner" id="dailyStreakBanner" style="background:#fff4d6;border-color:#d9a520">
+      <div class="icon" style="color:#8b5e0f"><i class="ti ti-flame"></i></div>
+      <div class="t" id="dailyStreakBannerText" style="color:#5c3d08">Daily streak!</div>
+    </div>
+    <div class="tool-banner" id="weekConquestBanner" style="background:#fff4d6;border-color:#d9a520">
+      <div class="icon" style="color:#8b5e0f"><i class="ti ti-flag-3"></i></div>
+      <div class="t" id="weekConquestBannerText" style="color:#5c3d08">Week conquered!</div>
+    </div>
     <div class="big" id="resultIcon"><i class="ti ti-shield-check"></i></div>
     <h2 id="resultTitle">Great job, brave knight!</h2>
     <p id="resultDetail">You got 8 out of 8 correct.</p>
     <div class="xp-gain" id="xpGain">+80 XP</div>
+    <div class="xp-gain" id="coinGain" style="color:#8b5e0f">+23 coins</div>
     <div class="newbadge-row" id="newBadgeRow"></div>
     <div id="newFactsRow" style="margin:10px 0"></div>
     <button class="primary" id="continueBtn">Next quest <i class="ti ti-sword"></i></button>
@@ -400,6 +494,7 @@
 const STORAGE_KEY = 'knight-castle-progress-v4';
 const QUESTIONS_PER_DAY = 8;
 const CORRECT_PER_FOOD = 15;
+const BADGES_PER_FACT = 3;
 
 /* ---------- Multiplication day plan ---------- */
 const MULT_DAYS = [
@@ -442,10 +537,10 @@ const RANKS = [
   {title:'Knight', icon:'ti-shield-check'},
   {title:'Brave knight', icon:'ti-flame'},
   {title:'Castle guard', icon:'ti-building-castle'},
-  {title:'Champion', icon:'ti-award'},
-  {title:'Royal champion', icon:'ti-medal'},
-  {title:'Dragon slayer', icon:'ti-flame'},
-  {title:'Kingdom hero', icon:'ti-crown'}
+  {title:'Champion', icon:'ti-award', requiredBadges:8},
+  {title:'Royal champion', icon:'ti-medal', requiredBadges:14},
+  {title:'Dragon slayer', icon:'ti-flame', requiredBadges:20},
+  {title:'Kingdom hero', icon:'ti-crown', requiredBadges:28}
 ];
 const XP_PER_LEVEL = 60;
 
@@ -481,53 +576,151 @@ const BADGE_DEFS = [
   {id:'castle', name:'Castle reached', icon:'<i class="ti ti-building-castle"></i>'}
 ];
 
+const MASTERY_TOPICS = BADGE_DEFS.filter(b => b.id.startsWith('table-') || b.id.startsWith('add-') || b.id.startsWith('sub-'));
+
 const TOOLS = [
-  {id:'wooden-sword', name:'Wooden sword', icon:'ti-sword', category:'Weapons', cost:5},
-  {id:'steel-sword', name:'Steel sword', icon:'ti-swords', category:'Weapons', cost:8},
-  {id:'war-bow', name:'War bow', icon:'ti-target', category:'Weapons', cost:11},
-  {id:'golden-sword', name:'Golden sword', icon:'ti-award', category:'Weapons', cost:15},
-  {id:'legendary-blade', name:'Legendary blade', icon:'ti-crown', category:'Weapons', cost:20},
-  {id:'small-shield', name:'Small shield', icon:'ti-shield', category:'Armor', cost:5},
-  {id:'chainmail', name:'Chainmail armor', icon:'ti-shield-check', category:'Armor', cost:8},
-  {id:'dragon-shield', name:'Dragon shield', icon:'ti-diamond', category:'Armor', cost:12},
-  {id:'royal-armor', name:'Royal armor', icon:'ti-medal', category:'Armor', cost:16},
-  {id:'battle-banner', name:'Battle banner', icon:'ti-flag', category:'Banners', cost:6}
+  {id:'wooden-sword', name:'Wooden sword', icon:'ti-sword', category:'Weapons', cost:50},
+  {id:'steel-sword', name:'Steel sword', icon:'ti-swords', category:'Weapons', cost:80},
+  {id:'war-bow', name:'War bow', icon:'ti-target', category:'Weapons', cost:120},
+  {id:'golden-sword', name:'Golden sword', icon:'ti-award', category:'Weapons', cost:160},
+  {id:'legendary-blade', name:'Legendary blade', icon:'ti-crown', category:'Weapons', cost:220},
+  {id:'small-shield', name:'Small shield', icon:'ti-shield', category:'Armor', cost:50},
+  {id:'chainmail', name:'Chainmail armor', icon:'ti-shield-check', category:'Armor', cost:80},
+  {id:'dragon-shield', name:'Dragon shield', icon:'ti-diamond', category:'Armor', cost:120},
+  {id:'royal-armor', name:'Royal armor', icon:'ti-medal', category:'Armor', cost:160},
+  {id:'battle-banner', name:'Battle banner', icon:'ti-flag', category:'Banners', cost:60}
 ];
 const TOOL_CATEGORIES = ['Weapons', 'Armor', 'Banners'];
 
+const RARITY_TIERS = [
+  {max:60,  name:'Common',    bg:'radial-gradient(circle at 35% 30%,#f3f3f3,#b8b8b8 75%)', border:'#8a8a8a', color:'#3a3a3a'},
+  {max:90,  name:'Uncommon',  bg:'radial-gradient(circle at 35% 30%,#eaf6e0,#7bc45a 75%)', border:'#4a7a28', color:'#2c4a12'},
+  {max:170, name:'Rare',      bg:'radial-gradient(circle at 35% 30%,#e6f1fb,#4a90d9 75%)', border:'#1c5a8a', color:'#0c3a5a'},
+  {max:9999,name:'Legendary', bg:'radial-gradient(circle at 35% 30%,#fff2c8,#e0a020 60%,#a35c0f 100%)', border:'#8b5e0f', color:'#5c3d08'}
+];
+function toolRarity(cost){ return RARITY_TIERS.find(r => cost <= r.max) || RARITY_TIERS[RARITY_TIERS.length - 1]; }
+
 /* ---------- History facts ---------- */
 const FACTS = [
-  "Castles often had a moat — a deep water ditch — to slow down anyone trying to sneak in.",
-  "A knight's suit of armor could weigh as much as 25 kilograms, about the same as a big dog!",
-  "Squires trained for years, often starting as young pages around age seven.",
-  "Jousting knights rode toward each other with blunted lances, more like a sport than a battle.",
-  "Castle walls were sometimes over 3 meters thick to keep everyone safe inside.",
-  "Many medieval towns rang a bell every evening to signal it was time to put out fires and go to sleep.",
-  "Knights swore an oath called chivalry, promising to be brave, fair, and to protect others.",
-  "Falconry — hunting with trained birds — was a favorite pastime for medieval nobles.",
-  "Some castles had a 'great hall' where everyone gathered to eat, hear music, and tell stories.",
-  "A drawbridge could be pulled up to stop visitors from crossing the moat.",
-  "Blacksmiths were essential in every castle town, making everything from horseshoes to armor.",
-  "Tapestries — big woven pictures — kept stone castle walls warmer in winter.",
-  "Tournaments included games like archery contests, not just jousting.",
-  "Many knights kept a horse just for battle and a separate, gentler horse for travel.",
-  "Castle kitchens sometimes had giant fireplaces big enough to roast a whole ox.",
-  "Stained glass windows in castles and cathedrals told stories through pictures, since many people couldn't read.",
-  "A coat of arms was like a family logo, painted on shields so knights could be recognized in battle.",
-  "Market days brought traveling merchants, musicians, and jugglers into medieval towns.",
-  "Some medieval bridges had houses and shops built right on top of them.",
-  "Monks in medieval monasteries carefully copied books by hand, since printing presses didn't exist yet.",
-  "Pigeons were sometimes used to carry secret messages between castles.",
-  "A 'page' was the first step to becoming a knight, usually starting around age seven.",
-  "Many castles were built on hills so guards could see enemies coming from far away.",
-  "Longbows could shoot an arrow further than the length of two football fields.",
-  "Medieval fairs sometimes lasted for several days with games, food, and trading.",
-  "Knights often named their swords, treating them almost like a loyal friend.",
-  "Village life centered around the church bell, which told everyone when to wake, eat, and rest.",
-  "Some castles had secret tunnels so people could escape if the castle was ever surrounded.",
-  "Minstrels were traveling musicians who told stories and news through song.",
-  "A 'siege' was when an army surrounded a castle and waited, rather than attacking it directly."
+  {title:"The Moat", category:"Castles", icon:'ti-building-castle', text:"Picture a castle surrounded by a wide, deep ring of water \u2014 that's a moat, and it was way more than just a fancy swimming pool. It made attacking a castle nightmarishly hard, since enemies had to somehow cross open water in plain view of archers watching from the walls above. But here's the sneaky bonus: castle cooks stocked these moats with fish, called stew ponds, so the castle always had a backup food supply \u2014 even if it was completely surrounded and cut off from the outside world!", story:"\ud83d\udc1f True Story: At Leeds Castle in England, the moat was so packed with fish it helped feed everyone living there for centuries \u2014 and part of that same lake is still there today!", deck:'medieval'},
+  {title:"Thick Castle Walls", category:"Castles", icon:'ti-building-castle', text:"Some castle walls were over 3 meters (10 feet) thick \u2014 thicker than most modern houses are wide! That's not just for blocking cannonballs and battering rams, either. All that solid stone worked like a giant blanket, keeping rooms cooler in summer and holding in warmth during winter. Building walls this massive took an army of stonemasons and could take 10 to 20 years to finish \u2014 sometimes longer than the king who ordered it even lived!", story:"\ud83e\uddf1 True Story: Dover Castle in England, nicknamed the 'Key to England,' has walls up to 6 meters (20 feet) thick in places \u2014 that took decades to build.", deck:'medieval'},
+  {title:"The Great Hall", category:"Castles", icon:'ti-building-castle', text:"The Great Hall was basically the castle's party central \u2014 a massive room for feasts, music, storytelling, and even settling arguments. Long wooden tables were set up (and packed away!) for meals, a roaring fire kept everyone toasty, and minstrels played music while jesters cracked jokes and pulled off tricks. Kings and lords also used this room to hear complaints and welcome important guests, so imagine a dining room, concert hall, and town meeting all rolled into one.", story:"", deck:'medieval'},
+  {title:"Raising the Drawbridge", category:"Castles", icon:'ti-building-castle', text:"A drawbridge did double duty as both a bridge AND a shield. Made of heavy wood, it stretched across the moat so people could walk in \u2014 but the second trouble showed up, guards could yank ropes and chains through a pulley system to raise it straight up, blocking the main gate like a giant wooden slab against arrows and battering rams. Talk about a quick-change defense move!", story:"", deck:'medieval'},
+  {title:"Warm Walls", category:"Castles", icon:'ti-building-castle', text:"Cold stone walls made castle rooms feel like a freezer \u2014 so what did people do? They hung huge woven cloths called tapestries to trap warm air and stop chilly drafts. Bonus: tapestries were also gorgeous works of art, showing off hunts, battles, and legends, which was extra important since most people back then couldn't read.", story:"\ud83e\udea1 True Story: One of the most famous cloth artworks ever made, the Bayeux Tapestry, stretches about 70 meters (230 feet) long and tells the whole story of the Norman conquest of England in 1066 \u2014 like a giant comic strip stitched entirely in thread!", deck:'medieval'},
+  {title:"Castle Kitchens", category:"Castles", icon:'ti-building-castle', text:"The grandest castle kitchens had fireplaces enormous enough to roast a whole pig or wild boar on a giant turning spit \u2014 an entire ox was possible, but only in the fanciest royal kitchens with the biggest fires and strongest iron spits. Turning that spit for hours was hot, sweaty work, usually handed to a young kitchen helper called a turnspit. Now imagine cooking a feast like that for a hundred hungry guests, with no ovens, no timers, and no fridge!", story:"", deck:'medieval'},
+  {title:"Castles on Hills", category:"Castles", icon:'ti-mountain', text:"Ever play king-of-the-hill? Medieval castle builders sure did. Perching a castle on top of a hill \u2014 or a giant mound of earth called a motte \u2014 gave defenders 'the high ground': guards could spot enemies coming from miles away, and it's a lot harder to attack uphill while people are firing arrows and dropping rocks down from above.", story:"\u26f0\ufe0f True Story: After 1066, William the Conqueror had hundreds of quick wooden 'motte-and-bailey' castles thrown up across England in a hurry \u2014 a mound with a fort on top and a fenced yard below \u2014 just to control his brand-new kingdom fast.", deck:'medieval'},
+  {title:"Secret Escape Tunnels", category:"Castles", icon:'ti-building-castle', text:"Some castles hid secret passages called sally ports \u2014 sneaky exits that let people slip out completely unseen. Why? To fetch help, sneak in supplies during a siege, or make a daring escape if the castle was about to fall. Some tunnels led far outside the walls entirely, hidden in forests, riverbanks, or caves.", story:"\ud83d\udd73\ufe0f True Story: Nottingham Castle sits above real sandstone caves carved by hand \u2014 some used for storage and secret movement, and legend even ties them to tales of Robin Hood!", deck:'medieval'},
+  {title:"Suits of Armor", category:"Knights", icon:'ti-sword', text:"Full plate armor weighed around 20-25 kg (45-55 lbs) \u2014 about as heavy as a fully-loaded school backpack! But here's the genius part: that weight was spread evenly across the whole body instead of piled on one spot, so trained knights could actually run, climb, and even do somersaults while wearing it. Each suit was custom-built for one exact knight by a skilled craftsman called an armorer, and it could take weeks or months to finish just one.", story:"", deck:'medieval'},
+  {title:"Becoming a Knight", category:"Knights", icon:'ti-sword', text:"Becoming a knight wasn't a weekend project \u2014 it took over 10 years! At around age 7, a boy became a page, learning manners and basic skills while living with a noble family. At around age 14, he became a squire, helping a real knight with his horse and armor \u2014 and following him right into real battles. Finally, around age 21, after proving his courage, he was officially 'knighted,' kneeling while a lord tapped a sword on each shoulder.", story:"", deck:'medieval'},
+  {title:"The Knight's Promise", category:"Knights", icon:'ti-sword', text:"Knights lived by a code of honor called chivalry: be brave in battle, tell the truth, protect the weak, show mercy, and stay loyal to your lord. Did every single knight live up to it perfectly? Probably not \u2014 but it was the gold standard every knight was supposed to aim for.", story:"\ud83d\udee1\ufe0f True Story: William Marshal was born into a poor noble family and was even used as a child hostage during a war \u2014 yet he rose all the way up to become one of the greatest knights in English history, so respected that he served five kings and earned the nickname 'the greatest knight who ever lived.'", deck:'medieval'},
+  {title:"Two Horses", category:"Knights", icon:'ti-horse', text:"A knight didn't just have one horse \u2014 he needed a whole team. His destrier was a big, powerful warhorse trained for the chaos of battle. But he wasn't about to tire out his prized battle horse on a long, boring journey \u2014 for that, he rode a gentler, comfier horse called a palfrey, saving his destrier's energy for when it truly mattered.", story:"", deck:'medieval'},
+  {title:"Coats of Arms", category:"Knights", icon:'ti-shield', text:"A coat of arms worked like a knight's family logo \u2014 colorful designs painted on shields, banners, and cloth worn over armor. In the total chaos of battle, with everyone's face hidden behind a helmet, this was the fastest way to tell friend from foe. Every color and symbol meant something: red for courage, blue for loyalty, a lion for bravery, an eagle for nobility.", story:"", deck:'medieval'},
+  {title:"From Page to Knight", category:"Knights", icon:'ti-sword', text:"This whole journey \u2014 page at 7, squire at 14, knight around 21 \u2014 meant over a decade of nonstop learning: swordsmanship, horsemanship, weapon care, hunting, and the rules of chivalry, all while shadowing a real knight up close, watching him in actual battles and tournaments.", story:"", deck:'medieval'},
+  {title:"Naming a Sword", category:"Knights", icon:'ti-sword', text:"Some knights believed their sword deserved its own name \u2014 like a trusty sidekick that carried extra honor, or maybe even a little magic. The most famous example ever? King Arthur's legendary sword, Excalibur. Real historical figures did this too \u2014 the emperor Charlemagne was said to have a sword named Joyeuse, meaning 'joyful.'", story:"", deck:'medieval'},
+  {title:"Waiting Out a Siege", category:"Knights", icon:'ti-shield', text:"Sometimes the smartest battle plan was no battle at all. Attacking thick castle walls head-on was incredibly deadly and often failed completely. So instead, armies would surround a castle entirely, cutting off food, water, and supplies, then simply wait. This was called a siege, and it could drag on for weeks, months, or way longer, turning into a grueling test of who would run out of food and hope first.", story:"\u23f3 True Story: The Siege of Kenilworth Castle in 1266 dragged on for about six months \u2014 one of the longest sieges in all of medieval English history!", deck:'medieval'},
+  {title:"The Evening Bell", category:"Daily Life", icon:'ti-bell', text:"Every evening, a bell rang across town, signaling everyone to put out their fires and head to bed \u2014 this was called curfew, from an old French phrase meaning 'cover the fire.' Why so serious about it? Most buildings back then were wood with thatched roofs, so one unattended fire left burning overnight could burn down an entire town by morning.", story:"\ud83d\udd14 True Story: William the Conqueror made curfew laws official in England around 1068, ringing a bell each night as the signal to smother household fires.", deck:'medieval'},
+  {title:"Hunting with Birds", category:"Daily Life", icon:'ti-feather', text:"Falconry \u2014 hunting with trained birds of prey like falcons, hawks, and eagles \u2014 was one of the coolest hobbies a medieval noble could have. Training a bird took months of patience, and back then your rank actually decided which bird you were allowed to fly: kings might soar a gyrfalcon, while a lower noble got a smaller hawk. Carrying a beautifully trained falcon on your arm was basically a walking status symbol.", story:"", deck:'medieval'},
+  {title:"Stories in Glass", category:"Daily Life", icon:'ti-window', text:"Most peasants in the Middle Ages couldn't read, so churches got creative: they told Bible stories through absolutely massive, glowing stained glass windows. Imagine sunlight pouring through colorful glass scenes of Noah's Ark or the Nativity, lighting up the whole church like a magical, glowing storybook.", story:"\u26ea True Story: Chartres Cathedral in France still has over 150 original stained glass windows from the 1100s and 1200s \u2014 some of the oldest and most breathtaking in the world.", deck:'medieval'},
+  {title:"Market Day", category:"Daily Life", icon:'ti-building-store', text:"Once or twice a week, towns exploded into action for market day. Farmers hauled in vegetables, eggs, and livestock to sell, craftsmen set up stalls of tools, cloth, and pottery, and jugglers and musicians turned the whole street into part shopping trip, part street party.", story:"", deck:'medieval'},
+  {title:"Copying Books by Hand", category:"Daily Life", icon:'ti-book', text:"Before the printing press existed, every single book had to be copied out by hand \u2014 usually by monks working quietly in a room called a scriptorium. This painstaking work could take months for just one book! Many monks also decorated the pages with jaw-dropping painted designs and gold leaf, called illumination, turning each finished book into a genuine work of art.", story:"\ud83d\udcd6 True Story: The Lindisfarne Gospels, made by monks in England around the year 700, is so detailed and beautifully illustrated that experts believe parts of it took years to finish.", deck:'medieval'},
+  {title:"Days-Long Fairs", category:"Daily Life", icon:'ti-building-store', text:"A regular weekly market was nothing compared to a fair \u2014 a massive event lasting several days or even weeks, pulling in merchants from other towns, regions, or even other countries. Games, contests, exotic goods, food stalls, and entertainers made it feel like a full-blown medieval festival.", story:"\ud83c\udfaa True Story: The Champagne fairs in medieval France were so famous that merchants traveled from Italy, Spain, and beyond just to trade there, making the region one of the busiest trading hubs in all of Europe.", deck:'medieval'},
+  {title:"The Church Bell's Rhythm", category:"Daily Life", icon:'ti-bell', text:"Long before clocks were everywhere, the church bell was how an entire village kept time. Bells rang for morning prayers, midday, and evening prayers \u2014 so even without a watch, everyone in town knew roughly what time it was just by listening.", story:"", deck:'medieval'},
+  {title:"Traveling Storytellers", category:"Daily Life", icon:'ti-music', text:"Minstrels roamed from town to town, singing songs, telling stories, and reciting poems \u2014 and since there was no TV, no internet, and no newspaper, they were often how ordinary people first heard news from other parts of the country, mixed right in with legends, jokes, and love ballads.", story:"", deck:'medieval'},
+  {title:"Friendly Jousting", category:"Tournaments", icon:'ti-target', text:"In a joust, two knights on galloping horses charged straight at each other holding long wooden poles called lances \u2014 but for sport, the lance tips were blunted so nobody would be seriously hurt. The goal was to score points by striking your opponent's shield or armor cleanly, or better yet, knocking them clean off their horse, all while a roaring crowd cheered your name.", story:"\ud83c\udfc6 True Story: William Marshal was so good at tournaments in his younger years that he made his entire fortune winning them, once claiming to have defeated over 500 knights across his career.", deck:'medieval'},
+  {title:"Tournament Games", category:"Tournaments", icon:'ti-target', text:"Jousting got all the glory, but tournaments were really giant medieval sports festivals: archery contests to test aim, wrestling matches to test raw strength, foot races, sword-fighting displays, and mock battles called melees where whole groups of knights fought with blunted weapons all at once.", story:"", deck:'medieval'},
+  {title:"The Village Blacksmith", category:"Tools & Trades", icon:'ti-hammer', text:"The blacksmith was one of the most important people in any village \u2014 heating iron in a roaring forge until it glowed bright orange, then hammering it into horseshoes, tools, wheel rims, nails, and even armor and swords. Fun fact: the word 'blacksmith' comes from working with 'black' metal (iron), to tell them apart from a 'whitesmith,' who worked with lighter metals like tin.", story:"", deck:'medieval'},
+  {title:"The Mighty Longbow", category:"Tools & Trades", icon:'ti-target', text:"The English longbow was often as tall as the archer using it, and could fire arrows powerful enough to pierce armor from over 200 meters away. It wasn't easy to master, though \u2014 archers needed years of daily practice starting from childhood just to build the incredible arm and back strength needed to pull the string back.", story:"\ud83c\udff9 True Story: At the Battle of Agincourt in 1415, thousands of English longbowmen helped defeat a much larger French army of armored knights \u2014 one of the most famous victories in medieval military history, immortalized by Shakespeare himself.", deck:'medieval'},
+  {title:"Bridges with Buildings", category:"Journeys & Trade", icon:'ti-bridge', text:"Some medieval bridges weren't just for crossing rivers \u2014 they had entire rows of shops, houses, and even a chapel built right on top! Merchants set up stalls, and people actually lived and worked on the bridge itself.", story:"\ud83c\udf09 True Story: Old London Bridge had houses and shops lining both sides for about 600 years, from the 1200s until they were finally removed in the 1750s \u2014 it was practically its own little town balanced on a bridge!", deck:'medieval'},
+  {title:"Messenger Pigeons", category:"Journeys & Trade", icon:'ti-feather', text:"For sending urgent news across long distances, people used trained messenger pigeons, tying tiny written notes to their legs. Since pigeons have an incredible natural ability to find their way home, this was often faster than sending a rider on horseback.", story:"", deck:'medieval'},
+  {title:"Mount Olympus & the Twelve Gods", category:"Mythology", icon:'ti-mountain', text:"Picture the tallest, cloudiest mountain you can imagine \u2014 now imagine a glowing palace hidden at the very top where super-powered beings throw parties, start feuds, and occasionally hurl lightning bolts at each other. That's Mount Olympus, home of the Greek gods! The ancient Greeks believed these gods were watching everything happening down below, like the world's most dramatic story, with the gods themselves as the stars.", story:"", deck:'greek'},
+  {title:"The Trojan Horse", category:"Mythology", icon:'ti-horse', text:"Here's a battle plan so sneaky it's still famous 3,000 years later. The Greeks had been stuck outside the walls of Troy for ten whole years and couldn't get in. So they built a massive wooden horse, hid a squad of soldiers inside its belly, and left it outside the gates like an oversized 'gift.' The Trojans \u2014 thinking they'd won \u2014 wheeled the horse right into their city. That night, the soldiers snuck out and opened the gates. It's why we still say 'Trojan horse' for any trick hiding something sneaky inside.", story:"", deck:'greek'},
+  {title:"Pegasus and Mythical Creatures", category:"Mythology", icon:'ti-horse', text:"Greek mythology is basically the ultimate monster-and-hero collection. There's Pegasus, a dazzling white horse with enormous wings who could soar through the clouds. There are centaurs \u2014 half-human, half-horse. And there's the Sphinx, who wouldn't let anyone pass unless they solved her tricky riddle first. Not every creature was scary, though \u2014 Pegasus became a loyal hero's sidekick, proving even mythical creatures could be good guys.", story:"", deck:'greek'},
+  {title:"The Oracle of Delphi", category:"Mythology", icon:'ti-building-bank', text:"Imagine a real place where people believed you could get a sneak peek at the future. That was the Oracle of Delphi! A priestess called the Pythia sat in a temple and delivered mysterious messages that people believed came straight from the god Apollo. Kings and generals traveled for days just to ask her advice \u2014 sometimes before starting entire wars!", story:"\ud83c\udfdb\ufe0f True Story: People kept visiting the Oracle of Delphi for over a thousand years \u2014 longer than many castles, cathedrals, and even some entire countries have existed. You can still walk around its ruins in Greece today.", deck:'greek'},
+  {title:"The Twelve Olympians", category:"Mythology", icon:'ti-mountain', text:"Think of the Twelve Olympians as ancient Greece's ultimate team of gods. Zeus ruled the sky and hurled lightning bolts. Poseidon commanded the seas with a giant trident. Athena was the brains of the group, goddess of wisdom. Hermes zipped around as the speedy messenger god, and Hephaestus built incredible things at his forge. Add Hera, Apollo, Artemis, and more, and you've got twelve of the most powerful beings the Greeks could imagine.", story:"", deck:'greek'},
+  {title:"Hercules and the Twelve Labors", category:"Mythology", icon:'ti-shield', text:"Hercules might be the ultimate ancient action hero. Super strong and the son of Zeus himself, he was given an impossible-sounding to-do list: twelve labors that would make anyone's stomach drop \u2014 from capturing a magical deer with golden antlers without hurting it, to facing all kinds of legendary creatures. Twelve labors, zero excuses \u2014 Hercules completed them all and became Greece's most legendary hero.", story:"", deck:'greek'},
+  {title:"Prometheus and the Gift of Fire", category:"Mythology", icon:'ti-flame', text:"Long ago, according to legend, humans were cold, hungry, and stuck in the dark because only the gods were allowed to have fire. A Titan named Prometheus felt so bad for humans that he snuck up to Mount Olympus, took a spark of fire, and brought it down to Earth. Suddenly humans could cook, stay warm, and build incredible things \u2014 a brave, rule-breaking gift that changed human history forever.", story:"", deck:'greek'},
+  {title:"The Parthenon", category:"Architecture", icon:'ti-building-bank', text:"Imagine building a giant marble temple with zero power tools, zero cranes, and zero trucks \u2014 just human muscle, ropes, and pure genius. That's the Parthenon, built around 447-432 BC to honor the goddess Athena. Here's the mind-blowing part: the columns actually curve slightly instead of standing perfectly straight, because the builders knew that dead-straight columns would look slightly bent to the human eye from far away \u2014 so they bent them on purpose to trick your brain into seeing them as straight!", story:"", deck:'greek'},
+  {title:"The Colossus of Rhodes", category:"Architecture", icon:'ti-building-bank', text:"Picture a bronze statue taller than a ten-story building, standing guard over a busy harbor. That was the Colossus of Rhodes, a giant statue of the sun god Helios, and one of the Seven Wonders of the Ancient World. This giant only stood for about 54 years before an earthquake knocked it down in 226 BC \u2014 proving that even the mightiest statues can't out-muscle an earthquake.", story:"", deck:'greek'},
+  {title:"Three Kinds of Columns", category:"Architecture", icon:'ti-building-bank', text:"Not all Greek columns look the same \u2014 spotting the difference is like a fun architecture treasure hunt! Doric columns are plain and chunky, no decorations. Ionic columns are slimmer, topped with curly scrolls that look like rolled-up paper. Corinthian columns are covered in carved leafy designs. Next time you pass a fancy building \u2014 a bank, a courthouse, a museum \u2014 look at the columns. Chances are, the Greeks invented that exact style thousands of years ago.", story:"", deck:'greek'},
+  {title:"The Acropolis of Athens", category:"Architecture", icon:'ti-mountain', text:"'Acropolis' literally means 'high city,' and ancient Greek cities loved building theirs on the highest hill they could find. Athens' Acropolis is the most famous \u2014 a rocky hilltop stacked with jaw-dropping temples, including the Parthenon. Building on a cliff wasn't just for the view \u2014 if enemies ever approached the city below, everyone could retreat up to the fortified hilltop for safety.", story:"", deck:'greek'},
+  {title:"The First Olympics", category:"Sports", icon:'ti-target', text:"The very first Olympics happened way back in 776 BC \u2014 over 2,700 years ago! \u2014 as a giant sports festival to honor Zeus. But here's the twist: there was only one event, a single foot race called the stadion. No swimming, no gymnastics, no basketball \u2014 just running. And instead of a gold medal, the winner got crowned with a wreath of olive leaves cut from a sacred tree.", story:"", deck:'greek'},
+  {title:"The First Marathon", category:"Sports", icon:'ti-target', text:"Get ready for one of history's most dramatic sports legends. After Greek soldiers won a huge battle near the town of Marathon in 490 BC, a runner named Pheidippides supposedly sprinted about 25 miles all the way to Athens to deliver the news. Legend says he burst into the city, shouted 'Nike!' ('Victory!'), and then collapsed from total exhaustion. That epic run is exactly why today's marathon races are 26.2 miles long.", story:"", deck:'greek'},
+  {title:"The Olympic Truce", category:"Sports", icon:'ti-target', text:"Ancient Greece's city-states loved competing with each other \u2014 but every four years, something incredible happened. A special agreement called the Olympic Truce was announced, and warring cities were supposed to pause their conflicts so athletes and fans could travel safely to the games. An entire ancient world hitting the 'pause' button, just for sports.", story:"", deck:'greek'},
+  {title:"Athenian Democracy", category:"Government", icon:'ti-building-bank', text:"Around 508 BC, the people of Athens tried something wild: instead of one all-powerful king making every decision, citizens could actually vote on the laws that governed their own lives. This is where the word democracy comes from \u2014 demos (the people) plus kratos (power). 'Power to the people,' ancient Greek style.", story:"\ud83d\uddf3\ufe0f True Story: Only free adult men born in Athens got a say back then \u2014 women, enslaved people, and foreigners were shut out. Still, this bold idea planted a seed that grew into democracies all over the modern world.", deck:'greek'},
+  {title:"City-States: Sparta vs. Athens", category:"Government", icon:'ti-shield', text:"Ancient Greece wasn't one big country \u2014 it was a patchwork of independent city-states, and two of the biggest rivals could not have been more different. Athens was passionate about art, philosophy, theater, and voting. Sparta was focused on one thing: becoming the toughest, most disciplined warriors possible. These two very different city-states eventually clashed in a long conflict called the Peloponnesian War.", story:"", deck:'greek'},
+  {title:"Greek Theater", category:"Arts", icon:'ti-mask', text:"Long before movies, TV, or even electricity, the Greeks were putting on full theatrical productions in giant open-air stone amphitheaters that could seat thousands. Actors wore big, dramatic masks so people sitting far away could instantly tell who was who, and whether the story was a tragedy or a comedy. These amphitheaters were built with such perfect acoustics that a performer could whisper on stage and be heard clearly in the very last row \u2014 no microphones required!", story:"", deck:'greek'},
+  {title:"Painted Pottery", category:"Arts", icon:'ti-flask', text:"Ancient Greek pottery wasn't just for storing olive oil and wine \u2014 it was covered in detailed painted scenes of gods, heroes, and everyday life. Early artists used black-figure style (dark figures on natural orange clay), and later switched to red-figure style (a black background with figures left in orange). Thanks to all this painted pottery, historians today can practically watch snapshots of ancient Greek life play out right in front of them.", story:"", deck:'greek'},
+  {title:"Greek Sculpture", category:"Arts", icon:'ti-flask', text:"Greek sculptors were obsessed with making stone and bronze look almost alive. They studied muscles, balance, and movement so closely that they invented a pose called contrapposto \u2014 weight shifted onto one leg \u2014 which made statues look like they might casually stroll off their pedestal. This 'make it look real' obsession influenced artists for thousands of years afterward, all the way up to sculptors working today.", story:"", deck:'greek'},
+  {title:"The Greek Alphabet", category:"Language", icon:'ti-abc', text:"Here's a fun brain-twister: the word 'alphabet' itself comes from Greek! Just combine the first two Greek letters \u2014 alpha (\u0391) and beta (\u0392) \u2014 and you get 'alphabet.' The Greeks were also pioneers in adding actual vowels to their alphabet, which made reading and pronouncing words way easier than earlier writing systems that skipped them.", story:"", deck:'greek'},
+  {title:"Greek Words We Still Use", category:"Language", icon:'ti-abc', text:"You are speaking a tiny bit of ancient Greek every single day, whether you realize it or not! Democracy (people + power), marathon (from that legendary battle), gymnastics, telephone (far + sound), and biology (life + study) all come straight from ancient Greek. Pretty sneaky how it's hiding inside your everyday vocabulary!", story:"", deck:'greek'},
+  {title:"Myths That Became Words", category:"Language", icon:'ti-abc', text:"Some of the coolest words in English come straight out of Greek myths. A nymph named Echo was said to only ever repeat what others said \u2014 which is exactly why we call a repeating sound an 'echo' today. A Titan named Atlas was said to hold up the sky forever, which is why we call a book of maps an 'atlas.' And a young man named Narcissus fell so deeply in love with his own reflection that he couldn't look away \u2014 giving us the word 'narcissist.'", story:"", deck:'greek'},
+  {title:"Wise Philosophers", category:"Ideas", icon:'ti-bulb', text:"Three of the most famous thinkers in all of human history were basically a teacher-student-student chain. Socrates taught by asking question after question until people figured things out for themselves. His student Plato wrote everything down and started a school called the Academy. And Plato's student Aristotle studied science, logic, and politics, and later became personal tutor to a teenage prince who'd grow up to become Alexander the Great.", story:"", deck:'greek'},
+  {title:"Herodotus, the First Historian", category:"Ideas", icon:'ti-book', text:"Before Herodotus came along, most stories about the past blended history and legend together. Herodotus, who lived around 484-425 BC, decided to try something new: he traveled far and wide, interviewed real people, and carefully wrote down what actually happened in a giant book called The Histories. Because he took the job so seriously, he's often nicknamed 'the Father of History.'", story:"", deck:'greek'},
+  {title:"Pythagoras and the Power of Numbers", category:"Ideas", icon:'ti-bulb', text:"You've probably heard of the Pythagorean theorem in math class \u2014 that famous formula about right triangles (a\u00b2 + b\u00b2 = c\u00b2)? You can thank Pythagoras, an ancient Greek mathematician who was so fascinated by numbers he believed math patterns explained everything in the universe \u2014 music, stars, nature, all of it. Not bad for someone who lived over 2,500 years ago.", story:"", deck:'greek'},
+  {title:"Archimedes and 'Eureka!'", category:"Ideas", icon:'ti-bulb', text:"Picture a brilliant inventor sitting in his bathtub, watching the water rise as he gets in \u2014 and suddenly it clicks. He's just figured out how to measure the volume of an object using water! Legend says Archimedes was so excited that he leaped straight out of the tub and ran through the streets shouting 'Eureka!' ('I found it!'). He also invented a giant spiral screw that's still used today to move water uphill.", story:"", deck:'greek'},
+  {title:"Swift Trireme Ships", category:"Engineering", icon:'ti-sailboat', text:"The Greeks built lightning-fast warships called triremes, named for their three stacked rows of oars \u2014 up to 170 rowers powering the ship at once, all rowing in perfect rhythm. With a sharp bronze ram bolted to the front, these sleek ships could slice through waves at impressive speed, making them some of the most respected warships sailing the ancient Mediterranean.", story:"", deck:'greek'},
+  {title:"Spartan Training", category:"Daily Life", icon:'ti-shield', text:"In Sparta, boys were taken from home at around age 7 to begin the agoge, one of the toughest training programs in ancient history. Days were packed with rigorous physical exercise, combat training, and survival challenges, all designed to forge boys into the fierce, disciplined soldiers of the legendary Spartan army. It's no wonder 'spartan' is still used today to describe something extremely tough or bare-bones.", story:"", deck:'greek'},
+  {title:"Olive Trees and Wreaths", category:"Daily Life", icon:'ti-leaf', text:"Olive trees were basically ancient Greece's superstar plant. Their oil lit lamps, flavored food, and even cleaned skin \u2014 but the real glory? Olympic champions were crowned with wreaths woven from sacred olive leaves. The olive tree was considered a gift from the goddess Athena herself, which is exactly how the city of Athens got its name.", story:"", deck:'greek'},
+  {title:"Alexander the Great's Empire", category:"Leaders & Legacy", icon:'ti-crown', text:"Try to top this: Alexander became king at just 20 years old, and by the time he turned 30, he'd conquered one of the biggest empires the ancient world had ever seen \u2014 stretching from Greece all the way to Egypt and India. As his armies marched across three continents, they carried Greek language, art, and ideas with them, sparking a massive cultural blend historians call the Hellenistic era. His tutor, by the way? Aristotle himself.", story:"", deck:'greek'},
+  {title:"All Roads Lead to Rome", category:"Engineering", icon:'ti-road', text:"Ever heard the saying 'all roads lead to Rome'? It's basically true! The Romans built a network of over 400,000 km (250,000 miles) of roads, all connecting back to the capital city. Some of these ancient roads were engineered so well that you can still walk on original Roman stones today \u2014 nearly 2,000 years later, and they haven't crumbled.", story:"", deck:'roman'},
+  {title:"Amazing Aqueducts", category:"Engineering", icon:'ti-bridge', text:"How do you get fresh water flowing into a city with no pumps, no electricity, and no motors? You build an aqueduct \u2014 a long channel, sometimes held up on towering stone arches, that uses nothing but gravity and precise measurements to carry water for miles. Roman engineers got this so right that their aqueducts supplied entire cities with running water for public fountains and baths.", story:"\ud83d\udca7 True Story: The Pont du Gard in France is a Roman aqueduct bridge that's nearly 2,000 years old and stands about 49 meters (160 feet) tall \u2014 roughly as tall as a 16-story building \u2014 and it's still standing strong today.", deck:'roman'},
+  {title:"The Roman Legion", category:"Engineering", icon:'ti-shield', text:"Imagine a squad of 5,000 soldiers who could build an entire fortified camp \u2014 walls, tents, trenches, and all \u2014 in just a few hours, then wake up the next morning ready to march twenty miles. That's the Roman legion. Their incredible discipline and teamwork made them one of history's most organized fighting forces.", story:"", deck:'roman'},
+  {title:"Remarkable Roman Concrete", category:"Engineering", icon:'ti-building', text:"Here's a wild fact: some Roman concrete buildings have survived for over 2,000 years, while a lot of modern concrete crumbles after just a few decades. Roman engineers mixed volcanic ash into their concrete recipe, accidentally creating something incredibly tough \u2014 so tough that scientists today are still studying it, trying to figure out exactly how the Romans pulled it off.", story:"", deck:'roman'},
+  {title:"Hadrian's Wall", category:"Engineering", icon:'ti-building-castle', text:"Around 122 AD, Emperor Hadrian decided his empire needed a serious boundary line \u2014 so he ordered a massive wall built clear across northern Britain, stretching 118 km (73 miles) coast to coast. Watchtowers and forts lined the entire wall, packed with soldiers guarding the very edge of the Roman world.", story:"", deck:'roman'},
+  {title:"Warm Floors", category:"Engineering", icon:'ti-flame', text:"No fireplace in the room, but somehow the floor is warm? The Romans figured out an early version of central heating called a hypocaust. Furnaces pumped hot air through hidden tunnels running underneath the floors and inside the walls, warming entire rooms \u2014 including their fanciest bathhouses \u2014 without a single flame in sight.", story:"", deck:'roman'},
+  {title:"Straight as an Arrow", category:"Engineering", icon:'ti-road', text:"Roman road builders were obsessed with going in a straight line. Using clever surveying tools, they'd plan the most direct possible path between two places \u2014 even if that meant slicing through a hill or building a bridge across a valley. Layers of stone, gravel, and sand made these roads tough enough to survive centuries of wagon wheels, marching soldiers, and weather.", story:"", deck:'roman'},
+  {title:"The Cloaca Maxima", category:"Engineering", icon:'ti-building', text:"Long before most cities had figured out where their waste should go, Rome built the Cloaca Maxima ('Greatest Sewer'), a massive underground tunnel that carried waste and rainwater straight out of the city. It was engineered so well that parts of it are still working as part of Rome's drainage system today, over 2,000 years later.", story:"", deck:'roman'},
+  {title:"The Roman Arch", category:"Engineering", icon:'ti-bridge', text:"The Romans didn't invent the arch, but they turned it into their secret weapon. An arch spreads weight evenly down both sides instead of one flat spot pushing straight down, which means it can support way more weight than a flat beam. Romans used this one simple curved shape to build soaring aqueducts, sturdy bridges, and the mighty Colosseum itself.", story:"", deck:'roman'},
+  {title:"Pompeii, Frozen in Time", category:"Daily Life", icon:'ti-mountain', text:"When Mount Vesuvius erupted in 79 AD, the city of Pompeii was buried under a thick blanket of volcanic ash \u2014 and that ash accidentally became one of history's greatest time capsules. Centuries later, archaeologists digging through the site found entire streets, houses, wall paintings, and even loaves of bread still sitting in ovens, frozen exactly as they were on that ordinary day thousands of years ago.", story:"\u26cf\ufe0f True Story: People have been digging up Pompeii since the 1700s \u2014 that's over 250 years of digging \u2014 and archaeologists are still finding incredible new details there today.", deck:'roman'},
+  {title:"Roman Baths", category:"Daily Life", icon:'ti-bath', text:"Roman bathhouses weren't just for getting clean \u2014 they were basically the ultimate hangout spot. People came to swim, chat, exercise, do business, and relax in hot rooms, cold pools, and steam rooms, sometimes with a library or garden attached. Imagine your local pool, gym, and library all rolled into one giant marble building.", story:"", deck:'roman'},
+  {title:"Naming the Months", category:"Daily Life", icon:'ti-calendar', text:"You say Roman names practically every time you check a calendar! July was named after Julius Caesar, August after Emperor Augustus, and January after Janus, the two-faced Roman god who could look backward and forward at the same time \u2014 the perfect symbol for the very first month of the year.", story:"", deck:'roman'},
+  {title:"Wearing a Toga", category:"Daily Life", icon:'ti-shirt', text:"Wrapping a toga correctly was basically an ancient art form \u2014 the fabric could stretch over 6 meters (20 feet) long, roughly the length of a school bus! It took real skill (and usually a helper) to drape it properly, and the exact way you wore it could reveal your rank in Roman society at a glance.", story:"", deck:'roman'},
+  {title:"Roman Coins", category:"Daily Life", icon:'ti-coin', text:"Roman coins like the silver denarius usually featured the current emperor's face stamped right on them, sort of like an ancient trading card. Because Roman trade routes stretched so far, archaeologists have dug up Roman coins in places as distant as India and Scandinavia, proving just how far the Roman world's reach really went.", story:"", deck:'roman'},
+  {title:"The Colosseum", category:"Architecture", icon:'ti-building-bank', text:"The Colosseum was the largest amphitheater ever built in the ancient world, capable of packing in somewhere between 50,000 and 80,000 spectators \u2014 roughly the size of a modern football stadium! Roman engineers designed a genius network of arches, tunnels, and stairways that let that entire massive crowd enter and exit through 80 separate entrances in just minutes. It even had a giant retractable fabric awning called a velarium, pulled across the top like a sunshade.", story:"", deck:'roman'},
+  {title:"The Pantheon's Dome", category:"Architecture", icon:'ti-building-bank', text:"The Pantheon's dome is still the largest unreinforced concrete dome on the planet \u2014 meaning it has no steel bars hidden inside holding it up \u2014 and it's nearly 1,900 years old! At the very top is a circular hole called an oculus that lets sunlight (and occasionally rain) pour straight down into the building below. Engineers today still study this dome, trying to fully understand how ancient builders pulled off something this advanced.", story:"", deck:'roman'},
+  {title:"The Roman Forum", category:"Architecture", icon:'ti-building-bank', text:"The Forum was the beating heart of ancient Rome \u2014 packed with temples, courts, marketplaces, and government buildings, all buzzing with activity. This is where Romans came to hear speeches, catch up on news, shop, worship, and watch big public processions. If something exciting was happening in Rome, it was happening at the Forum.", story:"", deck:'roman'},
+  {title:"Trajan's Column", category:"Architecture", icon:'ti-building-bank', text:"Trajan's Column stands about 30 meters (98 feet) tall, wrapped from bottom to top in a spiraling carved picture-story showing Emperor Trajan's military campaigns. Here's the wow-factor: if you unrolled that spiral carving flat, it would stretch about 190 meters (over 600 feet) long \u2014 like history's longest picture-story, carved permanently in stone.", story:"", deck:'roman'},
+  {title:"Julius Caesar", category:"Government", icon:'ti-crown', text:"Julius Caesar was a brilliant, ambitious general who conquered huge amounts of new territory for Rome and eventually took total power as dictator. But his rise worried a lot of senators, who feared he wanted to crown himself king \u2014 so in 44 BC, a group of them turned against him. His dramatic downfall set off a chain of events that ended the Roman Republic and led straight into the age of emperors.", story:"", deck:'roman'},
+  {title:"SPQR", category:"Government", icon:'ti-flag', text:"Look closely at Roman ruins, monuments, and even modern manhole covers around Rome today, and you'll spot the letters SPQR everywhere. They stand for Senatus Populusque Romanus \u2014 Latin for 'The Senate and People of Rome' \u2014 a phrase that represented the shared authority of the entire Roman government and its citizens.", story:"", deck:'roman'},
+  {title:"The Roman Senate", category:"Government", icon:'ti-building-bank', text:"The Roman Senate was a powerful group of Rome's most experienced and influential citizens, who debated laws, advised leaders, and controlled major decisions about money and foreign policy. Even after Rome became an empire ruled by all-powerful emperors, the Senate kept meeting for centuries \u2014 though its real power shrank quite a bit.", story:"", deck:'roman'},
+  {title:"Augustus, Rome's First Emperor", category:"Government", icon:'ti-crown', text:"After Julius Caesar's death, his adopted heir \u2014 a determined young man named Octavian \u2014 outmaneuvered his rivals and became Rome's very first emperor in 27 BC, taking the grand new name Augustus. His long reign kicked off nearly 200 years of relative peace and stability across the empire, a golden stretch known as the Pax Romana, or 'Roman Peace.'", story:"", deck:'roman'},
+  {title:"The Twelve Tables", category:"Government", icon:'ti-scale', text:"Around 450 BC, Rome created its first-ever written law code, called the Twelve Tables, and posted the rules publicly in the Forum for anyone to read. Before this, powerful nobles could bend unwritten laws however they liked \u2014 but once the rules were carved in stone for everyone to see, regular citizens finally had a fighting chance at fairer treatment.", story:"", deck:'roman'},
+  {title:"Roman Numerals", category:"Language", icon:'ti-abc', text:"Instead of the 1, 2, 3 you use today, Romans used letters to stand for numbers: I (1), V (5), X (10), L (50), C (100), D (500), and M (1000). Keep an eye out \u2014 Roman numerals are still hiding in plain sight today on clock faces, at the end of movie credits, and numbering big events like the Olympics.", story:"", deck:'roman'},
+  {title:"The Language That Never Left", category:"Language", icon:'ti-abc', text:"Latin, the language ancient Romans spoke every day, never actually disappeared \u2014 it slowly transformed into modern languages like Italian, Spanish, French, Portuguese, and Romanian. Even English borrowed thousands of Latin words! Doctors, scientists, and lawyers still use Latin terms constantly, even today.", story:"", deck:'roman'},
+  {title:"Latin Phrases We Still Use Today", category:"Language", icon:'ti-abc', text:"You've probably said Latin without even realizing it! We use 'et cetera' (meaning 'and the rest') when a list gets too long to finish, we tell people to 'carpe diem' ('seize the day!') when we want them to be bold, and Julius Caesar himself once summed up a lightning-fast victory in just three words: 'veni, vidi, vici' \u2014 'I came, I saw, I conquered.'", story:"", deck:'roman'},
+  {title:"Chariot Racing", category:"Sports", icon:'ti-target', text:"Ancient Rome had chariot racing, held at colossal racetracks like the Circus Maximus, which could pack in an incredible 150,000+ screaming fans. Charioteers, pulled by teams of two or four galloping horses, whipped around tight turns at breakneck speed, and the very best racers became some of the biggest celebrities in the entire Roman Empire.", story:"", deck:'roman'},
+  {title:"Gladiators \u2014 Ancient Rome's Sports Stars", category:"Sports", icon:'ti-shield', text:"Gladiators were highly trained athletes who performed in front of massive, roaring crowds at arenas like the Colosseum \u2014 and the most skilled ones became genuine superstars, complete with devoted fans, cool nicknames, and even merchandise like pottery decorated with their portraits. They trained hard at special schools called ludi, mastering specific fighting styles the same way athletes train for a sport today.", story:"", deck:'roman'},
+  {title:"Rome's Lasting Legacy", category:"Ideas", icon:'ti-building-bank', text:"Even though the Western Roman Empire collapsed over 1,500 years ago, you're surrounded by its legacy every single day: our calendar, big chunks of modern legal systems, architecture styles used in buildings all over the world, engineering tricks like arches and concrete, and thousands of English words all trace straight back to ancient Rome.", story:"", deck:'roman'},
+  {title:"The Fall of Rome", category:"Ideas", icon:'ti-building-bank', text:"Rome didn't vanish in one dramatic moment \u2014 it slowly weakened over many years from invasions, money troubles, and political chaos, until finally, in 476 AD, the last Western Roman emperor was removed from power. But here's the twist: the eastern half of the empire, later called the Byzantine Empire, kept right on going for almost another thousand years, ruled from its capital city, Constantinople.", story:"", deck:'roman'},
 ];
+
+const DECK_META = {
+  medieval: {name:'Medieval Knights & Castles', icon:'ti-building-castle'},
+  greek:    {name:'Ancient Greece', icon:'ti-building-bank'},
+  roman:    {name:'Ancient Rome', icon:'ti-building'}
+};
+const DECKS = (() => {
+  const order = [];
+  const byId = {};
+  FACTS.forEach((f, i) => {
+    if (!byId[f.deck]) {
+      byId[f.deck] = { id: f.deck, name: DECK_META[f.deck].name, icon: DECK_META[f.deck].icon, indices: [] };
+      order.push(byId[f.deck]);
+    }
+    byId[f.deck].indices.push(i);
+  });
+  return order;
+})();
+
+function isDeckFullyCollected(deck){
+  return deck.indices.every(i => progress.collectedFacts.includes(i));
+}
+function isDeckUnlocked(deckIdx){
+  for (let i = 0; i < deckIdx; i++){
+    if (!isDeckFullyCollected(DECKS[i])) return false;
+  }
+  return true;
+}
 
 /* ---------- Kingdom regions ---------- */
 const REGIONS = {
@@ -546,16 +739,82 @@ const REGIONS = {
   ]
 };
 
+/* ---------- Endless-mode region pools, themed to whichever fact deck is currently active ---------- */
+const THEME_REGIONS = {
+  medieval: [
+    {name:'Silver Lake Shore', icon:'ti-droplet'},
+    {name:'Old Oak Forest', icon:'ti-trees'},
+    {name:'Highland Pass', icon:'ti-mountain'},
+    {name:'Golden Valley', icon:'ti-plant'},
+    {name:'Misty Moor', icon:'ti-cloud'},
+    {name:"Falcon's Ridge", icon:'ti-feather'},
+    {name:'Stonebridge', icon:'ti-bridge'},
+    {name:'Amber Fields', icon:'ti-plant'},
+    {name:'Ravenswood', icon:'ti-trees'},
+    {name:'Sunset Crag', icon:'ti-mountain'}
+  ],
+  greek: [
+    {name:'Aegean Shore', icon:'ti-sailboat'},
+    {name:"Delphi's Path", icon:'ti-building-bank'},
+    {name:'Spartan Plains', icon:'ti-shield'},
+    {name:'Athenian Hills', icon:'ti-building-bank'},
+    {name:'Corinthian Straits', icon:'ti-sailboat'},
+    {name:'Cretan Coast', icon:'ti-droplet'},
+    {name:'Ithacan Isles', icon:'ti-sailboat'},
+    {name:'Marathon Fields', icon:'ti-target'},
+    {name:'Rhodes Harbor', icon:'ti-building-bank'},
+    {name:'Olympia Grounds', icon:'ti-target'}
+  ],
+  roman: [
+    {name:'The Appian Way', icon:'ti-road'},
+    {name:'Tiber Crossing', icon:'ti-bridge'},
+    {name:'Forum District', icon:'ti-building-bank'},
+    {name:'Colosseum Quarter', icon:'ti-building-bank'},
+    {name:'Palatine Hill', icon:'ti-mountain'},
+    {name:"Hadrian's Frontier", icon:'ti-building-castle'},
+    {name:'Aqueduct Valley', icon:'ti-bridge'},
+    {name:'Pompeii Ridge', icon:'ti-mountain'},
+    {name:'Circus Maximus', icon:'ti-target'},
+    {name:'Latium Plains', icon:'ti-plant'}
+  ]
+};
+const ROMAN_NUMERALS = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+
+function currentThemeDeckId(){
+  let idx = 0;
+  for (let i = 0; i < DECKS.length; i++){ if (isDeckUnlocked(i)) idx = i; }
+  return DECKS[idx] ? DECKS[idx].id : 'medieval';
+}
+
+function getEndlessRegion(endlessIdx){
+  const pool = THEME_REGIONS[currentThemeDeckId()] || THEME_REGIONS.medieval;
+  const cycle = Math.floor(endlessIdx / pool.length) + 1;
+  const base = pool[endlessIdx % pool.length];
+  const suffix = cycle > 1 ? ' ' + (ROMAN_NUMERALS[cycle] || ('×' + cycle)) : '';
+  return { name: base.name + suffix, icon: base.icon };
+}
+
 /* ---------- Companion ---------- */
 const COMPANION_TYPES = {
-  horse: {icon:'ti-horse', color:'#8b5e0f', bg:'radial-gradient(circle at 35% 30%,#f3e6c4,#d9a520 75%)', stages:['Foal','Young colt','Steady steed','Trusted mount','Legendary charger']},
-  falcon: {icon:'ti-feather', color:'#185fa5', bg:'radial-gradient(circle at 35% 30%,#e6f1fb,#378add 75%)', stages:['Hatchling','Fledgling','Swift flyer','Sharp-eyed hunter','Legendary falcon']}
+  horse: {
+    icon:'ti-horse', color:'#8b5e0f', bg:'radial-gradient(circle at 35% 30%,#f3e6c4,#d9a520 75%)',
+    stages:['Foal','Young colt','Steady steed','Trusted mount','Pegasus'],
+    legendaryColor:'#1c5a8a', legendaryBg:'radial-gradient(circle at 35% 25%,#ffffff,#bfe0ff 55%,#5fa8d9 100%)',
+    legendaryNote:'A mythical winged horse from Greek legend — swift enough to fly among the clouds!'
+  },
+  falcon: {
+    icon:'ti-feather', color:'#185fa5', bg:'radial-gradient(circle at 35% 30%,#e6f1fb,#378add 75%)',
+    stages:['Hatchling','Fledgling','Swift flyer','Sharp-eyed hunter','Phoenix'],
+    legendaryColor:'#8a2600', legendaryBg:'radial-gradient(circle at 35% 25%,#fff2c8,#ffab4d 55%,#d9480f 100%)',
+    legendaryNote:'A legendary firebird from myth, said to be reborn again and again in flame and light!'
+  }
 };
 
 let progress = {
   playerName: '',
   activeMode: 'mult',
   xp: 0,
+  coins: 0,
   badges: {},
   bestStreak: 0,
   currentStreak: 0,
@@ -565,13 +824,17 @@ let progress = {
   totalCorrect: 0,
   companionFed: 0,
   correctByMode: {mult:0, add:0, sub:0},
+  weakFacts: {},
+  masteryCount: {},
+  mastered: {},
+  dailyStreak: { current: 0, best: 0, weeksConquered: 0, lastActiveDate: null, streakCountedDate: null, categoriesToday: {mult:false, add:false, sub:false} },
   modes: {
     mult: { completedDays: [], currentDay: 1 },
     add:  { completedDays: [], currentDay: 1 },
     sub:  { completedDays: [], currentDay: 1 }
   }
 };
-let session = { mode: 'mult', day: 1, qIndex: 0, correct: 0, questions: [], newBadges: [], newFacts: [] };
+let session = { mode: 'mult', day: 1, qIndex: 0, correct: 0, questions: [], results: [], newBadges: [], newFacts: [], newMastery: null, newDailyStreak: null, newWeekConquered: null };
 
 async function loadProgress() {
   try {
@@ -579,21 +842,28 @@ async function loadProgress() {
     if (res && res.value) progress = JSON.parse(res.value);
   } catch (e) { /* first time */ }
   normalizeProgress();
-  if (progress.playerName && progress.companion) {
+  const screens = ['introScreen', 'companionScreen', 'missionScreen'];
+  if (progress.playerName && progress.companion && progress.onboarded) {
     showMap();
-  } else if (progress.playerName) {
-    document.getElementById('nameScreen').style.display = 'none';
-    document.getElementById('companionScreen').style.display = 'block';
   } else {
-    document.getElementById('nameScreen').style.display = 'block';
+    screens.forEach(id => document.getElementById(id).style.display = 'none');
     document.getElementById('mapScreen').style.display = 'none';
+    if (!progress.playerName) {
+      document.getElementById('introScreen').style.display = 'block';
+    } else if (!progress.companion) {
+      document.getElementById('companionScreen').style.display = 'block';
+    } else {
+      showMissionScreen();
+    }
   }
 }
 
 function normalizeProgress(){
   if (typeof progress.playerName !== 'string') progress.playerName = '';
+  if (typeof progress.onboarded !== 'boolean') progress.onboarded = false;
   if (!MODES[progress.activeMode]) progress.activeMode = 'mult';
   if (typeof progress.xp !== 'number') progress.xp = 0;
+  if (typeof progress.coins !== 'number') progress.coins = 0;
   if (!progress.badges || typeof progress.badges !== 'object') progress.badges = {};
   if (typeof progress.bestStreak !== 'number') progress.bestStreak = 0;
   if (typeof progress.currentStreak !== 'number') progress.currentStreak = 0;
@@ -604,6 +874,20 @@ function normalizeProgress(){
   if (typeof progress.companionFed !== 'number') progress.companionFed = 0;
   if (!progress.correctByMode || typeof progress.correctByMode !== 'object') progress.correctByMode = {};
   Object.keys(MODES).forEach(key => { if (typeof progress.correctByMode[key] !== 'number') progress.correctByMode[key] = 0; });
+  if (!progress.weakFacts || typeof progress.weakFacts !== 'object') progress.weakFacts = {};
+  if (!progress.masteryCount || typeof progress.masteryCount !== 'object') progress.masteryCount = {};
+  if (!progress.mastered || typeof progress.mastered !== 'object') progress.mastered = {};
+  if (!progress.dailyStreak || typeof progress.dailyStreak !== 'object') {
+    progress.dailyStreak = { current: 0, best: 0, weeksConquered: 0, lastActiveDate: null, streakCountedDate: null, categoriesToday: {mult:false, add:false, sub:false} };
+  } else {
+    if (typeof progress.dailyStreak.current !== 'number') progress.dailyStreak.current = 0;
+    if (typeof progress.dailyStreak.best !== 'number') progress.dailyStreak.best = 0;
+    if (typeof progress.dailyStreak.weeksConquered !== 'number') progress.dailyStreak.weeksConquered = 0;
+    if (!progress.dailyStreak.categoriesToday || typeof progress.dailyStreak.categoriesToday !== 'object') {
+      progress.dailyStreak.categoriesToday = {mult:false, add:false, sub:false};
+    }
+    Object.keys(MODES).forEach(k => { if (typeof progress.dailyStreak.categoriesToday[k] !== 'boolean') progress.dailyStreak.categoriesToday[k] = false; });
+  }
   if (!progress.modes || typeof progress.modes !== 'object') progress.modes = {};
   Object.keys(MODES).forEach(key => {
     if (!progress.modes[key] || typeof progress.modes[key] !== 'object') {
@@ -630,24 +914,46 @@ async function saveProgress() {
 }
 
 function showMap(){
-  document.getElementById('nameScreen').style.display = 'none';
+  document.getElementById('introScreen').style.display = 'none';
   document.getElementById('companionScreen').style.display = 'none';
+  document.getElementById('missionScreen').style.display = 'none';
   document.getElementById('mapScreen').style.display = 'block';
-  document.getElementById('headerSubtitle').textContent = 'Help Sir ' + progress.playerName + ' reach the castle!';
+  document.getElementById('headerSubtitle').textContent = "Sir " + progress.playerName + "'s quest to master arithmetic and become a legendary knight";
   document.getElementById('editNameWrap').style.display = 'block';
   renderMap();
 }
 
+function showMissionScreen(){
+  document.getElementById('introScreen').style.display = 'none';
+  document.getElementById('companionScreen').style.display = 'none';
+  document.getElementById('mapScreen').style.display = 'none';
+  document.getElementById('missionScreen').style.display = 'block';
+  const type = COMPANION_TYPES[progress.companion.type];
+  document.getElementById('missionTitle').textContent = 'Your Quest, Sir ' + progress.playerName;
+  document.getElementById('missionBody').innerHTML =
+    'Together with <b>' + progress.companion.name + '</b> the ' + type.stages[0].toLowerCase() + ', you must journey across the realm and master the numbers that have fallen into chaos — multiplication, addition, and subtraction. ' +
+    'Badges will mark your triumphs. Coins will fill your treasury. Facts of old will be revealed as you go. And one day, Sir ' + progress.playerName + ', you shall be known not just as a knight... but as a true master of arithmetic.';
+}
+
 function levelFromXp(xp){ return Math.min(Math.floor(xp / XP_PER_LEVEL), RANKS.length - 1); }
+function achievedLevel(){
+  const xpLevel = levelFromXp(progress.xp);
+  let level = 0;
+  for (let i = 0; i <= xpLevel; i++){
+    const req = RANKS[i].requiredBadges;
+    if (req && totalBadges() < req) break;
+    level = i;
+  }
+  return level;
+}
 function totalBadges(){ return Object.values(progress.badges).reduce((a,b)=>a+b,0); }
-function badgeSpent(){ return progress.craftedTools.reduce((sum, id) => { const t = TOOLS.find(x => x.id === id); return sum + (t ? t.cost : 0); }, 0); }
-function badgeBalance(){ return totalBadges() - badgeSpent(); }
-function affordableLockedTools(){ return TOOLS.filter(t => !progress.craftedTools.includes(t.id) && badgeBalance() >= t.cost); }
+function affordableLockedTools(){ return TOOLS.filter(t => !progress.craftedTools.includes(t.id) && progress.coins >= t.cost); }
 
 function craftTool(toolId){
   const tool = TOOLS.find(t => t.id === toolId);
   if (!tool || progress.craftedTools.includes(toolId)) return;
-  if (badgeBalance() < tool.cost) return;
+  if (progress.coins < tool.cost) return;
+  progress.coins -= tool.cost;
   progress.craftedTools.push(toolId);
   saveProgress();
   renderArsenalGallery();
@@ -667,41 +973,39 @@ function renderModeTabs(){
 }
 
 function renderRank(){
-  const level = levelFromXp(progress.xp);
+  const xpLevel = levelFromXp(progress.xp);
+  const level = achievedLevel();
   const rank = RANKS[level];
   document.getElementById('rankIcon').className = 'ti ' + rank.icon;
   document.getElementById('rankTitle').textContent = (progress.playerName ? 'Sir ' + progress.playerName + ' — ' : '') + rank.title;
-  const xpIntoLevel = progress.xp - level * XP_PER_LEVEL;
-  document.getElementById('rankXp').textContent = progress.xp + ' XP · ' + xpIntoLevel + '/' + XP_PER_LEVEL + ' to next rank';
-  document.getElementById('xpFill').style.width = Math.min(100, (xpIntoLevel / XP_PER_LEVEL) * 100) + '%';
+  const xpIntoLevel = progress.xp - xpLevel * XP_PER_LEVEL;
+  const blocked = level < xpLevel;
+  if (blocked) {
+    const nextRank = RANKS[level + 1];
+    const need = nextRank.requiredBadges - totalBadges();
+    document.getElementById('rankXp').textContent = progress.xp + ' XP — ready for ' + nextRank.title + '! Earn ' + need + ' more badge' + (need === 1 ? '' : 's') + ' to claim it.';
+    document.getElementById('xpFill').style.width = '100%';
+  } else {
+    document.getElementById('rankXp').textContent = progress.xp + ' XP · ' + xpIntoLevel + '/' + XP_PER_LEVEL + ' to next rank';
+    document.getElementById('xpFill').style.width = Math.min(100, (xpIntoLevel / XP_PER_LEVEL) * 100) + '%';
+  }
   const streakLine = document.getElementById('bestStreakLine');
   streakLine.innerHTML = progress.bestStreak > 0
     ? '<i class="ti ti-flame"></i> Best streak: ' + progress.bestStreak + ' in a row — can he beat it today?'
     : '';
 }
 
-function renderBadgesStrip(){
-  const strip = document.getElementById('badgesStrip');
-  strip.innerHTML = '';
-  BADGE_DEFS.slice(0, 8).forEach(b => {
-    const count = progress.badges[b.id] || 0;
-    const chip = document.createElement('div');
-    chip.className = 'badge-chip ' + (count > 0 ? 'earned' : 'locked');
-    chip.innerHTML = b.icon + (count > 1 ? '<span class="badge-count">x' + count + '</span>' : '');
-    strip.appendChild(chip);
-  });
+function renderHallSummary(){
+  document.getElementById('hallSummaryLine').innerHTML =
+    '<i class="ti ti-award"></i> ' + totalBadges() + ' badges &nbsp;·&nbsp; <i class="ti ti-coins"></i> ' + progress.coins + ' coins<br>' +
+    '<i class="ti ti-book"></i> ' + progress.collectedFacts.length + '/' + FACTS.length + ' facts &nbsp;·&nbsp; <i class="ti ti-star-filled"></i> ' + masteredCount() + '/' + MASTERY_TOPICS.length + ' mastered';
 }
 
-function renderArsenalStrip(){
-  const strip = document.getElementById('arsenalStrip');
-  strip.innerHTML = '';
-  TOOLS.forEach(t => {
-    const earned = progress.craftedTools.includes(t.id);
-    const chip = document.createElement('div');
-    chip.className = 'tool-chip ' + (earned ? 'earned' : 'locked');
-    chip.innerHTML = '<i class="ti ' + t.icon + '"></i>';
-    strip.appendChild(chip);
-  });
+function renderHallScreen(){
+  document.getElementById('hallBadgesSummary').textContent = totalBadges() + ' badges earned';
+  document.getElementById('hallTreasurySummary').textContent = progress.coins + ' coins · ' + progress.craftedTools.length + '/' + TOOLS.length + ' tools owned';
+  document.getElementById('hallScrapbookSummary').textContent = progress.collectedFacts.length + '/' + FACTS.length + ' facts discovered';
+  document.getElementById('hallMasterySummary').textContent = masteredCount() + '/' + MASTERY_TOPICS.length + ' topics mastered';
 }
 
 function renderGallery(){
@@ -722,10 +1026,10 @@ function renderGallery(){
 function renderArsenalGallery(){
   const grid = document.getElementById('arsenalGrid');
   grid.innerHTML = '';
-  const balance = badgeBalance();
+  const balance = progress.coins;
 
   const pointsBanner = document.getElementById('arsenalPoints');
-  pointsBanner.innerHTML = '<i class="ti ti-coins"></i> ' + balance + ' badge' + (balance === 1 ? '' : 's') + ' saved up — spend them on any tool below!';
+  pointsBanner.innerHTML = '<i class="ti ti-coins"></i> ' + balance + ' coin' + (balance === 1 ? '' : 's') + ' in the treasury — spend them on any tool below!';
   pointsBanner.style.color = '#2c4a12';
 
   TOOL_CATEGORIES.forEach(cat => {
@@ -740,17 +1044,19 @@ function renderArsenalGallery(){
     TOOLS.filter(t => t.category === cat).forEach(t => {
       const got = progress.craftedTools.includes(t.id);
       const affordable = balance >= t.cost;
+      const rarity = toolRarity(t.cost);
       const item = document.createElement('div');
       item.className = 'arsenal-item';
       const chipStyle = got
-        ? 'background:#ffd166;border-color:#d9a520;color:#6b4a06'
+        ? 'background:' + rarity.bg + ';border-color:' + rarity.border + ';color:' + rarity.color + (rarity.name === 'Legendary' ? ';box-shadow:0 0 10px ' + rarity.border + '80' : '')
         : 'background:#e3ddc9;border-color:#cfc7a9;color:#b0a888';
       item.innerHTML = '<div class="chip" style="' + chipStyle + '"><i class="ti ' + t.icon + '"></i></div>' +
         '<div class="name">' + t.name + '</div>' +
-        (got ? '' : '<div style="font-size:10px;color:#6b5730;margin-top:2px">' + t.cost + ' badges</div>');
+        '<div style="font-size:10px;font-weight:700;color:' + (got ? rarity.border : '#b0a888') + ';margin-top:1px">' + rarity.name + '</div>' +
+        (got ? '' : '<div style="font-size:10px;color:#6b5730;margin-top:1px"><i class="ti ti-coin"></i> ' + t.cost + '</div>');
       if (!got) {
         const craftBtn = document.createElement('button');
-        craftBtn.textContent = affordable ? 'Craft' : 'Locked';
+        craftBtn.textContent = affordable ? 'Buy' : 'Locked';
         craftBtn.disabled = !affordable;
         craftBtn.style.cssText = 'margin-top:4px;font-size:11px;padding:4px 8px;border-radius:8px;border:2px solid ' + (affordable ? '#6b9c3c' : '#cfc7a9') + ';background:' + (affordable ? '#a3d977' : '#f1e6c8') + ';color:' + (affordable ? '#2c4a12' : '#b0a888') + ';cursor:' + (affordable ? 'pointer' : 'not-allowed');
         craftBtn.onclick = () => craftTool(t.id);
@@ -774,9 +1080,8 @@ function renderMap() {
   renderModeTabs();
   renderRank();
   renderCompanion();
-  renderBadgesStrip();
-  renderArsenalStrip();
-  renderScrapbookStrip();
+  renderHallSummary();
+  renderDailyStreak();
 
   const mode = progress.activeMode;
   const modeState = progress.modes[mode];
@@ -787,8 +1092,9 @@ function renderMap() {
 
   const container = document.getElementById('weeksContainer');
   container.innerHTML = '';
-  for (let w=0; w<weeks; w++){
-    const region = REGIONS[mode][w];
+  const totalWeeksToShow = Math.max(weeks, Math.ceil(modeState.currentDay / 7));
+  for (let w=0; w<totalWeeksToShow; w++){
+    const region = w < weeks ? REGIONS[mode][w] : getEndlessRegion(w - weeks);
     const label = document.createElement('div');
     label.className = 'week-label';
     label.innerHTML = '<i class="ti ' + region.icon + '"></i> ' + region.name;
@@ -797,13 +1103,16 @@ function renderMap() {
     pathDiv.className = 'path';
     for (let d=1; d<=7; d++){
       const dayNum = w*7 + d;
-      if (dayNum > totalDays) continue;
       const node = document.createElement('div');
       const done = modeState.completedDays.includes(dayNum);
       const isCurrent = dayNum === modeState.currentDay;
       const locked = dayNum > modeState.currentDay;
+      const topicId = badgeForDay(mode, dayNum);
+      const isMastered = done && topicId && progress.mastered[topicId];
       node.className = 'day-node ' + (done ? 'done' : isCurrent ? 'current' : 'locked');
-      node.innerHTML = done ? '<i class="ti ti-check"></i>' : locked ? '<i class="ti ti-lock"></i>' : dayNum;
+      if (isMastered) node.style.cssText = 'background:radial-gradient(circle at 35% 30%,#fff2c8,#d9a520 80%);border-color:#8b5e0f;color:#5c3d08';
+      node.title = topicId ? (BADGE_DEFS.find(b=>b.id===topicId) || {}).name || '' : '';
+      node.innerHTML = isMastered ? '<i class="ti ti-star-filled"></i>' : done ? '<i class="ti ti-check"></i>' : locked ? '<i class="ti ti-lock"></i>' : dayNum;
       pathDiv.appendChild(node);
     }
     container.appendChild(pathDiv);
@@ -813,7 +1122,8 @@ function renderMap() {
   const playBtn = document.getElementById('playBtn');
   if (modeState.currentDay > totalDays) {
     endlessNote.style.display = 'block';
-    endlessNote.innerHTML = '<i class="ti ti-building-castle"></i> Castle reached! Keep adventuring — quest ' + modeState.currentDay + ' and beyond, as many as he likes.';
+    const currentEndlessRegion = getEndlessRegion(Math.floor((modeState.currentDay - totalDays - 1) / 7));
+    endlessNote.innerHTML = '<i class="ti ti-building-castle"></i> Castle reached! Now adventuring through ' + currentEndlessRegion.name + ' — as many quests as he likes.';
     playBtn.innerHTML = 'Play quest ' + modeState.currentDay + ' <i class="ti ti-sword"></i>';
     playBtn.onclick = startDay;
   } else {
@@ -826,15 +1136,24 @@ function renderMap() {
 function renderKingdomMap(mode, modeState, weeks){
   const wrap = document.getElementById('kingdomMap');
   wrap.innerHTML = '';
+  const totalDays = MODES[mode].days.length;
   for (let w=0; w<weeks; w++){
     const firstDay = w*7 + 1;
-    const lastDay = Math.min((w+1)*7, MODES[mode].days.length);
+    const lastDay = Math.min((w+1)*7, totalDays);
     const region = REGIONS[mode][w];
     const allDone = modeState.completedDays.includes(lastDay) || modeState.currentDay > lastDay;
     const isCurrent = !allDone && modeState.currentDay >= firstDay && modeState.currentDay <= lastDay;
     const status = allDone ? 'done' : isCurrent ? 'current' : 'locked';
     const marker = document.createElement('div');
     marker.className = 'region-marker ' + status;
+    marker.innerHTML = '<div class="region-icon"><i class="ti ' + region.icon + '"></i></div><div class="region-name">' + region.name + '</div>';
+    wrap.appendChild(marker);
+  }
+  if (modeState.currentDay > totalDays){
+    const endlessIdx = Math.floor((modeState.currentDay - totalDays - 1) / 7);
+    const region = getEndlessRegion(endlessIdx);
+    const marker = document.createElement('div');
+    marker.className = 'region-marker current';
     marker.innerHTML = '<div class="region-icon"><i class="ti ' + region.icon + '"></i></div><div class="region-name">' + region.name + '</div>';
     wrap.appendChild(marker);
   }
@@ -871,11 +1190,13 @@ function renderCompanion(){
   const type = COMPANION_TYPES[progress.companion.type];
   const maxStage = type.stages.length - 1;
   const stageIdx = Math.min(progress.companionFed || 0, maxStage);
-  document.getElementById('companionBadge').style.background = type.bg;
-  document.getElementById('companionBadge').style.borderColor = type.color;
+  const isLegendary = stageIdx >= maxStage;
+  document.getElementById('companionBadge').style.background = isLegendary ? type.legendaryBg : type.bg;
+  document.getElementById('companionBadge').style.borderColor = isLegendary ? type.legendaryColor : type.color;
+  document.getElementById('companionBadge').style.boxShadow = isLegendary ? '0 0 10px ' + type.legendaryColor + '80, 0 2px 3px rgba(0,0,0,0.25)' : '0 2px 3px rgba(0,0,0,0.25)';
   document.getElementById('companionIcon').className = 'ti ' + type.icon;
-  document.getElementById('companionIcon').style.color = type.color;
-  document.getElementById('companionTitle').textContent = progress.companion.name + ' the ' + type.stages[stageIdx];
+  document.getElementById('companionIcon').style.color = isLegendary ? type.legendaryColor : type.color;
+  document.getElementById('companionTitle').innerHTML = progress.companion.name + ' the ' + type.stages[stageIdx] + (isLegendary ? ' <i class="ti ti-sparkles" style="color:' + type.legendaryColor + '"></i>' : '');
 
   const withinFood = (progress.totalCorrect || 0) % CORRECT_PER_FOOD;
   const fullyGrown = stageIdx >= maxStage;
@@ -884,7 +1205,7 @@ function renderCompanion(){
   const foodReady = foodAvailable() > 0;
 
   if (fullyGrown) {
-    document.getElementById('companionSubtitle').textContent = 'Fully grown and by your side!';
+    document.getElementById('companionSubtitle').textContent = type.legendaryNote;
     document.getElementById('companionFoodFill').style.width = '100%';
   } else if (reachingFinalStage && foodReady && unmet.length > 0) {
     const names = unmet.map(k => MODES[k].label).join(' and ');
@@ -904,61 +1225,180 @@ function renderCompanion(){
   feedBtn.innerHTML = fullyGrown ? '<i class="ti ti-heart"></i> Grown' : '<i class="ti ti-meat"></i> Feed' + (foodAvailable() > 0 ? ' (' + foodAvailable() + ')' : '');
 }
 
-function renderScrapbookStrip(){
-  const strip = document.getElementById('scrapbookStrip');
-  strip.innerHTML = '';
-  const shown = Math.min(FACTS.length, 8);
-  for (let i=0;i<shown;i++){
-    const earned = i < progress.collectedFacts.length;
-    const chip = document.createElement('div');
-    chip.className = 'badge-chip ' + (earned ? 'earned' : 'locked');
-    chip.innerHTML = '<i class="ti ti-scroll"></i>';
-    strip.appendChild(chip);
+function renderScrapbook(){
+  const countEl = document.getElementById('scrapbookCount');
+  countEl.textContent = '📜 ' + progress.collectedFacts.length + ' of ' + FACTS.length + ' facts discovered across ' + DECKS.length + ' decks';
+  const grid = document.getElementById('scrapbookGrid');
+  grid.innerHTML = '';
+
+  DECKS.forEach((deck, deckIdx) => {
+    const unlocked = isDeckUnlocked(deckIdx);
+    const collectedInDeck = deck.indices.filter(i => progress.collectedFacts.includes(i));
+
+    const heading = document.createElement('div');
+    heading.style.cssText = 'display:flex;align-items:center;gap:8px;margin:14px 0 4px';
+    heading.innerHTML = '<i class="ti ' + deck.icon + '" style="font-size:18px;color:' + (unlocked ? '#8b5e0f' : '#b0a888') + '"></i>' +
+      '<span style="font-family:\'Cinzel\',serif;font-weight:700;font-size:14px;color:' + (unlocked ? '#3c2f1e' : '#b0a888') + '">' + deck.name + '</span>' +
+      '<span style="font-size:11px;color:#8b6f3e;font-weight:700">' + collectedInDeck.length + '/' + deck.indices.length + '</span>';
+    grid.appendChild(heading);
+
+    if (!unlocked) {
+      const lockedCard = document.createElement('div');
+      lockedCard.style.cssText = 'background:#e3ddc9;border:2px dashed #b0a888;border-radius:10px;padding:12px;text-align:center;color:#8a8265;font-size:12px';
+      lockedCard.innerHTML = '<i class="ti ti-lock"></i> Discover every fact in ' + DECKS[deckIdx - 1].name + ' to unlock this deck!';
+      grid.appendChild(lockedCard);
+      return;
+    }
+
+    collectedInDeck.forEach(idx => {
+      const fact = FACTS[idx];
+      const card = document.createElement('div');
+      card.style.cssText = 'background:#fffdf5;border:2px solid #b9963f;border-radius:10px;padding:12px;display:flex;gap:10px;align-items:flex-start;margin-bottom:8px';
+      const storyHtml = fact.story ? '<div style="margin-top:8px;background:#f1e6c8;border-left:3px solid #d9a520;border-radius:4px;padding:6px 8px;font-size:12px;color:#5c3d08">' + fact.story + '</div>' : '';
+      card.innerHTML = '<i class="ti ' + fact.icon + '" style="font-size:20px;color:#8b5e0f;flex-shrink:0;margin-top:2px"></i><div style="font-size:13px;color:#3c2f1e;line-height:1.5"><b style="font-family:\'Cinzel\',serif">' + fact.title + '</b><span style="font-size:10px;color:#8b6f3e;font-weight:700;margin-left:6px">' + fact.category + '</span><br>' + fact.text + storyHtml + '</div>';
+      grid.appendChild(card);
+    });
+
+    if (collectedInDeck.length < deck.indices.length) {
+      const remaining = deck.indices.length - collectedInDeck.length;
+      const hint = document.createElement('div');
+      hint.style.cssText = 'text-align:center;font-size:12px;color:#6b5730;padding:6px';
+      hint.innerHTML = '<i class="ti ti-lock"></i> ' + remaining + ' more in this deck — earn more badges to reveal them.';
+      grid.appendChild(hint);
+    }
+  });
+}
+
+function dateKey(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+function todayKey(){ return dateKey(new Date()); }
+function yesterdayKey(){ const d = new Date(); d.setDate(d.getDate()-1); return dateKey(d); }
+
+function updateDailyStreak(mode){
+  const ds = progress.dailyStreak;
+  const today = todayKey();
+  if (ds.lastActiveDate !== today){
+    if (ds.streakCountedDate !== yesterdayKey()) ds.current = 0;
+    ds.categoriesToday = {mult:false, add:false, sub:false};
+    ds.lastActiveDate = today;
+  }
+  ds.categoriesToday[mode] = true;
+  const allDone = Object.keys(MODES).every(k => ds.categoriesToday[k]);
+  if (allDone && ds.streakCountedDate !== today){
+    ds.current += 1;
+    ds.best = Math.max(ds.best, ds.current);
+    ds.streakCountedDate = today;
+    session.newDailyStreak = ds.current;
+    if (ds.current % 7 === 0){
+      ds.weeksConquered += 1;
+      session.newWeekConquered = ds.weeksConquered;
+    }
   }
 }
 
-function renderScrapbook(){
-  const countEl = document.getElementById('scrapbookCount');
-  countEl.textContent = progress.collectedFacts.length + ' of ' + FACTS.length + ' facts discovered';
-  const grid = document.getElementById('scrapbookGrid');
-  grid.innerHTML = '';
-  progress.collectedFacts.forEach(idx => {
-    const card = document.createElement('div');
-    card.style.cssText = 'background:#fffdf5;border:2px solid #b9963f;border-radius:10px;padding:12px;display:flex;gap:10px;align-items:flex-start';
-    card.innerHTML = '<i class="ti ti-scroll" style="font-size:20px;color:#8b5e0f;flex-shrink:0;margin-top:2px"></i><div style="font-size:13px;color:#3c2f1e;line-height:1.5">' + FACTS[idx] + '</div>';
-    grid.appendChild(card);
-  });
-  if (progress.collectedFacts.length < FACTS.length){
-    const lockedCount = FACTS.length - progress.collectedFacts.length;
-    const hint = document.createElement('div');
-    hint.style.cssText = 'text-align:center;font-size:12px;color:#6b5730;padding:8px';
-    hint.innerHTML = '<i class="ti ti-lock"></i> ' + lockedCount + ' more waiting to be discovered — earn badges to reveal them.';
-    grid.appendChild(hint);
+function renderDailyStreak(){
+  const ds = progress.dailyStreak;
+  const today = todayKey();
+  const categoriesToday = ds.lastActiveDate === today ? ds.categoriesToday : {mult:false, add:false, sub:false};
+
+  const era = DECKS.find(d => d.id === currentThemeDeckId()) || DECKS[0];
+  document.getElementById('conquestEraLine').innerHTML = '<i class="ti ' + era.icon + '"></i> Weekly Conquest — ' + era.name + ' Era';
+
+  document.getElementById('dailyStreakLine').innerHTML = '🏴 ' + ds.weeksConquered + ' week' + (ds.weeksConquered === 1 ? '' : 's') + ' conquered &nbsp;·&nbsp; 🔥 ' + ds.current + ' day streak' + (ds.best > ds.current ? ' (best: ' + ds.best + ')' : '');
+
+  const dayInWeek = ds.current === 0 ? 0 : ((ds.current - 1) % 7) + 1;
+  const stampRow = document.getElementById('weekStampRow');
+  stampRow.innerHTML = '';
+  for (let i = 1; i <= 7; i++){
+    const filled = i <= dayInWeek;
+    const stamp = document.createElement('div');
+    stamp.style.cssText = 'flex:1;aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;border:2px solid ' +
+      (filled ? '#8b5e0f' : '#cfc7a9') + ';background:' + (filled ? 'radial-gradient(circle at 35% 30%,#fff2c8,#d9a520 80%)' : '#e3ddc9') + ';color:' + (filled ? '#5c3d08' : '#b0a888');
+    stamp.innerHTML = filled ? '<i class="ti ti-check"></i>' : (i);
+    stampRow.appendChild(stamp);
   }
+
+  const checklist = document.getElementById('dailyStreakChecklist');
+  checklist.innerHTML = '';
+  Object.keys(MODES).forEach(k => {
+    const done = categoriesToday[k];
+    const chip = document.createElement('span');
+    chip.style.cssText = 'display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;padding:3px 8px;border-radius:10px;margin-right:6px;' +
+      (done ? 'background:#c8e89f;color:#2c4a12;border:1px solid #4a7a28' : 'background:#e3ddc9;color:#8a8265;border:1px solid #cfc7a9');
+    chip.innerHTML = '<i class="ti ' + (done ? 'ti-check' : 'ti-circle') + '"></i> ' + MODES[k].label;
+    checklist.appendChild(chip);
+  });
+}
+
+function masteredCount(){
+  return MASTERY_TOPICS.filter(t => progress.mastered[t.id]).length;
+}
+
+function renderMasteryBoard(){
+  const grid = document.getElementById('masteryGrid');
+  grid.innerHTML = '';
+  MASTERY_TOPICS.forEach(topic => {
+    const count = progress.masteryCount[topic.id] || 0;
+    const mastered = !!progress.mastered[topic.id];
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;background:#fffdf5;border:2px solid #b9963f;border-radius:8px;padding:8px 12px';
+    let statusHtml;
+    if (mastered) {
+      statusHtml = '<span style="color:#8b5e0f;font-weight:700;font-size:12px"><i class="ti ti-star-filled"></i> Mastered</span>';
+    } else if (count > 0) {
+      statusHtml = '<span style="color:#6b5730;font-size:12px">' + count + '/' + MASTERY_REQUIRED + ' near-perfect passes</span>';
+    } else {
+      statusHtml = '<span style="color:#b0a888;font-size:12px">Not started</span>';
+    }
+    row.innerHTML = '<span style="font-weight:600;color:#3c2f1e;font-size:13px">' + topic.name + '</span>' + statusHtml;
+    grid.appendChild(row);
+  });
 }
 
 function streakMessage(streak){
-  if (streak >= 20) return streak + ' in a row — unstoppable!';
-  if (streak >= 15) return streak + ' in a row — blazing!';
-  if (streak >= 10) return streak + ' in a row — on fire!';
-  if (streak >= 5) return streak + ' in a row — amazing streak!';
+  if (streak >= 20) return '⚡ ' + streak + ' in a row — unstoppable! ⚡';
+  if (streak >= 15) return '🔥 ' + streak + ' in a row — blazing! 🔥';
+  if (streak >= 10) return '🔥 ' + streak + ' in a row — on fire!';
+  if (streak >= 5) return '✨ ' + streak + ' in a row — amazing streak!';
   if (streak >= 2) return streak + ' correct in a row!';
   return '';
 }
 
 function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
+const WEAK_FACT_CHANCE = 0.45;
+const MASTERY_REQUIRED = 2;
+const MASTERY_MIN_CORRECT = 7;
+
+function factKey(mode, config, a, b){
+  if (mode === 'mult') return 'mult|' + a + '|' + b;
+  return mode + '|' + config.type + '|' + config.limit + '|' + a + '|' + b;
+}
+function factCompatible(mode, config, w){
+  if (w.mode !== mode) return false;
+  if (mode === 'mult') return config.tables.includes(w.table);
+  return w.type === config.type && w.limit === config.limit;
+}
+function weightedPick(items, weightFn){
+  const total = items.reduce((s, it) => s + weightFn(it), 0);
+  let r = Math.random() * total;
+  for (const it of items){
+    r -= weightFn(it);
+    if (r <= 0) return it;
+  }
+  return items[items.length - 1];
+}
+
 function generateNumberFact(config, mode){
   if (mode === 'mult') {
     const a = config.tables[randInt(0, config.tables.length-1)];
-    const b = randInt(1,12);
+    const b = randInt(0,12);
     return { a, b, answer: a*b, symbol: '×' };
   }
   if (mode === 'add') {
     if (config.type === 'single') {
       const a = randInt(10, config.limit - 1);
-      const maxB = Math.max(1, Math.min(9, config.limit - a));
-      const b = randInt(1, maxB);
+      const maxB = Math.max(0, Math.min(9, config.limit - a));
+      const b = randInt(0, maxB);
       return { a, b, answer: a+b, symbol: '+' };
     } else {
       const a = randInt(10, Math.max(10, config.limit - 10));
@@ -970,7 +1410,7 @@ function generateNumberFact(config, mode){
   // subtraction
   if (config.type === 'single') {
     const a = randInt(10, config.limit);
-    const b = randInt(1, 9);
+    const b = randInt(0, 9);
     return { a, b, answer: a-b, symbol: '\u2212' };
   } else {
     const a = randInt(10, Math.min(config.limit, 99));
@@ -985,13 +1425,66 @@ function pickConfig(dayEntry, mode){
   return dayEntry;
 }
 
+const WORD_PROBLEM_CHANCE = 0.25;
+const WORD_PROBLEMS = {
+  mult: [
+    "Sir {name} must arm {a} knights with {b} swords each. How many swords are needed in total?",
+    "The blacksmith forges {b} shields every day for {a} days. How many shields does he forge in total?",
+    "There are {a} watchtowers, each guarded by {b} soldiers. How many soldiers are guarding the towers altogether?",
+    "The royal stables have {a} horses, and each horse needs {b} apples a day. How many apples are needed altogether?",
+    "{name} finds {a} treasure chests, each holding {b} gold coins. How many coins in total?",
+    "The banquet hall has {a} tables, each set with {b} plates. How many plates are there in total?"
+  ],
+  add: [
+    "The castle bakery made {a} loaves in the morning and {b} more in the afternoon. How many loaves in total?",
+    "Sir {name} collected {a} gold coins on Monday and {b} more on Tuesday. How many coins does {name} have now?",
+    "There were {a} knights at the feast, and {b} more arrived later. How many knights are at the feast now?",
+    "The garden has {a} red roses and {b} yellow roses. How many roses are there altogether?",
+    "{name} found {a} arrows in the armory and {b} more in the tower. How many arrows in total?",
+    "The kingdom has {a} villages, and {b} new villages were just founded. How many villages are there now?"
+  ],
+  sub: [
+    "The treasury had {a} coins, but {b} were spent on supplies. How many coins are left?",
+    "There were {a} loaves of bread, and the knights ate {b} of them. How many loaves are left?",
+    "Sir {name} had {a} arrows, and used {b} of them in practice. How many arrows does {name} have left?",
+    "The stable had {a} horses, but {b} were sent out on patrol. How many horses remain in the stable?",
+    "{name} started with {a} gold coins and spent {b} at the market. How many coins does {name} have left?",
+    "There were {a} guards on the wall, but {b} went home for the night. How many guards remain?"
+  ]
+};
+
+function isReviewDay(mode, dayEntry){
+  return mode === 'mult' ? dayEntry.length > 1 : !!dayEntry.review;
+}
+
+function buildWordProblem(mode, a, b){
+  const templates = WORD_PROBLEMS[mode];
+  const template = templates[randInt(0, templates.length - 1)];
+  const name = progress.playerName || 'the knight';
+  return template.replace(/\{a\}/g, a).replace(/\{b\}/g, b).replace(/\{name\}/g, name);
+}
+
 function buildQuestions(mode, day) {
   const totalDays = MODES[mode].days.length;
   const dayEntry = MODES[mode].days[Math.min(day, totalDays) - 1];
+  const reviewDay = isReviewDay(mode, dayEntry);
   const qs = [];
   for (let i=0;i<QUESTIONS_PER_DAY;i++){
     const config = pickConfig(dayEntry, mode);
-    const fact = generateNumberFact(config, mode);
+
+    const compatibleWeak = Object.values(progress.weakFacts).filter(w => w.misses > 0 && factCompatible(mode, config, w));
+    let fact, key;
+    if (compatibleWeak.length > 0 && Math.random() < WEAK_FACT_CHANCE){
+      const w = weightedPick(compatibleWeak, x => x.misses);
+      const symbol = mode === 'mult' ? '×' : mode === 'add' ? '+' : '\u2212';
+      const answer = mode === 'mult' ? w.a * w.b : mode === 'add' ? w.a + w.b : w.a - w.b;
+      fact = { a: w.a, b: w.b, answer, symbol };
+      key = factKey(mode, config, w.a, w.b);
+    } else {
+      fact = generateNumberFact(config, mode);
+      key = factKey(mode, config, mode === 'mult' ? fact.a : fact.a, fact.b);
+    }
+
     const opts = new Set([fact.answer]);
     let guard = 0;
     while (opts.size < 4 && guard < 40){
@@ -1001,7 +1494,8 @@ function buildQuestions(mode, day) {
       if (candidate >= 0 && candidate !== fact.answer) opts.add(candidate);
     }
     const optArr = Array.from(opts).sort(()=>Math.random()-0.5);
-    qs.push({ a: fact.a, b: fact.b, symbol: fact.symbol, answer: fact.answer, options: optArr });
+    const wordProblem = (reviewDay && Math.random() < WORD_PROBLEM_CHANCE) ? buildWordProblem(mode, fact.a, fact.b) : null;
+    qs.push({ a: fact.a, b: fact.b, symbol: fact.symbol, answer: fact.answer, options: optArr, key, mode, table: mode==='mult' ? fact.a : undefined, type: config.type, limit: config.limit, wordProblem });
   }
   return qs;
 }
@@ -1019,7 +1513,7 @@ function startDay() {
   const mode = progress.activeMode;
   const modeState = progress.modes[mode];
   const day = modeState.currentDay;
-  session = { mode, day, qIndex: 0, correct: 0, questions: buildQuestions(mode, day), newBadges: [], newFacts: [] };
+  session = { mode, day, qIndex: 0, correct: 0, questions: buildQuestions(mode, day), results: [], newBadges: [], newFacts: [], newMastery: null, newDailyStreak: null, newWeekConquered: null };
   document.getElementById('mapScreen').style.display = 'none';
   document.getElementById('galleryScreen').style.display = 'none';
   document.getElementById('arsenalScreen').style.display = 'none';
@@ -1029,11 +1523,37 @@ function startDay() {
   renderQuestion();
 }
 
+function renderMiniTerritory(){
+  const wrap = document.getElementById('miniTerritory');
+  wrap.innerHTML = '';
+  for (let i = 0; i < QUESTIONS_PER_DAY; i++){
+    const node = document.createElement('div');
+    if (i < session.results.length){
+      node.className = 'mini-node ' + (session.results[i] ? 'correct' : 'wrong');
+      node.innerHTML = '<i class="ti ' + (session.results[i] ? 'ti-check' : 'ti-x') + '"></i>';
+    } else if (i === session.qIndex){
+      node.className = 'mini-node current';
+      node.textContent = i + 1;
+    } else {
+      node.className = 'mini-node';
+      node.textContent = i + 1;
+    }
+    wrap.appendChild(node);
+  }
+}
+
 function renderQuestion(){
   const q = session.questions[session.qIndex];
   document.getElementById('quizCount').textContent = (session.qIndex+1) + ' / ' + QUESTIONS_PER_DAY;
-  document.getElementById('progressFill').style.width = ((session.qIndex)/QUESTIONS_PER_DAY*100) + '%';
-  document.getElementById('questionText').textContent = q.a + ' ' + q.symbol + ' ' + q.b;
+  renderMiniTerritory();
+  const qEl = document.getElementById('questionText');
+  if (q.wordProblem) {
+    qEl.className = 'word-q';
+    qEl.textContent = q.wordProblem;
+  } else {
+    qEl.className = 'q';
+    qEl.textContent = q.a + ' ' + q.symbol + ' ' + q.b;
+  }
   document.getElementById('feedback').textContent = '';
   document.getElementById('feedback').className = 'feedback';
   document.getElementById('streakFlame').textContent = streakMessage(progress.currentStreak || 0);
@@ -1055,21 +1575,33 @@ function answer(selected, btn){
   const fb = document.getElementById('feedback');
   if (selected === q.answer){
     session.correct++;
+    session.results.push(true);
     progress.currentStreak = (progress.currentStreak || 0) + 1;
     if (progress.currentStreak > (progress.bestStreak || 0)) progress.bestStreak = progress.currentStreak;
     [5,10,15,20].forEach(t => { if (progress.currentStreak === t) awardBadge('streak-' + t); });
+    if (progress.weakFacts[q.key]){
+      progress.weakFacts[q.key].misses -= 1;
+      if (progress.weakFacts[q.key].misses <= 0) delete progress.weakFacts[q.key];
+    }
     btn.classList.add('correct');
-    fb.textContent = 'Hooray! The knight moves forward!';
+    fb.textContent = '⚔️ Hooray! The knight moves forward!';
     fb.className = 'feedback good';
     document.getElementById('knightScene').innerHTML = '<i class="ti ti-shield-check"></i>';
     document.getElementById('streakFlame').textContent = streakMessage(progress.currentStreak);
   } else {
+    session.results.push(false);
     progress.currentStreak = 0;
+    const existing = progress.weakFacts[q.key];
+    progress.weakFacts[q.key] = {
+      mode: q.mode, table: q.table, type: q.type, limit: q.limit, a: q.a, b: q.b,
+      misses: (existing ? existing.misses : 0) + 2
+    };
     btn.classList.add('wrong');
     document.querySelectorAll('.opt-btn').forEach(b => { if (parseInt(b.textContent) === q.answer) b.classList.add('correct'); });
     fb.textContent = 'Not quite — the answer was ' + q.answer + '.';
     fb.className = 'feedback bad';
   }
+  renderMiniTerritory();
   setTimeout(() => {
     session.qIndex++;
     if (session.qIndex < QUESTIONS_PER_DAY) renderQuestion();
@@ -1080,19 +1612,28 @@ function answer(selected, btn){
 function awardBadge(id){
   progress.badges[id] = (progress.badges[id] || 0) + 1;
   session.newBadges.push(id);
-  unlockFact();
 }
 
-function unlockFact(){
-  const remaining = FACTS.map((_, i) => i).filter(i => !progress.collectedFacts.includes(i));
-  if (remaining.length === 0) return;
-  const idx = remaining[randInt(0, remaining.length - 1)];
-  progress.collectedFacts.push(idx);
-  session.newFacts.push(idx);
+function unlockedFactPool(){
+  const pool = [];
+  DECKS.forEach((deck, i) => {
+    if (isDeckUnlocked(i)) pool.push(...deck.indices);
+  });
+  return pool;
+}
+
+function syncFacts(){
+  const target = Math.floor(totalBadges() / BADGES_PER_FACT);
+  while (progress.collectedFacts.length < target){
+    const remaining = unlockedFactPool().filter(i => !progress.collectedFacts.includes(i));
+    if (remaining.length === 0) break;
+    const idx = remaining[randInt(0, remaining.length - 1)];
+    progress.collectedFacts.push(idx);
+    session.newFacts.push(idx);
+  }
 }
 
 function finishDay(){
-  document.getElementById('progressFill').style.width = '100%';
   document.getElementById('quizScreen').style.display = 'none';
   const passed = session.correct >= Math.ceil(QUESTIONS_PER_DAY * 0.75);
   const perfect = session.correct === QUESTIONS_PER_DAY;
@@ -1100,17 +1641,23 @@ function finishDay(){
   const modeState = progress.modes[mode];
   const totalDays = MODES[mode].days.length;
 
-  const oldLevel = levelFromXp(progress.xp);
+  const oldLevel = achievedLevel();
   const pointsBefore = affordableLockedTools().length;
   const foodBefore = foodAvailable();
+  const coinsBefore = progress.coins;
 
   let xpGained = session.correct * 10;
   if (passed) xpGained += 20;
   if (perfect) xpGained += 30;
   progress.xp += xpGained;
+
+  let coinsGained = session.correct * 1;
+  if (passed) coinsGained += 5;
+  if (perfect) coinsGained += 10;
+  progress.coins += coinsGained;
+
   progress.totalCorrect = (progress.totalCorrect || 0) + session.correct;
   progress.correctByMode[mode] = (progress.correctByMode[mode] || 0) + session.correct;
-  const newLevel = levelFromXp(progress.xp);
   const foodGained = foodAvailable() - foodBefore;
 
   const wasBeforeCastle = modeState.currentDay <= totalDays;
@@ -1120,8 +1667,21 @@ function finishDay(){
     const badgeId = badgeForDay(mode, session.day);
     if (badgeId) awardBadge(badgeId);
     if (wasBeforeCastle && modeState.currentDay > totalDays) awardBadge('castle');
+    updateDailyStreak(mode);
+
+    if (badgeId && session.correct >= MASTERY_MIN_CORRECT){
+      progress.masteryCount[badgeId] = (progress.masteryCount[badgeId] || 0) + 1;
+      if (!progress.mastered[badgeId] && progress.masteryCount[badgeId] >= MASTERY_REQUIRED){
+        progress.mastered[badgeId] = true;
+        session.newMastery = badgeId;
+      }
+    }
   }
   if (perfect) awardBadge('perfect');
+  const decksUnlockedBefore = DECKS.map((_, i) => isDeckUnlocked(i));
+  syncFacts();
+  const newlyUnlockedDeck = DECKS.find((d, i) => !decksUnlockedBefore[i] && isDeckUnlocked(i) && i > 0);
+  const newLevel = achievedLevel();
 
   const pointsAfter = affordableLockedTools().length;
   const pointsGained = pointsAfter - pointsBefore;
@@ -1135,11 +1695,12 @@ function finishDay(){
   document.getElementById('resultTitle').textContent = passed ? ('Great job, Sir ' + progress.playerName + '!') : "Almost there — let's try again!";
   document.getElementById('resultDetail').textContent = 'You got ' + session.correct + ' out of ' + QUESTIONS_PER_DAY + ' correct.';
   document.getElementById('xpGain').textContent = '+' + xpGained + ' XP';
+  document.getElementById('coinGain').innerHTML = '<i class="ti ti-coin"></i> +' + coinsGained + ' coins';
 
   const levelupBanner = document.getElementById('levelupBanner');
   if (newLevel > oldLevel){
     levelupBanner.style.display = 'block';
-    document.getElementById('levelupText').innerHTML = '<i class="ti ti-arrow-big-up-lines"></i> Level up! Now a ' + RANKS[newLevel].title;
+    document.getElementById('levelupText').innerHTML = '🎉 <i class="ti ti-arrow-big-up-lines"></i> Level up! Now a ' + RANKS[newLevel].title;
   } else {
     levelupBanner.style.display = 'none';
   }
@@ -1147,8 +1708,8 @@ function finishDay(){
   const toolBanner = document.getElementById('toolBanner');
   if (pointsGained > 0){
     toolBanner.style.display = 'block';
-    document.getElementById('toolBannerIcon').innerHTML = '<i class="ti ti-hammer"></i>';
-    document.getElementById('toolBannerText').innerHTML = 'A new tool is ready to craft! <a href="#" id="goToArsenalLink">Choose it in the arsenal</a>';
+    document.getElementById('toolBannerIcon').innerHTML = '🔨';
+    document.getElementById('toolBannerText').innerHTML = 'You have enough coins for a new tool! <a href="#" id="goToArsenalLink">Visit the Treasury</a>';
     setTimeout(() => {
       const link = document.getElementById('goToArsenalLink');
       if (link) link.onclick = (e) => {
@@ -1168,9 +1729,44 @@ function finishDay(){
   const foodBanner = document.getElementById('foodBanner');
   if (foodGained > 0 && progress.companion){
     foodBanner.style.display = 'block';
-    document.getElementById('foodBannerText').textContent = 'Food is ready for ' + progress.companion.name + '!';
+    document.getElementById('foodBannerText').textContent = '🍖 Food is ready for ' + progress.companion.name + '!';
   } else {
     foodBanner.style.display = 'none';
+  }
+
+  const deckBanner = document.getElementById('deckBanner');
+  if (newlyUnlockedDeck){
+    deckBanner.style.display = 'block';
+    document.getElementById('deckBannerIcon').innerHTML = '<i class="ti ' + newlyUnlockedDeck.icon + '"></i>';
+    document.getElementById('deckBannerText').textContent = '📖 New scrapbook deck unlocked: ' + newlyUnlockedDeck.name + '!';
+  } else {
+    deckBanner.style.display = 'none';
+  }
+
+  const masteryBanner = document.getElementById('masteryBanner');
+  if (session.newMastery){
+    const def = BADGE_DEFS.find(b => b.id === session.newMastery);
+    masteryBanner.style.display = 'block';
+    document.getElementById('masteryBannerText').textContent = '⭐ Mastered: ' + (def ? def.name : session.newMastery) + '! Truly exam-ready.';
+  } else {
+    masteryBanner.style.display = 'none';
+  }
+
+  const dailyStreakBanner = document.getElementById('dailyStreakBanner');
+  if (session.newDailyStreak){
+    dailyStreakBanner.style.display = 'block';
+    document.getElementById('dailyStreakBannerText').textContent = '🔥 All 3 subjects done today — daily streak: ' + session.newDailyStreak + ' day' + (session.newDailyStreak === 1 ? '' : 's') + '!';
+  } else {
+    dailyStreakBanner.style.display = 'none';
+  }
+
+  const weekConquestBanner = document.getElementById('weekConquestBanner');
+  if (session.newWeekConquered){
+    const era = DECKS.find(d => d.id === currentThemeDeckId()) || DECKS[0];
+    weekConquestBanner.style.display = 'block';
+    document.getElementById('weekConquestBannerText').innerHTML = '🏴 A full week conquered! ' + session.newWeekConquered + ' week' + (session.newWeekConquered === 1 ? '' : 's') + ' total in the ' + era.name + ' era.';
+  } else {
+    weekConquestBanner.style.display = 'none';
   }
 
   const newBadgeRow = document.getElementById('newBadgeRow');
@@ -1187,9 +1783,11 @@ function finishDay(){
   const newFactsRow = document.getElementById('newFactsRow');
   newFactsRow.innerHTML = '';
   session.newFacts.forEach(idx => {
+    const fact = FACTS[idx];
     const card = document.createElement('div');
     card.style.cssText = 'background:#fffdf5;border:2px solid #b9963f;border-radius:10px;padding:10px;margin-bottom:8px;text-align:left;display:flex;gap:8px;align-items:flex-start';
-    card.innerHTML = '<i class="ti ti-scroll" style="font-size:18px;color:#8b5e0f;flex-shrink:0;margin-top:2px"></i><div style="font-size:12px;color:#3c2f1e;line-height:1.5"><b style="font-family:\'Cinzel\',serif">New fact!</b><br>' + FACTS[idx] + '</div>';
+    const storyHtml = fact.story ? '<div style="margin-top:6px;background:#f1e6c8;border-left:3px solid #d9a520;border-radius:4px;padding:5px 7px;font-size:11px;color:#5c3d08">' + fact.story + '</div>' : '';
+    card.innerHTML = '<i class="ti ' + fact.icon + '" style="font-size:18px;color:#8b5e0f;flex-shrink:0;margin-top:2px"></i><div style="font-size:12px;color:#3c2f1e;line-height:1.5"><b style="font-family:\'Cinzel\',serif">📜 New fact: ' + fact.title + '</b><br>' + fact.text + storyHtml + '</div>';
     newFactsRow.appendChild(card);
   });
 
@@ -1212,25 +1810,36 @@ document.getElementById('exitQuizLink').addEventListener('click', (e) => {
   renderMap();
 });
 
-document.getElementById('resetBtn').addEventListener('click', async () => {
-  const sure = confirm("Reset EVERYTHING — name, companion, and all progress? This can't be undone.");
-  if (!sure) return;
+document.getElementById('resetBtn').addEventListener('click', () => {
+  document.getElementById('resetConfirmBox').style.display = 'block';
+});
+
+document.getElementById('resetCancelBtn').addEventListener('click', () => {
+  document.getElementById('resetConfirmBox').style.display = 'none';
+});
+
+document.getElementById('resetConfirmBtn').addEventListener('click', async () => {
+  document.getElementById('resetConfirmBox').style.display = 'none';
   progress = {
-    playerName: '', companion: null,
-    activeMode: 'mult', xp: 0, badges: {}, bestStreak: 0, currentStreak: 0, craftedTools: [], collectedFacts: [],
+    playerName: '', onboarded: false, companion: null,
+    activeMode: 'mult', xp: 0, coins: 0, badges: {}, bestStreak: 0, currentStreak: 0, craftedTools: [], collectedFacts: [],
     totalCorrect: 0, companionFed: 0, correctByMode: {mult:0, add:0, sub:0},
+    weakFacts: {}, masteryCount: {}, mastered: {},
+    dailyStreak: { current: 0, best: 0, weeksConquered: 0, lastActiveDate: null, streakCountedDate: null, categoriesToday: {mult:false, add:false, sub:false} },
     modes: { mult:{completedDays:[],currentDay:1}, add:{completedDays:[],currentDay:1}, sub:{completedDays:[],currentDay:1} }
   };
   await saveProgress();
   document.getElementById('mapScreen').style.display = 'none';
   document.getElementById('companionScreen').style.display = 'none';
+  document.getElementById('missionScreen').style.display = 'none';
   document.getElementById('nameInput').value = '';
   document.getElementById('companionNameInput').value = '';
   selectedCompanionType = null;
   document.getElementById('chooseHorse').classList.remove('selected');
   document.getElementById('chooseFalcon').classList.remove('selected');
   document.getElementById('editNameWrap').style.display = 'none';
-  document.getElementById('nameScreen').style.display = 'block';
+  document.getElementById('headerSubtitle').textContent = 'A quest to master arithmetic and become a legendary knight';
+  document.getElementById('introScreen').style.display = 'block';
 });
 
 document.getElementById('saveBtn').addEventListener('click', async () => {
@@ -1242,40 +1851,90 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
   setTimeout(() => { fb.textContent = ''; }, 2500);
 });
 
-document.getElementById('galleryLink').addEventListener('click', (e) => {
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const textarea = document.getElementById('progressTextarea');
+  textarea.value = JSON.stringify(progress, null, 2);
+  textarea.select();
+  const fb = document.getElementById('importFeedback');
+  fb.style.color = '#378add';
+  fb.textContent = 'Copy the text above — paste it to Claude or save it somewhere safe.';
+});
+
+document.getElementById('importBtn').addEventListener('click', async () => {
+  const textarea = document.getElementById('progressTextarea');
+  const fb = document.getElementById('importFeedback');
+  try {
+    const parsed = JSON.parse(textarea.value);
+    progress = parsed;
+    normalizeProgress();
+    await saveProgress();
+    renderMap();
+    fb.style.color = '#4a7a28';
+    fb.textContent = 'Progress imported successfully!';
+  } catch (e) {
+    fb.style.color = '#c85c4d';
+    fb.textContent = "That doesn't look like valid progress data — check it's a full copy and try again.";
+  }
+});
+
+document.getElementById('hallLink').addEventListener('click', (e) => {
   e.preventDefault();
   document.getElementById('mapScreen').style.display = 'none';
+  document.getElementById('hallScreen').style.display = 'block';
+  renderHallScreen();
+});
+document.getElementById('hallBackBtn').addEventListener('click', () => {
+  document.getElementById('hallScreen').style.display = 'none';
+  document.getElementById('mapScreen').style.display = 'block';
+  renderMap();
+});
+
+document.getElementById('hallBadgesLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('hallScreen').style.display = 'none';
   document.getElementById('galleryScreen').style.display = 'block';
   renderGallery();
 });
 document.getElementById('galleryBackBtn').addEventListener('click', () => {
   document.getElementById('galleryScreen').style.display = 'none';
-  document.getElementById('mapScreen').style.display = 'block';
-  renderMap();
+  document.getElementById('hallScreen').style.display = 'block';
+  renderHallScreen();
 });
 
-document.getElementById('arsenalLink').addEventListener('click', (e) => {
+document.getElementById('hallTreasuryLink').addEventListener('click', (e) => {
   e.preventDefault();
-  document.getElementById('mapScreen').style.display = 'none';
+  document.getElementById('hallScreen').style.display = 'none';
   document.getElementById('arsenalScreen').style.display = 'block';
   renderArsenalGallery();
 });
 document.getElementById('arsenalBackBtn').addEventListener('click', () => {
   document.getElementById('arsenalScreen').style.display = 'none';
-  document.getElementById('mapScreen').style.display = 'block';
-  renderMap();
+  document.getElementById('hallScreen').style.display = 'block';
+  renderHallScreen();
 });
 
-document.getElementById('scrapbookLink').addEventListener('click', (e) => {
+document.getElementById('hallScrapbookLink').addEventListener('click', (e) => {
   e.preventDefault();
-  document.getElementById('mapScreen').style.display = 'none';
+  document.getElementById('hallScreen').style.display = 'none';
   document.getElementById('scrapbookScreen').style.display = 'block';
   renderScrapbook();
 });
 document.getElementById('scrapbookBackBtn').addEventListener('click', () => {
   document.getElementById('scrapbookScreen').style.display = 'none';
-  document.getElementById('mapScreen').style.display = 'block';
-  renderMap();
+  document.getElementById('hallScreen').style.display = 'block';
+  renderHallScreen();
+});
+
+document.getElementById('hallMasteryLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('hallScreen').style.display = 'none';
+  document.getElementById('masteryScreen').style.display = 'block';
+  renderMasteryBoard();
+});
+document.getElementById('masteryBackBtn').addEventListener('click', () => {
+  document.getElementById('masteryScreen').style.display = 'none';
+  document.getElementById('hallScreen').style.display = 'block';
+  renderHallScreen();
 });
 
 function submitName(){
@@ -1283,15 +1942,23 @@ function submitName(){
   if (!val) return;
   progress.playerName = val;
   saveProgress();
-  if (progress.companion) {
+  if (progress.companion && progress.onboarded) {
     showMap();
+  } else if (progress.companion) {
+    showMissionScreen();
   } else {
-    document.getElementById('nameScreen').style.display = 'none';
+    document.getElementById('introScreen').style.display = 'none';
     document.getElementById('companionScreen').style.display = 'block';
   }
 }
 document.getElementById('nameSubmitBtn').addEventListener('click', submitName);
 document.getElementById('nameInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') submitName(); });
+
+document.getElementById('missionAcceptBtn').addEventListener('click', () => {
+  progress.onboarded = true;
+  saveProgress();
+  showMap();
+});
 
 let selectedCompanionType = null;
 function selectCompanionCard(type){
@@ -1307,14 +1974,18 @@ document.getElementById('companionSubmitBtn').addEventListener('click', () => {
   if (!selectedCompanionType || !name) return;
   progress.companion = { type: selectedCompanionType, name };
   saveProgress();
-  showMap();
+  if (progress.onboarded) {
+    showMap();
+  } else {
+    showMissionScreen();
+  }
 });
 
 document.getElementById('editNameLink').addEventListener('click', (e) => {
   e.preventDefault();
   document.getElementById('nameInput').value = progress.playerName || '';
   document.getElementById('mapScreen').style.display = 'none';
-  document.getElementById('nameScreen').style.display = 'block';
+  document.getElementById('introScreen').style.display = 'block';
 });
 
 let parentGateAnswer = 0;
