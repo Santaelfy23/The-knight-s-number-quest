@@ -815,6 +815,7 @@ let progress = {
   activeMode: 'mult',
   xp: 0,
   coins: 0,
+  lifetimeCoins: 0,
   badges: {},
   bestStreak: 0,
   currentStreak: 0,
@@ -864,6 +865,7 @@ function normalizeProgress(){
   if (!MODES[progress.activeMode]) progress.activeMode = 'mult';
   if (typeof progress.xp !== 'number') progress.xp = 0;
   if (typeof progress.coins !== 'number') progress.coins = 0;
+  if (typeof progress.lifetimeCoins !== 'number') progress.lifetimeCoins = Math.max(progress.coins, 0);
   if (!progress.badges || typeof progress.badges !== 'object') progress.badges = {};
   if (typeof progress.bestStreak !== 'number') progress.bestStreak = 0;
   if (typeof progress.currentStreak !== 'number') progress.currentStreak = 0;
@@ -1003,7 +1005,7 @@ function renderHallSummary(){
 
 function renderHallScreen(){
   document.getElementById('hallBadgesSummary').textContent = totalBadges() + ' badges earned';
-  document.getElementById('hallTreasurySummary').textContent = progress.coins + ' coins · ' + progress.craftedTools.length + '/' + TOOLS.length + ' tools owned';
+  document.getElementById('hallTreasurySummary').textContent = progress.coins + ' to spend · ' + progress.lifetimeCoins + ' earned lifetime · ' + progress.craftedTools.length + '/' + TOOLS.length + ' tools owned';
   document.getElementById('hallScrapbookSummary').textContent = progress.collectedFacts.length + '/' + FACTS.length + ' facts discovered';
   document.getElementById('hallMasterySummary').textContent = masteredCount() + '/' + MASTERY_TOPICS.length + ' topics mastered';
 }
@@ -1029,7 +1031,8 @@ function renderArsenalGallery(){
   const balance = progress.coins;
 
   const pointsBanner = document.getElementById('arsenalPoints');
-  pointsBanner.innerHTML = '<i class="ti ti-coins"></i> ' + balance + ' coin' + (balance === 1 ? '' : 's') + ' in the treasury — spend them on any tool below!';
+  pointsBanner.innerHTML = '<i class="ti ti-coins"></i> ' + balance + ' coin' + (balance === 1 ? '' : 's') + ' to spend' +
+    '<div style="font-size:11px;font-weight:600;color:#8b6f3e;margin-top:2px"><i class="ti ti-trophy"></i> ' + progress.lifetimeCoins + ' coin' + (progress.lifetimeCoins === 1 ? '' : 's') + ' earned in total, ever</div>';
   pointsBanner.style.color = '#2c4a12';
 
   TOOL_CATEGORIES.forEach(cat => {
@@ -1655,6 +1658,7 @@ function finishDay(){
   if (passed) coinsGained += 5;
   if (perfect) coinsGained += 10;
   progress.coins += coinsGained;
+  progress.lifetimeCoins = (progress.lifetimeCoins || 0) + coinsGained;
 
   progress.totalCorrect = (progress.totalCorrect || 0) + session.correct;
   progress.correctByMode[mode] = (progress.correctByMode[mode] || 0) + session.correct;
@@ -1822,7 +1826,7 @@ document.getElementById('resetConfirmBtn').addEventListener('click', async () =>
   document.getElementById('resetConfirmBox').style.display = 'none';
   progress = {
     playerName: '', onboarded: false, companion: null,
-    activeMode: 'mult', xp: 0, coins: 0, badges: {}, bestStreak: 0, currentStreak: 0, craftedTools: [], collectedFacts: [],
+    activeMode: 'mult', xp: 0, coins: 0, lifetimeCoins: 0, badges: {}, bestStreak: 0, currentStreak: 0, craftedTools: [], collectedFacts: [],
     totalCorrect: 0, companionFed: 0, correctByMode: {mult:0, add:0, sub:0},
     weakFacts: {}, masteryCount: {}, mastered: {},
     dailyStreak: { current: 0, best: 0, weeksConquered: 0, lastActiveDate: null, streakCountedDate: null, categoriesToday: {mult:false, add:false, sub:false} },
