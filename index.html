@@ -85,6 +85,7 @@
   .footer-link a { color:#8b6f3e; }
 
   .path { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin: 12px 0; }
+  .path-10 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 12px 0; }
   .day-node {
     aspect-ratio: 1;
     border-radius: 50%;
@@ -98,6 +99,16 @@
   .day-node.current { background: radial-gradient(circle at 35% 30%, #ffe8a8, #ffc94d 80%); color: #6b4a06; border-color: #d9a520; animation: pulse 1.6s infinite; }
   .day-node.locked { background: #e3ddc9; color: #b0a888; cursor: not-allowed; box-shadow:none; }
   @keyframes pulse { 0%,100%{ transform: scale(1);} 50%{ transform: scale(1.08);} }
+  @keyframes craftPop {
+    0% { transform: scale(0.3) rotate(-20deg); opacity: 0; }
+    55% { transform: scale(1.2) rotate(8deg); opacity: 1; }
+    75% { transform: scale(0.95) rotate(-3deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  @keyframes craftGlow {
+    0%,100% { box-shadow: 0 0 0px rgba(217,165,32,0.6); }
+    50% { box-shadow: 0 0 26px rgba(217,165,32,0.85); }
+  }
 
   .week-label { font-family:'Cinzel',serif; font-size: 13px; color: #5c3d08; font-weight: 700; margin: 14px 0 6px; text-align:center; }
 
@@ -332,6 +343,11 @@
       <a href="#" id="hallLink" style="font-size:12px;font-weight:700;color:#8b5e0f;white-space:nowrap;flex-shrink:0"><i class="ti ti-books"></i> Hall of Records</a>
     </div>
 
+    <div id="trophyShelfCard" style="display:none;background:#fffdf5;border:2px solid #b9963f;border-radius:10px;padding:10px 12px;margin-bottom:10px">
+      <div style="font-family:'Cinzel',serif;font-size:13px;font-weight:700;color:#3c2f1e;margin-bottom:8px"><i class="ti ti-sword"></i> <span id="trophyShelfTitle">Sir Arthur's Gear</span></div>
+      <div id="trophyShelfRow" style="display:flex;gap:10px;flex-wrap:wrap"></div>
+    </div>
+
     <div class="section-label"><i class="ti ti-map"></i> The kingdom</div>
     <div id="kingdomMap" class="kingdom-map"></div>
 
@@ -421,22 +437,31 @@
 
   <div id="masteryScreen" class="card" style="display:none">
     <h2 style="font-family:'Cinzel',serif;text-align:center;color:#3c2f1e;margin-top:0">Mastery board</h2>
-    <p style="text-align:center;font-size:13px;color:#6b5730">A topic is Passed once you clear it, and Mastered once you've nailed it (7/8 or better) twice — that's real exam-ready recall.</p>
+    <p style="text-align:center;font-size:13px;color:#6b5730">A topic is Passed once you clear it. It's Mastered once you've answered 7/8 or better <b>and</b> quickly (averaging under 6 seconds a question) four separate times — that's real exam-ready recall, not just a lucky round.</p>
     <div id="masteryGrid" style="display:flex;flex-direction:column;gap:6px;margin:12px 0"></div>
     <button class="primary" id="masteryBackBtn">Back to the map</button>
   </div>
 
   <div id="arsenalScreen" class="card" style="display:none">
     <h2 style="font-family:'Cinzel',serif;text-align:center;color:#3c2f1e;margin-top:0">The Treasury</h2>
-    <p style="text-align:center;font-size:13px;color:#6b5730">Every correct answer earns coins for the treasury — spend them on any tool, but the mightiest ones cost more.</p>
-    <p style="text-align:center;font-size:13px;font-weight:700" id="arsenalPoints"></p>
-    <div class="arsenal-grid" id="arsenalGrid"></div>
-    <button class="primary" id="arsenalBackBtn">Back to the map</button>
+    <div id="craftCelebration" style="display:none;text-align:center;padding:16px 10px 8px">
+      <div id="craftCelebrationIcon" style="width:90px;height:90px;border-radius:16px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:42px;animation:craftPop 0.6s ease-out, craftGlow 1.6s ease-in-out infinite 0.6s"></div>
+      <div style="font-family:'Cinzel',serif;font-size:12px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#8b6f3e;margin-bottom:4px" id="craftCelebrationRarity"></div>
+      <h2 style="font-family:'Cinzel',serif;color:#3c2f1e;margin:0 0 6px" id="craftCelebrationName"></h2>
+      <p style="color:#6b5730;font-size:13px;margin:0 0 18px">Crafted and added to your gear!</p>
+      <button class="primary" id="craftCelebrationBtn">Excellent! <i class="ti ti-sparkles"></i></button>
+    </div>
+    <div id="arsenalMainView">
+      <p style="text-align:center;font-size:13px;color:#6b5730">Every correct answer earns coins for the treasury — spend them on any tool, but the mightiest ones cost more.</p>
+      <p style="text-align:center;font-size:13px;font-weight:700" id="arsenalPoints"></p>
+      <div class="arsenal-grid" id="arsenalGrid"></div>
+      <button class="primary" id="arsenalBackBtn">Back to the map</button>
+    </div>
   </div>
 
   <div id="quizScreen" class="card">
     <div class="quiz-topbar">
-      <span id="quizDayLabel">Day 1</span>
+      <span id="quizDayLabel">Quest 1</span>
       <span id="quizCount">1 / 8</span>
     </div>
     <div class="footer-link" style="margin-bottom:8px"><a href="#" id="exitQuizLink"><i class="ti ti-door-exit"></i> Leave quest (won't be counted)</a></div>
@@ -447,6 +472,8 @@
     <div class="question-box"><div class="q" id="questionText">3 × 4</div></div>
     <div class="options" id="optionsGrid"></div>
     <div class="feedback" id="feedback"></div>
+    <div id="learnHint" style="display:none;background:#f1e6c8;border:2px solid #b9963f;border-radius:10px;padding:10px 12px;margin-top:6px;font-size:13px;color:#3c2f1e;line-height:1.5"></div>
+    <button class="primary" id="quizContinueBtn" style="display:none">Got it — continue <i class="ti ti-arrow-right"></i></button>
   </div>
 
   <div id="resultScreen" class="card">
@@ -468,6 +495,14 @@
     <div class="tool-banner" id="masteryBanner" style="background:#fff4d6;border-color:#d9a520">
       <div class="icon" style="color:#8b5e0f"><i class="ti ti-star-filled"></i></div>
       <div class="t" id="masteryBannerText" style="color:#5c3d08">Mastered!</div>
+    </div>
+    <div class="tool-banner" id="badgeCapBanner" style="background:#e6f1fb;border-color:#378add">
+      <div class="icon" style="color:#185fa5"><i class="ti ti-moon-stars"></i></div>
+      <div class="t" style="color:#0c447c">He's earned all today's badges — more unlock tomorrow!</div>
+    </div>
+    <div class="tool-banner" id="speedBanner" style="background:#eaf6e0;border-color:#6b9c3c">
+      <div class="icon" style="color:#2c4a12"><i class="ti ti-bolt"></i></div>
+      <div class="t" style="color:#2c4a12">Great accuracy! A little quicker next time and this will count toward Mastery.</div>
     </div>
     <div class="tool-banner" id="dailyStreakBanner" style="background:#fff4d6;border-color:#d9a520">
       <div class="icon" style="color:#8b5e0f"><i class="ti ti-flame"></i></div>
@@ -507,18 +542,25 @@ const MULT_DAYS = [
 const ADD_DAYS = [
   {type:'single', limit:20},
   {type:'single', limit:20},
+  {type:'triple', limit:20},
   {type:'single', limit:30},
   {type:'single', limit:30},
+  {type:'triple', limit:30},
+  {review:true, configs:[{type:'single',limit:20},{type:'single',limit:30},{type:'triple',limit:20},{type:'triple',limit:30}]},
   {type:'single', limit:40},
   {type:'single', limit:40},
-  {review:true, configs:[{type:'single',limit:20},{type:'single',limit:30},{type:'single',limit:40}]},
+  {type:'triple', limit:40},
+  {review:true, configs:[{type:'single',limit:20},{type:'single',limit:30},{type:'single',limit:40},{type:'triple',limit:20},{type:'triple',limit:30},{type:'triple',limit:40}]},
   {type:'double', limit:50},
   {type:'double', limit:50},
+  {review:true, configs:[{type:'double',limit:50},{type:'triple',limit:40}]},
   {type:'double', limit:70},
   {type:'double', limit:70},
   {type:'double', limit:100},
   {type:'double', limit:100},
-  {review:true, configs:[{type:'single',limit:20},{type:'single',limit:30},{type:'single',limit:40},{type:'double',limit:50},{type:'double',limit:70},{type:'double',limit:100}]}
+  {review:true, configs:[{type:'double',limit:70},{type:'double',limit:100}]},
+  {review:true, configs:[{type:'single',limit:20},{type:'single',limit:30},{type:'single',limit:40},{type:'triple',limit:20},{type:'triple',limit:30},{type:'triple',limit:40},{type:'double',limit:50},{type:'double',limit:70},{type:'double',limit:100}]},
+  {review:true, configs:[{type:'single',limit:20},{type:'single',limit:30},{type:'single',limit:40},{type:'triple',limit:20},{type:'triple',limit:30},{type:'triple',limit:40},{type:'double',limit:50},{type:'double',limit:70},{type:'double',limit:100}]}
 ];
 
 /* ---------- Subtraction day plan ---------- */
@@ -526,8 +568,8 @@ const SUB_DAYS = JSON.parse(JSON.stringify(ADD_DAYS)); // same tier shape as add
 
 const MODES = {
   mult: { label:'Times tables', symbol:'×', weeks:3, days: MULT_DAYS },
-  add:  { label:'Addition', symbol:'+', weeks:2, days: ADD_DAYS },
-  sub:  { label:'Subtraction', symbol:'−', weeks:2, days: SUB_DAYS }
+  add:  { label:'Addition', symbol:'+', weeks:3, days: ADD_DAYS },
+  sub:  { label:'Subtraction', symbol:'−', weeks:3, days: SUB_DAYS }
 };
 
 const RANKS = [
@@ -559,12 +601,18 @@ const BADGE_DEFS = [
   {id:'add-single-20', name:'Adds to 20', icon:'20'},
   {id:'add-single-30', name:'Adds to 30', icon:'30'},
   {id:'add-single-40', name:'Adds to 40', icon:'40'},
+  {id:'add-triple-20', name:'Chains to 20', icon:'20'},
+  {id:'add-triple-30', name:'Chains to 30', icon:'30'},
+  {id:'add-triple-40', name:'Chains to 40', icon:'40'},
   {id:'add-double-50', name:'Big adds to 50', icon:'50'},
   {id:'add-double-70', name:'Big adds to 70', icon:'70'},
   {id:'add-double-100', name:'Big adds to 100', icon:'100'},
   {id:'sub-single-20', name:'Subtracts from 20', icon:'20'},
   {id:'sub-single-30', name:'Subtracts from 30', icon:'30'},
   {id:'sub-single-40', name:'Subtracts from 40', icon:'40'},
+  {id:'sub-triple-20', name:'Chains from 20', icon:'20'},
+  {id:'sub-triple-30', name:'Chains from 30', icon:'30'},
+  {id:'sub-triple-40', name:'Chains from 40', icon:'40'},
   {id:'sub-double-50', name:'Big subtracts from 50', icon:'50'},
   {id:'sub-double-70', name:'Big subtracts from 70', icon:'70'},
   {id:'sub-double-100', name:'Big subtracts from 100', icon:'100'},
@@ -584,13 +632,20 @@ const TOOLS = [
   {id:'war-bow', name:'War bow', icon:'ti-target', category:'Weapons', cost:120},
   {id:'golden-sword', name:'Golden sword', icon:'ti-award', category:'Weapons', cost:160},
   {id:'legendary-blade', name:'Legendary blade', icon:'ti-crown', category:'Weapons', cost:220},
+  {id:'mythril-blade', name:'Mythril blade', icon:'ti-sparkles', category:'Weapons', cost:260},
   {id:'small-shield', name:'Small shield', icon:'ti-shield', category:'Armor', cost:50},
   {id:'chainmail', name:'Chainmail armor', icon:'ti-shield-check', category:'Armor', cost:80},
   {id:'dragon-shield', name:'Dragon shield', icon:'ti-diamond', category:'Armor', cost:120},
   {id:'royal-armor', name:'Royal armor', icon:'ti-medal', category:'Armor', cost:160},
-  {id:'battle-banner', name:'Battle banner', icon:'ti-flag', category:'Banners', cost:60}
+  {id:'mythril-armor', name:'Mythril armor', icon:'ti-shield-half-filled', category:'Armor', cost:260},
+  {id:'battle-banner', name:'Battle banner', icon:'ti-flag', category:'Banners', cost:60},
+  {id:'royal-standard', name:'Royal standard', icon:'ti-star-filled', category:'Banners', cost:90},
+  {id:'warhorse', name:'Warhorse', icon:'ti-horse', category:'Mounts', cost:130},
+  {id:'griffon-steed', name:'Griffon steed', icon:'ti-feather', category:'Mounts', cost:200},
+  {id:'ancient-scroll', name:'Ancient scroll', icon:'ti-scroll', category:'Artifacts', cost:150},
+  {id:'crown-of-valor', name:'Crown of Valor', icon:'ti-trophy', category:'Artifacts', cost:300}
 ];
-const TOOL_CATEGORIES = ['Weapons', 'Armor', 'Banners'];
+const TOOL_CATEGORIES = ['Weapons', 'Armor', 'Banners', 'Mounts', 'Artifacts'];
 
 const RARITY_TIERS = [
   {max:60,  name:'Common',    bg:'radial-gradient(circle at 35% 30%,#f3f3f3,#b8b8b8 75%)', border:'#8a8a8a', color:'#3a3a3a'},
@@ -731,11 +786,13 @@ const REGIONS = {
   ],
   add:  [
     {name:'Market Village', icon:'ti-building-store'},
-    {name:'Mountain Trail', icon:'ti-mountain'}
+    {name:'Mountain Trail', icon:'ti-mountain'},
+    {name:'The Grand Bazaar', icon:'ti-building-bank'}
   ],
   sub:  [
     {name:'River Crossing', icon:'ti-bridge'},
-    {name:'The Old Bridge', icon:'ti-building-castle'}
+    {name:'The Old Bridge', icon:'ti-building-castle'},
+    {name:'The Vanishing Falls', icon:'ti-droplet'}
   ]
 };
 
@@ -828,6 +885,8 @@ let progress = {
   weakFacts: {},
   masteryCount: {},
   mastered: {},
+  badgeCapDate: null,
+  badgesEarnedToday: 0,
   dailyStreak: { current: 0, best: 0, weeksConquered: 0, lastActiveDate: null, streakCountedDate: null, categoriesToday: {mult:false, add:false, sub:false} },
   modes: {
     mult: { completedDays: [], currentDay: 1 },
@@ -835,7 +894,7 @@ let progress = {
     sub:  { completedDays: [], currentDay: 1 }
   }
 };
-let session = { mode: 'mult', day: 1, qIndex: 0, correct: 0, questions: [], results: [], newBadges: [], newFacts: [], newMastery: null, newDailyStreak: null, newWeekConquered: null };
+let session = { mode: 'mult', day: 1, qIndex: 0, correct: 0, questions: [], results: [], responseTimes: [], newBadges: [], newFacts: [], newMastery: null, newDailyStreak: null, newWeekConquered: null, badgesCappedToday: false, accurateButSlow: false };
 
 async function loadProgress() {
   try {
@@ -879,6 +938,8 @@ function normalizeProgress(){
   if (!progress.weakFacts || typeof progress.weakFacts !== 'object') progress.weakFacts = {};
   if (!progress.masteryCount || typeof progress.masteryCount !== 'object') progress.masteryCount = {};
   if (!progress.mastered || typeof progress.mastered !== 'object') progress.mastered = {};
+  if (typeof progress.badgeCapDate !== 'string' && progress.badgeCapDate !== null) progress.badgeCapDate = null;
+  if (typeof progress.badgesEarnedToday !== 'number') progress.badgesEarnedToday = 0;
   if (!progress.dailyStreak || typeof progress.dailyStreak !== 'object') {
     progress.dailyStreak = { current: 0, best: 0, weeksConquered: 0, lastActiveDate: null, streakCountedDate: null, categoriesToday: {mult:false, add:false, sub:false} };
   } else {
@@ -960,7 +1021,28 @@ function craftTool(toolId){
   saveProgress();
   renderArsenalGallery();
   renderMap();
+  showCraftCelebration(tool);
 }
+
+function showCraftCelebration(tool){
+  const rarity = toolRarity(tool.cost);
+  document.getElementById('arsenalMainView').style.display = 'none';
+  const celebration = document.getElementById('craftCelebration');
+  celebration.style.display = 'block';
+  const iconEl = document.getElementById('craftCelebrationIcon');
+  iconEl.style.background = rarity.bg;
+  iconEl.style.border = '4px solid ' + rarity.border;
+  iconEl.style.color = rarity.color;
+  iconEl.innerHTML = '<i class="ti ' + tool.icon + '"></i>';
+  document.getElementById('craftCelebrationRarity').textContent = rarity.name + ' item crafted!';
+  document.getElementById('craftCelebrationRarity').style.color = rarity.border;
+  document.getElementById('craftCelebrationName').textContent = tool.name;
+}
+
+document.getElementById('craftCelebrationBtn').addEventListener('click', () => {
+  document.getElementById('craftCelebration').style.display = 'none';
+  document.getElementById('arsenalMainView').style.display = 'block';
+});
 
 function renderModeTabs(){
   const tabs = document.getElementById('modeTabs');
@@ -1025,7 +1107,34 @@ function renderGallery(){
   });
 }
 
+function renderTrophyShelf(){
+  const card = document.getElementById('trophyShelfCard');
+  if (progress.craftedTools.length === 0){
+    card.style.display = 'none';
+    return;
+  }
+  card.style.display = 'block';
+  document.getElementById('trophyShelfTitle').textContent = 'Sir ' + progress.playerName + "'s Gear";
+  const row = document.getElementById('trophyShelfRow');
+  row.innerHTML = '';
+  progress.craftedTools.forEach(toolId => {
+    const tool = TOOLS.find(t => t.id === toolId);
+    if (!tool) return;
+    const rarity = toolRarity(tool.cost);
+    const item = document.createElement('div');
+    item.style.cssText = 'text-align:center;width:52px';
+    item.innerHTML =
+      '<div style="width:44px;height:44px;border-radius:10px;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;font-size:20px;' +
+      'background:' + rarity.bg + ';border:2px solid ' + rarity.border + ';color:' + rarity.color +
+      (rarity.name === 'Legendary' ? ';box-shadow:0 0 8px ' + rarity.border + '80' : '') + '"><i class="ti ' + tool.icon + '"></i></div>' +
+      '<div style="font-size:9px;font-weight:700;color:#5a4a30;line-height:1.2">' + tool.name + '</div>';
+    row.appendChild(item);
+  });
+}
+
 function renderArsenalGallery(){
+  document.getElementById('craftCelebration').style.display = 'none';
+  document.getElementById('arsenalMainView').style.display = 'block';
   const grid = document.getElementById('arsenalGrid');
   grid.innerHTML = '';
   const balance = progress.coins;
@@ -1084,6 +1193,7 @@ function renderMap() {
   renderRank();
   renderCompanion();
   renderHallSummary();
+  renderTrophyShelf();
   renderDailyStreak();
 
   const mode = progress.activeMode;
@@ -1092,34 +1202,7 @@ function renderMap() {
   const weeks = MODES[mode].weeks;
 
   renderKingdomMap(mode, modeState, weeks);
-
-  const container = document.getElementById('weeksContainer');
-  container.innerHTML = '';
-  const totalWeeksToShow = Math.max(weeks, Math.ceil(modeState.currentDay / 7));
-  for (let w=0; w<totalWeeksToShow; w++){
-    const region = w < weeks ? REGIONS[mode][w] : getEndlessRegion(w - weeks);
-    const label = document.createElement('div');
-    label.className = 'week-label';
-    label.innerHTML = '<i class="ti ' + region.icon + '"></i> ' + region.name;
-    container.appendChild(label);
-    const pathDiv = document.createElement('div');
-    pathDiv.className = 'path';
-    for (let d=1; d<=7; d++){
-      const dayNum = w*7 + d;
-      const node = document.createElement('div');
-      const done = modeState.completedDays.includes(dayNum);
-      const isCurrent = dayNum === modeState.currentDay;
-      const locked = dayNum > modeState.currentDay;
-      const topicId = badgeForDay(mode, dayNum);
-      const isMastered = done && topicId && progress.mastered[topicId];
-      node.className = 'day-node ' + (done ? 'done' : isCurrent ? 'current' : 'locked');
-      if (isMastered) node.style.cssText = 'background:radial-gradient(circle at 35% 30%,#fff2c8,#d9a520 80%);border-color:#8b5e0f;color:#5c3d08';
-      node.title = topicId ? (BADGE_DEFS.find(b=>b.id===topicId) || {}).name || '' : '';
-      node.innerHTML = isMastered ? '<i class="ti ti-star-filled"></i>' : done ? '<i class="ti ti-check"></i>' : locked ? '<i class="ti ti-lock"></i>' : dayNum;
-      pathDiv.appendChild(node);
-    }
-    container.appendChild(pathDiv);
-  }
+  renderQuestPath(mode, modeState, weeks, totalDays);
 
   const endlessNote = document.getElementById('endlessNote');
   const playBtn = document.getElementById('playBtn');
@@ -1131,7 +1214,7 @@ function renderMap() {
     playBtn.onclick = startDay;
   } else {
     endlessNote.style.display = 'none';
-    playBtn.innerHTML = MODES[mode].label + ' · day ' + modeState.currentDay + ' <i class="ti ti-sword"></i>';
+    playBtn.innerHTML = MODES[mode].label + ' · quest ' + modeState.currentDay + ' <i class="ti ti-sword"></i>';
     playBtn.onclick = startDay;
   }
 }
@@ -1160,6 +1243,82 @@ function renderKingdomMap(mode, modeState, weeks){
     marker.innerHTML = '<div class="region-icon"><i class="ti ' + region.icon + '"></i></div><div class="region-name">' + region.name + '</div>';
     wrap.appendChild(marker);
   }
+}
+
+function buildDayNode(mode, modeState, dayNum){
+  const node = document.createElement('div');
+  const done = modeState.completedDays.includes(dayNum);
+  const isCurrent = dayNum === modeState.currentDay;
+  const locked = dayNum > modeState.currentDay;
+  const topicId = badgeForDay(mode, dayNum);
+  const isMastered = done && topicId && progress.mastered[topicId];
+  node.className = 'day-node ' + (done ? 'done' : isCurrent ? 'current' : 'locked');
+  if (isMastered) node.style.cssText = 'background:radial-gradient(circle at 35% 30%,#fff2c8,#d9a520 80%);border-color:#8b5e0f;color:#5c3d08';
+  node.title = topicId ? (BADGE_DEFS.find(b=>b.id===topicId) || {}).name || '' : '';
+  node.innerHTML = isMastered ? '<i class="ti ti-star-filled"></i>' : done ? '<i class="ti ti-check"></i>' : locked ? '<i class="ti ti-lock"></i>' : dayNum;
+  return node;
+}
+
+function renderQuestPath(mode, modeState, weeks, totalDays){
+  const container = document.getElementById('weeksContainer');
+  container.innerHTML = '';
+
+  // Fixed curriculum weeks — always shown in full detail (small and bounded)
+  for (let w=0; w<weeks; w++){
+    const region = REGIONS[mode][w];
+    const label = document.createElement('div');
+    label.className = 'week-label';
+    label.innerHTML = '<i class="ti ' + region.icon + '"></i> ' + region.name;
+    container.appendChild(label);
+    const pathDiv = document.createElement('div');
+    pathDiv.className = 'path';
+    for (let d=1; d<=7; d++){
+      const dayNum = w*7 + d;
+      if (dayNum > totalDays) continue;
+      pathDiv.appendChild(buildDayNode(mode, modeState, dayNum));
+    }
+    container.appendChild(pathDiv);
+  }
+
+  if (modeState.currentDay <= totalDays) return;
+
+  // Endless mode: condense completed progress into 10s, then 100s, so this never grows unbounded
+  const endlessCompleted = Math.max(0, modeState.currentDay - totalDays - 1);
+  const centuries = Math.floor(endlessCompleted / 100);
+  const afterCenturies = endlessCompleted % 100;
+  const decades = Math.floor(afterCenturies / 10);
+
+  const label = document.createElement('div');
+  label.className = 'week-label';
+  const region = getEndlessRegion(Math.floor(endlessCompleted / 7));
+  label.innerHTML = '<i class="ti ' + region.icon + '"></i> ' + region.name + ' (beyond the kingdom)';
+  container.appendChild(label);
+
+  if (centuries > 0 || decades > 0){
+    const summaryRow = document.createElement('div');
+    summaryRow.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;justify-content:center';
+    if (centuries > 0){
+      const chip = document.createElement('div');
+      chip.style.cssText = 'display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:10px;background:radial-gradient(circle at 35% 30%,#fff2c8,#d9a520 80%);border:3px solid #8b5e0f;color:#5c3d08;font-weight:700;font-size:12px';
+      chip.innerHTML = '<i class="ti ti-trophy"></i> ' + (centuries*100) + ' quests conquered' + (centuries>1 ? ' (\u00D7' + centuries + ')' : '');
+      summaryRow.appendChild(chip);
+    }
+    if (decades > 0){
+      const chip = document.createElement('div');
+      chip.style.cssText = 'display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:10px;background:radial-gradient(circle at 35% 30%,#c8e89f,#8fc95a 80%);border:3px solid #4a7a28;color:#223e0e;font-weight:700;font-size:12px';
+      chip.innerHTML = '<i class="ti ti-award"></i> ' + (decades*10) + ' more quests' + (decades>1 ? ' (\u00D7' + decades + ')' : '');
+      summaryRow.appendChild(chip);
+    }
+    container.appendChild(summaryRow);
+  }
+
+  const pathDiv = document.createElement('div');
+  pathDiv.className = 'path-10';
+  const decadeStartDay = totalDays + centuries*100 + decades*10 + 1;
+  for (let i=0; i<10; i++){
+    pathDiv.appendChild(buildDayNode(mode, modeState, decadeStartDay + i));
+  }
+  container.appendChild(pathDiv);
 }
 
 const BALANCE_THRESHOLD = 20;
@@ -1348,7 +1507,7 @@ function renderMasteryBoard(){
     if (mastered) {
       statusHtml = '<span style="color:#8b5e0f;font-weight:700;font-size:12px"><i class="ti ti-star-filled"></i> Mastered</span>';
     } else if (count > 0) {
-      statusHtml = '<span style="color:#6b5730;font-size:12px">' + count + '/' + MASTERY_REQUIRED + ' near-perfect passes</span>';
+      statusHtml = '<span style="color:#6b5730;font-size:12px">' + count + '/' + MASTERY_REQUIRED + ' quick, accurate passes</span>';
     } else {
       statusHtml = '<span style="color:#b0a888;font-size:12px">Not started</span>';
     }
@@ -1369,8 +1528,9 @@ function streakMessage(streak){
 function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
 const WEAK_FACT_CHANCE = 0.45;
-const MASTERY_REQUIRED = 2;
+const MASTERY_REQUIRED = 4;
 const MASTERY_MIN_CORRECT = 7;
+const MASTERY_SPEED_MS = 6000;
 
 function factKey(mode, config, a, b){
   if (mode === 'mult') return 'mult|' + a + '|' + b;
@@ -1379,6 +1539,7 @@ function factKey(mode, config, a, b){
 function factCompatible(mode, config, w){
   if (w.mode !== mode) return false;
   if (mode === 'mult') return config.tables.includes(w.table);
+  if (w.type === 'triple' || config.type === 'triple') return false;
   return w.type === config.type && w.limit === config.limit;
 }
 function weightedPick(items, weightFn){
@@ -1391,12 +1552,85 @@ function weightedPick(items, weightFn){
   return items[items.length - 1];
 }
 
+function buildMultHint(a, b, answer){
+  if (b === 0) return a + ' \u00D7 0 = 0 — zero groups of ' + a + ' means nothing at all!';
+  if (b === 1) return a + ' \u00D7 1 = ' + a + ' — just one group of ' + a + ' is ' + a + '.';
+  const terms = Array(b).fill(a).join(' + ');
+  return a + ' \u00D7 ' + b + ' means ' + b + ' groups of ' + a + ':<br>' + terms + ' = ' + answer + '.';
+}
+
+function buildAddHint(a, b, answer){
+  if (b === 0) return a + ' + 0 = ' + a + ' — adding zero never changes the number.';
+  const tensA = Math.floor(a / 10) * 10, onesA = a - tensA;
+  if (b < 10){
+    return 'Split it up: ' + a + ' + ' + b + ' = ' + tensA + ' + ' + onesA + ' + ' + b + '.<br>' +
+      onesA + ' + ' + b + ' = ' + (onesA + b) + ', then ' + tensA + ' + ' + (onesA + b) + ' = ' + answer + '.';
+  }
+  const tensB = Math.floor(b / 10) * 10, onesB = b - tensB;
+  return 'Add the tens, then the ones:<br>' + tensA + ' + ' + tensB + ' = ' + (tensA + tensB) + ', and ' + onesA + ' + ' + onesB + ' = ' + (onesA + onesB) + '.<br>' +
+    (tensA + tensB) + ' + ' + (onesA + onesB) + ' = ' + answer + '.';
+}
+
+function buildSubHint(a, b, answer){
+  if (b === 0) return a + ' \u2212 0 = ' + a + ' — taking away zero never changes the number.';
+  const hop1 = (10 - (b % 10)) % 10;
+  const mid = b + hop1;
+  const hop2 = a - mid;
+  if (hop1 === 0){
+    return 'Count up from ' + b + ' to ' + a + ': that jump is ' + hop2 + ', so ' + a + ' \u2212 ' + b + ' = ' + answer + '.';
+  }
+  if (hop2 === 0){
+    return 'Count up from ' + b + ' to ' + a + ': that jump is ' + hop1 + ', so ' + a + ' \u2212 ' + b + ' = ' + answer + '.';
+  }
+  return 'Count up from ' + b + ': first to ' + mid + ' (+' + hop1 + '), then to ' + a + ' (+' + hop2 + ').<br>' +
+    hop1 + ' + ' + hop2 + ' = ' + answer + '.';
+}
+
+function buildTripleAddHint(a, b, c, mid, answer){
+  return 'Take it one step at a time: ' + a + ' + ' + b + ' = ' + mid + '. Then ' + mid + ' + ' + c + ' = ' + answer + '.';
+}
+
+function buildTripleSubHint(a, b, c, mid, answer){
+  return 'Take it one step at a time: ' + a + ' \u2212 ' + b + ' = ' + mid + '. Then ' + mid + ' \u2212 ' + c + ' = ' + answer + '.';
+}
+
+function buildLearnHint(q){
+  if (q.exprText){
+    return q.symbol === '+' ? buildTripleAddHint(q.a, q.b, q.c, q.mid, q.answer) : buildTripleSubHint(q.a, q.b, q.c, q.mid, q.answer);
+  }
+  if (q.symbol === '\u00D7') return buildMultHint(q.a, q.b, q.answer);
+  if (q.symbol === '+') return buildAddHint(q.a, q.b, q.answer);
+  return buildSubHint(q.a, q.b, q.answer);
+}
+
+function genTripleFact(mode, limit){
+  if (mode === 'add'){
+    const a = randInt(10, Math.max(10, limit - 2));
+    let remaining = limit - a;
+    if (remaining < 2) remaining = 2;
+    const b = randInt(1, Math.min(9, remaining - 1));
+    const remaining2 = remaining - b;
+    const c = randInt(1, Math.max(1, Math.min(9, remaining2)));
+    const mid = a + b;
+    const answer = mid + c;
+    return { a, b, c, mid, answer, exprText: a + ' + ' + b + ' + ' + c + ' = ?', symbol: '+' };
+  }
+  // subtraction
+  const a = randInt(10, limit);
+  const b = randInt(1, 9);
+  const mid = a - b;
+  const c = randInt(0, Math.min(9, mid));
+  const answer = mid - c;
+  return { a, b, c, mid, answer, exprText: a + ' \u2212 ' + b + ' \u2212 ' + c + ' = ?', symbol: '\u2212' };
+}
+
 function generateNumberFact(config, mode){
   if (mode === 'mult') {
     const a = config.tables[randInt(0, config.tables.length-1)];
     const b = randInt(0,12);
     return { a, b, answer: a*b, symbol: '×' };
   }
+  if (config.type === 'triple') return genTripleFact(mode, config.limit);
   if (mode === 'add') {
     if (config.type === 'single') {
       const a = randInt(10, config.limit - 1);
@@ -1497,8 +1731,8 @@ function buildQuestions(mode, day) {
       if (candidate >= 0 && candidate !== fact.answer) opts.add(candidate);
     }
     const optArr = Array.from(opts).sort(()=>Math.random()-0.5);
-    const wordProblem = (reviewDay && Math.random() < WORD_PROBLEM_CHANCE) ? buildWordProblem(mode, fact.a, fact.b) : null;
-    qs.push({ a: fact.a, b: fact.b, symbol: fact.symbol, answer: fact.answer, options: optArr, key, mode, table: mode==='mult' ? fact.a : undefined, type: config.type, limit: config.limit, wordProblem });
+    const wordProblem = (reviewDay && !fact.exprText && Math.random() < WORD_PROBLEM_CHANCE) ? buildWordProblem(mode, fact.a, fact.b) : null;
+    qs.push({ a: fact.a, b: fact.b, c: fact.c, mid: fact.mid, exprText: fact.exprText || null, symbol: fact.symbol, answer: fact.answer, options: optArr, key, mode, table: mode==='mult' ? fact.a : undefined, type: config.type, limit: config.limit, wordProblem });
   }
   return qs;
 }
@@ -1516,13 +1750,13 @@ function startDay() {
   const mode = progress.activeMode;
   const modeState = progress.modes[mode];
   const day = modeState.currentDay;
-  session = { mode, day, qIndex: 0, correct: 0, questions: buildQuestions(mode, day), results: [], newBadges: [], newFacts: [], newMastery: null, newDailyStreak: null, newWeekConquered: null };
+  session = { mode, day, qIndex: 0, correct: 0, questions: buildQuestions(mode, day), results: [], responseTimes: [], newBadges: [], newFacts: [], newMastery: null, newDailyStreak: null, newWeekConquered: null, badgesCappedToday: false, accurateButSlow: false };
   document.getElementById('mapScreen').style.display = 'none';
   document.getElementById('galleryScreen').style.display = 'none';
   document.getElementById('arsenalScreen').style.display = 'none';
   document.getElementById('resultScreen').style.display = 'none';
   document.getElementById('quizScreen').style.display = 'block';
-  document.getElementById('quizDayLabel').textContent = MODES[mode].label + ' · day ' + day;
+  document.getElementById('quizDayLabel').textContent = MODES[mode].label + ' · quest ' + day;
   renderQuestion();
 }
 
@@ -1547,12 +1781,18 @@ function renderMiniTerritory(){
 
 function renderQuestion(){
   const q = session.questions[session.qIndex];
+  session.qStartTime = Date.now();
+  document.getElementById('learnHint').style.display = 'none';
+  document.getElementById('quizContinueBtn').style.display = 'none';
   document.getElementById('quizCount').textContent = (session.qIndex+1) + ' / ' + QUESTIONS_PER_DAY;
   renderMiniTerritory();
   const qEl = document.getElementById('questionText');
   if (q.wordProblem) {
     qEl.className = 'word-q';
     qEl.textContent = q.wordProblem;
+  } else if (q.exprText) {
+    qEl.className = 'q';
+    qEl.textContent = q.exprText;
   } else {
     qEl.className = 'q';
     qEl.textContent = q.a + ' ' + q.symbol + ' ' + q.b;
@@ -1572,10 +1812,19 @@ function renderQuestion(){
   document.getElementById('knightScene').innerHTML = '<i class="ti ti-horse-toy"></i>';
 }
 
+function advanceQuestion(){
+  document.getElementById('learnHint').style.display = 'none';
+  document.getElementById('quizContinueBtn').style.display = 'none';
+  session.qIndex++;
+  if (session.qIndex < QUESTIONS_PER_DAY) renderQuestion();
+  else finishDay();
+}
+
 function answer(selected, btn){
   const q = session.questions[session.qIndex];
   document.querySelectorAll('.opt-btn').forEach(b => b.onclick = null);
   const fb = document.getElementById('feedback');
+  session.responseTimes.push(Date.now() - (session.qStartTime || Date.now()));
   if (selected === q.answer){
     session.correct++;
     session.results.push(true);
@@ -1591,28 +1840,43 @@ function answer(selected, btn){
     fb.className = 'feedback good';
     document.getElementById('knightScene').innerHTML = '<i class="ti ti-shield-check"></i>';
     document.getElementById('streakFlame').textContent = streakMessage(progress.currentStreak);
+    renderMiniTerritory();
+    setTimeout(advanceQuestion, 1300);
   } else {
     session.results.push(false);
     progress.currentStreak = 0;
-    const existing = progress.weakFacts[q.key];
-    progress.weakFacts[q.key] = {
-      mode: q.mode, table: q.table, type: q.type, limit: q.limit, a: q.a, b: q.b,
-      misses: (existing ? existing.misses : 0) + 2
-    };
+    if (q.type !== 'triple'){
+      const existing = progress.weakFacts[q.key];
+      progress.weakFacts[q.key] = {
+        mode: q.mode, table: q.table, type: q.type, limit: q.limit, a: q.a, b: q.b,
+        misses: (existing ? existing.misses : 0) + 2
+      };
+    }
     btn.classList.add('wrong');
     document.querySelectorAll('.opt-btn').forEach(b => { if (parseInt(b.textContent) === q.answer) b.classList.add('correct'); });
     fb.textContent = 'Not quite — the answer was ' + q.answer + '.';
     fb.className = 'feedback bad';
+    renderMiniTerritory();
+    const hintBox = document.getElementById('learnHint');
+    hintBox.innerHTML = '<i class="ti ti-bulb"></i> ' + buildLearnHint(q);
+    hintBox.style.display = 'block';
+    document.getElementById('quizContinueBtn').style.display = 'block';
   }
-  renderMiniTerritory();
-  setTimeout(() => {
-    session.qIndex++;
-    if (session.qIndex < QUESTIONS_PER_DAY) renderQuestion();
-    else finishDay();
-  }, 1300);
 }
 
+const DAILY_BADGE_CAP = 5;
+
 function awardBadge(id){
+  const today = todayKey();
+  if (progress.badgeCapDate !== today){
+    progress.badgeCapDate = today;
+    progress.badgesEarnedToday = 0;
+  }
+  if (progress.badgesEarnedToday >= DAILY_BADGE_CAP){
+    session.badgesCappedToday = true;
+    return;
+  }
+  progress.badgesEarnedToday += 1;
   progress.badges[id] = (progress.badges[id] || 0) + 1;
   session.newBadges.push(id);
 }
@@ -1674,10 +1938,18 @@ function finishDay(){
     updateDailyStreak(mode);
 
     if (badgeId && session.correct >= MASTERY_MIN_CORRECT){
-      progress.masteryCount[badgeId] = (progress.masteryCount[badgeId] || 0) + 1;
-      if (!progress.mastered[badgeId] && progress.masteryCount[badgeId] >= MASTERY_REQUIRED){
-        progress.mastered[badgeId] = true;
-        session.newMastery = badgeId;
+      const avgResponseMs = session.responseTimes.length
+        ? session.responseTimes.reduce((a,b) => a+b, 0) / session.responseTimes.length
+        : 0;
+      const isQuick = avgResponseMs > 0 && avgResponseMs <= MASTERY_SPEED_MS;
+      if (isQuick){
+        progress.masteryCount[badgeId] = (progress.masteryCount[badgeId] || 0) + 1;
+        if (!progress.mastered[badgeId] && progress.masteryCount[badgeId] >= MASTERY_REQUIRED){
+          progress.mastered[badgeId] = true;
+          session.newMastery = badgeId;
+        }
+      } else {
+        session.accurateButSlow = true;
       }
     }
   }
@@ -1751,10 +2023,13 @@ function finishDay(){
   if (session.newMastery){
     const def = BADGE_DEFS.find(b => b.id === session.newMastery);
     masteryBanner.style.display = 'block';
-    document.getElementById('masteryBannerText').textContent = '⭐ Mastered: ' + (def ? def.name : session.newMastery) + '! Truly exam-ready.';
+    document.getElementById('masteryBannerText').textContent = '⭐ Mastered: ' + (def ? def.name : session.newMastery) + '! Fast and accurate, four times over.';
   } else {
     masteryBanner.style.display = 'none';
   }
+
+  document.getElementById('badgeCapBanner').style.display = session.badgesCappedToday ? 'block' : 'none';
+  document.getElementById('speedBanner').style.display = session.accurateButSlow ? 'block' : 'none';
 
   const dailyStreakBanner = document.getElementById('dailyStreakBanner');
   if (session.newDailyStreak){
@@ -1814,6 +2089,8 @@ document.getElementById('exitQuizLink').addEventListener('click', (e) => {
   renderMap();
 });
 
+document.getElementById('quizContinueBtn').addEventListener('click', advanceQuestion);
+
 document.getElementById('resetBtn').addEventListener('click', () => {
   document.getElementById('resetConfirmBox').style.display = 'block';
 });
@@ -1828,7 +2105,7 @@ document.getElementById('resetConfirmBtn').addEventListener('click', async () =>
     playerName: '', onboarded: false, companion: null,
     activeMode: 'mult', xp: 0, coins: 0, lifetimeCoins: 0, badges: {}, bestStreak: 0, currentStreak: 0, craftedTools: [], collectedFacts: [],
     totalCorrect: 0, companionFed: 0, correctByMode: {mult:0, add:0, sub:0},
-    weakFacts: {}, masteryCount: {}, mastered: {},
+    weakFacts: {}, masteryCount: {}, mastered: {}, badgeCapDate: null, badgesEarnedToday: 0,
     dailyStreak: { current: 0, best: 0, weeksConquered: 0, lastActiveDate: null, streakCountedDate: null, categoriesToday: {mult:false, add:false, sub:false} },
     modes: { mult:{completedDays:[],currentDay:1}, add:{completedDays:[],currentDay:1}, sub:{completedDays:[],currentDay:1} }
   };
