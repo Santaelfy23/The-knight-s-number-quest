@@ -384,10 +384,15 @@
 
       <div style="margin-top:10px;border-top:1px dashed #cfc7a9;padding-top:10px">
         <div style="display:flex;gap:8px">
-          <button id="exportBtn" style="flex:1;padding:8px;font-size:12px;font-weight:700;border-radius:10px;border:2px solid #8b6f3e;background:#f1e6c8;color:#5c3d08;cursor:pointer">Export progress <i class="ti ti-copy"></i></button>
-          <button id="importBtn" style="flex:1;padding:8px;font-size:12px;font-weight:700;border-radius:10px;border:2px solid #378add;background:#e6f1fb;color:#185fa5;cursor:pointer">Import progress <i class="ti ti-upload"></i></button>
+          <button id="exportBtn" style="flex:1;padding:8px;font-size:12px;font-weight:700;border-radius:10px;border:2px solid #8b6f3e;background:#f1e6c8;color:#5c3d08;cursor:pointer">Download backup <i class="ti ti-device-floppy"></i></button>
+          <button id="importFileBtn" style="flex:1;padding:8px;font-size:12px;font-weight:700;border-radius:10px;border:2px solid #378add;background:#e6f1fb;color:#185fa5;cursor:pointer">Restore from file <i class="ti ti-upload"></i></button>
         </div>
-        <textarea id="progressTextarea" placeholder="Exported progress will appear here — or paste progress data here to import it" style="width:100%;margin-top:8px;padding:8px;font-size:11px;font-family:monospace;border-radius:8px;border:2px solid #cfc7a9;min-height:80px;box-sizing:border-box"></textarea>
+        <input type="file" id="importFileInput" accept="application/json,.json" style="display:none" />
+        <details style="margin-top:8px">
+          <summary style="font-size:11px;color:#8b6f3e;cursor:pointer">Or paste progress data manually</summary>
+          <textarea id="progressTextarea" placeholder="Exported progress will appear here — or paste progress data here to import it" style="width:100%;margin-top:8px;padding:8px;font-size:11px;font-family:monospace;border-radius:8px;border:2px solid #cfc7a9;min-height:80px;box-sizing:border-box"></textarea>
+          <button id="importBtn" style="width:100%;margin-top:6px;padding:8px;font-size:12px;font-weight:700;border-radius:10px;border:2px solid #378add;background:#e6f1fb;color:#185fa5;cursor:pointer">Import pasted text</button>
+        </details>
         <div style="text-align:center;font-size:12px;color:#378add;font-weight:700;min-height:16px;margin-top:4px" id="importFeedback"></div>
       </div>
     </div>
@@ -896,10 +901,37 @@ let progress = {
 };
 let session = { mode: 'mult', day: 1, qIndex: 0, correct: 0, questions: [], results: [], responseTimes: [], newBadges: [], newFacts: [], newMastery: null, newDailyStreak: null, newWeekConquered: null, badgesCappedToday: false, accurateButSlow: false };
 
+/* Storage abstraction: window.storage only exists inside Claude's own preview panel.
+   When this file is downloaded and opened as a real HTML file in an actual browser,
+   that API doesn't exist at all, so every save would silently fail. We try it first
+   (for compatibility with Claude's preview), and fall back to real localStorage,
+   which is what actually persists data for a standalone downloaded file. */
+async function storageGet(key){
+  if (typeof window !== 'undefined' && window.storage && typeof window.storage.get === 'function'){
+    try {
+      const res = await window.storage.get(key, false);
+      if (res && res.value) return res.value;
+    } catch (e) { /* fall through to localStorage */ }
+  }
+  try {
+    return window.localStorage.getItem(key);
+  } catch (e) {
+    return null;
+  }
+}
+async function storageSet(key, value){
+  let savedAnywhere = false;
+  if (typeof window !== 'undefined' && window.storage && typeof window.storage.set === 'function'){
+    try { await window.storage.set(key, value, false); savedAnywhere = true; } catch (e) { /* try localStorage too */ }
+  }
+  try { window.localStorage.setItem(key, value); savedAnywhere = true; } catch (e) { /* localStorage unavailable */ }
+  return savedAnywhere;
+}
+
 async function loadProgress() {
   try {
-    const res = await window.storage.get(STORAGE_KEY, false);
-    if (res && res.value) progress = JSON.parse(res.value);
+    const value = await storageGet(STORAGE_KEY);
+    if (value) progress = JSON.parse(value);
   } catch (e) { /* first time */ }
   normalizeProgress();
   const screens = ['introScreen', 'companionScreen', 'missionScreen'];
@@ -962,18 +994,9 @@ function normalizeProgress(){
   });
 }
 async function saveProgress() {
-  try {
-    await window.storage.set(STORAGE_KEY, JSON.stringify(progress), false);
-    return true;
-  } catch (e) {
-    try {
-      await window.storage.set(STORAGE_KEY, JSON.stringify(progress), false);
-      return true;
-    } catch (e2) {
-      console.warn('Progress could not be saved right now — it will retry next time.');
-      return false;
-    }
-  }
+  const ok = await storageSet(STORAGE_KEY, JSON.stringify(progress));
+  if (!ok) console.warn('Progress could not be saved right now — it will retry next time.');
+  return ok;
 }
 
 function showMap(){
@@ -2133,29 +2156,63 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
 });
 
 document.getElementById('exportBtn').addEventListener('click', () => {
+  const dataStr = JSON.stringify(progress, null, 2);
   const textarea = document.getElementById('progressTextarea');
-  textarea.value = JSON.stringify(progress, null, 2);
-  textarea.select();
-  const fb = document.getElementById('importFeedback');
-  fb.style.color = '#378add';
-  fb.textContent = 'Copy the text above — paste it to Claude or save it somewhere safe.';
-});
-
-document.getElementById('importBtn').addEventListener('click', async () => {
-  const textarea = document.getElementById('progressTextarea');
+  textarea.value = dataStr;
   const fb = document.getElementById('importFeedback');
   try {
-    const parsed = JSON.parse(textarea.value);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const namePart = (progress.playerName || 'knight').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const dateStr = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = 'knight-quest-' + namePart + '-' + dateStr + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    fb.style.color = '#378add';
+    fb.textContent = 'Downloaded! Keep that file somewhere safe as a backup.';
+  } catch (e) {
+    fb.style.color = '#c85c4d';
+    fb.textContent = "Couldn't auto-download — copy the text below and save it somewhere safe instead.";
+  }
+});
+
+function applyImportedProgress(raw, fb){
+  try {
+    const parsed = JSON.parse(raw);
     progress = parsed;
     normalizeProgress();
-    await saveProgress();
+    saveProgress();
     renderMap();
     fb.style.color = '#4a7a28';
-    fb.textContent = 'Progress imported successfully!';
+    fb.textContent = 'Progress restored successfully!';
   } catch (e) {
     fb.style.color = '#c85c4d';
     fb.textContent = "That doesn't look like valid progress data — check it's a full copy and try again.";
   }
+}
+
+document.getElementById('importFileBtn').addEventListener('click', () => {
+  document.getElementById('importFileInput').click();
+});
+document.getElementById('importFileInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const fb = document.getElementById('importFeedback');
+  const reader = new FileReader();
+  reader.onload = () => applyImportedProgress(reader.result, fb);
+  reader.onerror = () => { fb.style.color = '#c85c4d'; fb.textContent = "Couldn't read that file — try again."; };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+document.getElementById('importBtn').addEventListener('click', () => {
+  const textarea = document.getElementById('progressTextarea');
+  const fb = document.getElementById('importFeedback');
+  applyImportedProgress(textarea.value, fb);
 });
 
 document.getElementById('hallLink').addEventListener('click', (e) => {
