@@ -280,8 +280,8 @@
 
   <div id="companionScreen" class="card" style="display:none;text-align:center">
     <div style="font-size:56px;margin-bottom:8px"><i class="ti ti-paw" style="color:#8b6f3e"></i></div>
-    <h2 style="font-family:'Cinzel',serif;color:#3c2f1e;margin:0 0 4px">No knight rides alone</h2>
-    <p style="color:#6b5730;font-size:14px;margin:0 0 16px">Choose a loyal companion to walk this road with you.</p>
+    <h2 id="companionScreenHeading" style="font-family:'Cinzel',serif;color:#3c2f1e;margin:0 0 4px">No knight rides alone</h2>
+    <p id="companionScreenSub" style="color:#6b5730;font-size:14px;margin:0 0 16px">Choose a loyal companion to walk this road with you.</p>
     <div style="display:flex;gap:12px;margin-bottom:14px">
       <div class="companion-choice" id="chooseHorse" data-type="horse" style="flex:1;padding:16px 8px;border-radius:12px;border:3px solid #cfc7a9;background:#f1e6c8;cursor:pointer">
         <div style="font-size:40px;color:#8b5e0f"><i class="ti ti-horse"></i></div>
@@ -369,10 +369,7 @@
     </div>
 
     <div id="parentControls" style="display:none;margin-top:8px">
-      <div style="display:flex;gap:8px">
-        <button id="saveBtn" style="flex:1;padding:10px;font-size:13px;font-weight:700;border-radius:10px;border:2px solid #6b9c3c;background:#eaf6e0;color:#2c4a12;cursor:pointer">Save progress <i class="ti ti-device-floppy"></i></button>
-        <button id="resetBtn" style="flex:1;padding:10px;font-size:13px;font-weight:700;border-radius:10px;border:2px solid #c85c4d;background:#faece7;color:#8a2d1f;cursor:pointer">Reset progress <i class="ti ti-refresh"></i></button>
-      </div>
+      <button id="resetBtn" style="width:100%;padding:10px;font-size:13px;font-weight:700;border-radius:10px;border:2px solid #c85c4d;background:#faece7;color:#8a2d1f;cursor:pointer">Reset progress <i class="ti ti-refresh"></i></button>
       <div id="resetConfirmBox" style="display:none;margin-top:8px;background:#faece7;border:2px solid #c85c4d;border-radius:10px;padding:10px 12px;text-align:center">
         <p style="font-size:12px;font-weight:700;color:#8a2d1f;margin:0 0 8px">Reset EVERYTHING — name, companion, and all progress? This can't be undone.</p>
         <div style="display:flex;gap:8px">
@@ -380,7 +377,6 @@
           <button id="resetCancelBtn" style="flex:1;padding:8px;font-size:12px;font-weight:700;border-radius:8px;border:2px solid #cfc7a9;background:#fffdf5;color:#6b5730;cursor:pointer">Cancel</button>
         </div>
       </div>
-      <div style="text-align:center;font-size:12px;color:#6b9c3c;font-weight:700;min-height:16px;margin-top:6px" id="saveFeedback"></div>
 
       <div style="margin-top:10px;border-top:1px dashed #cfc7a9;padding-top:10px">
         <div style="display:flex;gap:8px">
@@ -422,8 +418,20 @@
         <div style="flex:1"><div style="font-family:'Cinzel',serif;font-weight:700;color:#3c2f1e;font-size:14px">Mastery Board</div><div id="hallMasterySummary" style="font-size:12px;color:#6b5730"></div></div>
         <i class="ti ti-chevron-right" style="color:#b0a888"></i>
       </a>
+      <a href="#" id="hallStableLink" style="display:flex;align-items:center;gap:12px;background:#fffdf5;border:2px solid #b9963f;border-radius:10px;padding:12px;text-decoration:none">
+        <div style="width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f3e6c4,#d9a520 75%);border:2px solid #8b5e0f;display:flex;align-items:center;justify-content:center;font-size:18px;color:#5c3d08;flex-shrink:0"><i class="ti ti-horse"></i></div>
+        <div style="flex:1"><div style="font-family:'Cinzel',serif;font-weight:700;color:#3c2f1e;font-size:14px">The Stable</div><div id="hallStableSummary" style="font-size:12px;color:#6b5730"></div></div>
+        <i class="ti ti-chevron-right" style="color:#b0a888"></i>
+      </a>
     </div>
     <button class="primary" id="hallBackBtn">Back to the map</button>
+  </div>
+
+  <div id="stableScreen" class="card" style="display:none">
+    <h2 style="font-family:'Cinzel',serif;text-align:center;color:#3c2f1e;margin-top:0">The Stable</h2>
+    <p style="text-align:center;font-size:13px;color:#6b5730">Every companion he's ever raised, past and present.</p>
+    <div id="stableGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0"></div>
+    <button class="primary" id="stableBackBtn">Back to the map</button>
   </div>
 
   <div id="galleryScreen" class="card" style="display:none">
@@ -436,8 +444,16 @@
   <div id="scrapbookScreen" class="card" style="display:none">
     <h2 style="font-family:'Cinzel',serif;text-align:center;color:#3c2f1e;margin-top:0">History scrapbook</h2>
     <p style="text-align:center;font-size:13px;color:#6b5730" id="scrapbookCount"></p>
+    <button class="primary" id="storyModeBtn" style="background:linear-gradient(180deg, #ffe8a8 0%, #ffc94d 100%);border-color:#d9a520;color:#6b4a06;box-shadow:0 4px 0 #d9a520"><i class="ti ti-book"></i> Read as a Story</button>
     <div id="scrapbookGrid" style="display:flex;flex-direction:column;gap:10px;margin:12px 0"></div>
     <button class="primary" id="scrapbookBackBtn">Back to the map</button>
+  </div>
+
+  <div id="storyModeScreen" class="card" style="display:none">
+    <h2 style="font-family:'Cinzel',serif;text-align:center;color:#3c2f1e;margin-top:0" id="storyModeTitle">The Tale So Far</h2>
+    <div id="storyModeTabs" style="display:flex;gap:6px;justify-content:center;margin-bottom:10px;flex-wrap:wrap"></div>
+    <div id="storyModeBody" style="background:#fffdf5;border:2px solid #b9963f;border-radius:10px;padding:16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;color:#3c2f1e;line-height:1.7;max-height:60vh;overflow-y:auto"></div>
+    <button class="primary" id="storyModeBackBtn" style="margin-top:12px">Back to the scrapbook</button>
   </div>
 
   <div id="masteryScreen" class="card" style="display:none">
@@ -477,7 +493,10 @@
     <div class="question-box"><div class="q" id="questionText">3 × 4</div></div>
     <div class="options" id="optionsGrid"></div>
     <div class="feedback" id="feedback"></div>
-    <div id="learnHint" style="display:none;background:#f1e6c8;border:2px solid #b9963f;border-radius:10px;padding:10px 12px;margin-top:6px;font-size:13px;color:#3c2f1e;line-height:1.5"></div>
+    <div id="learnHint" style="display:none;background:#f1e6c8;border:2px solid #b9963f;border-radius:10px;padding:10px 12px;margin-top:6px;font-size:13px;color:#3c2f1e;line-height:1.5">
+      <div id="learnHintVisual" style="margin-bottom:8px"></div>
+      <div id="learnHintText"></div>
+    </div>
     <button class="primary" id="quizContinueBtn" style="display:none">Got it — continue <i class="ti ti-arrow-right"></i></button>
   </div>
 
@@ -539,6 +558,7 @@ const BADGES_PER_FACT = 3;
 /* ---------- Multiplication day plan ---------- */
 const MULT_DAYS = [
   [2],[2],[5],[5],[10],[10],[2,5,10],
+  [11],[11],[2],[10],[5],[2,5,10,11],
   [3],[3],[4],[4],[11],[12],[2,3,4,5,10,11,12],
   [6],[6],[9],[8],[8],[7],[1,2,3,4,5,6,7,8,9,10,11,12]
 ];
@@ -572,7 +592,7 @@ const ADD_DAYS = [
 const SUB_DAYS = JSON.parse(JSON.stringify(ADD_DAYS)); // same tier shape as addition
 
 const MODES = {
-  mult: { label:'Times tables', symbol:'×', weeks:3, days: MULT_DAYS },
+  mult: { label:'Times tables', symbol:'×', weeks:4, days: MULT_DAYS },
   add:  { label:'Addition', symbol:'+', weeks:3, days: ADD_DAYS },
   sub:  { label:'Subtraction', symbol:'−', weeks:3, days: SUB_DAYS }
 };
@@ -787,7 +807,8 @@ const REGIONS = {
   mult: [
     {name:'Green Meadows', icon:'ti-plant'},
     {name:'Whispering Woods', icon:'ti-trees'},
-    {name:"Dragon's Pass", icon:'ti-mountain'}
+    {name:"Dragon's Pass", icon:'ti-mountain'},
+    {name:'The Golden Hollow', icon:'ti-leaf'}
   ],
   add:  [
     {name:'Market Village', icon:'ti-building-store'},
@@ -935,15 +956,15 @@ async function loadProgress() {
   } catch (e) { /* first time */ }
   normalizeProgress();
   const screens = ['introScreen', 'companionScreen', 'missionScreen'];
-  if (progress.playerName && progress.companion && progress.onboarded) {
+  if (progress.playerName && progress.companions.length > 0 && progress.onboarded) {
     showMap();
   } else {
     screens.forEach(id => document.getElementById(id).style.display = 'none');
     document.getElementById('mapScreen').style.display = 'none';
     if (!progress.playerName) {
       document.getElementById('introScreen').style.display = 'block';
-    } else if (!progress.companion) {
-      document.getElementById('companionScreen').style.display = 'block';
+    } else if (progress.companions.length === 0) {
+      openCompanionScreen('onboard');
     } else {
       showMissionScreen();
     }
@@ -965,6 +986,13 @@ function normalizeProgress(){
   if (!progress.companion || !COMPANION_TYPES[progress.companion.type]) progress.companion = null;
   if (typeof progress.totalCorrect !== 'number') progress.totalCorrect = 0;
   if (typeof progress.companionFed !== 'number') progress.companionFed = 0;
+  if (!Array.isArray(progress.companions)) progress.companions = [];
+  if (progress.companions.length === 0 && progress.companion){
+    // Migrate old single-companion save data into the new companions array
+    progress.companions.push({ type: progress.companion.type, name: progress.companion.name, fed: progress.companionFed || 0 });
+  }
+  progress.companions = progress.companions.filter(c => c && COMPANION_TYPES[c.type]);
+  progress.companions.forEach(c => { if (typeof c.fed !== 'number') c.fed = 0; });
   if (!progress.correctByMode || typeof progress.correctByMode !== 'object') progress.correctByMode = {};
   Object.keys(MODES).forEach(key => { if (typeof progress.correctByMode[key] !== 'number') progress.correctByMode[key] = 0; });
   if (!progress.weakFacts || typeof progress.weakFacts !== 'object') progress.weakFacts = {};
@@ -1014,10 +1042,11 @@ function showMissionScreen(){
   document.getElementById('companionScreen').style.display = 'none';
   document.getElementById('mapScreen').style.display = 'none';
   document.getElementById('missionScreen').style.display = 'block';
-  const type = COMPANION_TYPES[progress.companion.type];
+  const companion = activeCompanion();
+  const type = COMPANION_TYPES[companion.type];
   document.getElementById('missionTitle').textContent = 'Your Quest, Sir ' + progress.playerName;
   document.getElementById('missionBody').innerHTML =
-    'Together with <b>' + progress.companion.name + '</b> the ' + type.stages[0].toLowerCase() + ', you must journey across the realm and master the numbers that have fallen into chaos — multiplication, addition, and subtraction. ' +
+    'Together with <b>' + companion.name + '</b> the ' + type.stages[0].toLowerCase() + ', you must journey across the realm and master the numbers that have fallen into chaos — multiplication, addition, and subtraction. ' +
     'Badges will mark your triumphs. Coins will fill your treasury. Facts of old will be revealed as you go. And one day, Sir ' + progress.playerName + ', you shall be known not just as a knight... but as a true master of arithmetic.';
 }
 
@@ -1113,6 +1142,89 @@ function renderHallScreen(){
   document.getElementById('hallTreasurySummary').textContent = progress.coins + ' to spend · ' + progress.lifetimeCoins + ' earned lifetime · ' + progress.craftedTools.length + '/' + TOOLS.length + ' tools owned';
   document.getElementById('hallScrapbookSummary').textContent = progress.collectedFacts.length + '/' + FACTS.length + ' facts discovered';
   document.getElementById('hallMasterySummary').textContent = masteredCount() + '/' + MASTERY_TOPICS.length + ' topics mastered';
+  const grownCount = progress.companions.filter(c => (c.fed || 0) >= COMPANION_TYPES[c.type].stages.length - 1).length;
+  document.getElementById('hallStableSummary').textContent = progress.companions.length + ' companion' + (progress.companions.length === 1 ? '' : 's') + ' raised · ' + grownCount + ' fully grown';
+}
+
+function renderStable(){
+  const grid = document.getElementById('stableGrid');
+  grid.innerHTML = '';
+  const active = activeCompanion();
+  progress.companions.forEach(companion => {
+    const type = COMPANION_TYPES[companion.type];
+    const maxStage = type.stages.length - 1;
+    const stageIdx = Math.min(companion.fed || 0, maxStage);
+    const isLegendary = stageIdx >= maxStage;
+    const isActive = companion === active;
+    const item = document.createElement('div');
+    item.style.cssText = 'text-align:center;padding:8px;border-radius:10px;' + (isActive ? 'background:#fff4d6;border:2px solid #d9a520' : 'background:#fffdf5;border:2px solid #cfc7a9');
+    item.innerHTML =
+      '<div style="width:52px;height:52px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:24px;' +
+      'background:' + (isLegendary ? type.legendaryBg : type.bg) + ';border:3px solid ' + (isLegendary ? type.legendaryColor : type.color) +
+      (isLegendary ? ';box-shadow:0 0 8px ' + type.legendaryColor + '80' : '') + '"><i class="ti ' + type.icon + '" style="color:' + (isLegendary ? type.legendaryColor : type.color) + '"></i></div>' +
+      '<div style="font-size:11px;font-weight:700;color:#3c2f1e">' + companion.name + '</div>' +
+      '<div style="font-size:10px;color:#6b5730">the ' + type.stages[stageIdx] + '</div>' +
+      (isActive ? '<div style="font-size:9px;font-weight:700;color:#8b5e0f;margin-top:2px">Active</div>' : '');
+    grid.appendChild(item);
+  });
+}
+
+const STORY_CONNECTORS = [
+  'Turning the page further...',
+  'Elsewhere in the story of the realm...',
+  'There is more to discover...',
+  'And so the tale continues...',
+  'Long ago, another story unfolded...'
+];
+
+function renderStoryMode(deckIdx){
+  const unlockedDecks = DECKS.map((d, i) => i).filter(i => isDeckUnlocked(i));
+  const tabs = document.getElementById('storyModeTabs');
+  tabs.innerHTML = '';
+  unlockedDecks.forEach(i => {
+    const deck = DECKS[i];
+    const btn = document.createElement('button');
+    const active = i === deckIdx;
+    btn.style.cssText = 'padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;border:2px solid ' + (active ? '#4a7a28' : '#b9963f') + ';background:' + (active ? '#8fc95a' : '#f1e6c8') + ';color:' + (active ? '#223e0e' : '#5c3d08') + ';cursor:pointer';
+    btn.innerHTML = '<i class="ti ' + deck.icon + '"></i> ' + deck.name;
+    btn.onclick = () => renderStoryMode(i);
+    tabs.appendChild(btn);
+  });
+
+  const deck = DECKS[deckIdx];
+  document.getElementById('storyModeTitle').textContent = deck.name;
+  const body = document.getElementById('storyModeBody');
+  const collected = deck.indices.filter(i => progress.collectedFacts.includes(i));
+  if (collected.length === 0){
+    body.innerHTML = '<p style="text-align:center;color:#8a8265">No facts discovered yet in this deck — earn more badges to start the story!</p>';
+    return;
+  }
+  let html = '';
+  collected.forEach((idx, i) => {
+    const fact = FACTS[idx];
+    if (i > 0){
+      const connector = STORY_CONNECTORS[i % STORY_CONNECTORS.length];
+      html += '<p style="text-align:center;font-style:italic;color:#8b6f3e;font-size:13px;margin:20px 0">— ' + connector + ' —</p>';
+    }
+    html += '<div style="display:flex;gap:10px;align-items:center;margin-bottom:6px">';
+    html += '<div style="width:36px;height:36px;flex-shrink:0">' + categoryIllustration(fact.category) + '</div>';
+    html += '<h3 style="font-family:\'Cinzel\',serif;font-size:16px;color:#3c2f1e;margin:4px 0">' + fact.title + '</h3>';
+    html += '</div>';
+    html += '<p style="margin:0 0 8px">' + fact.text + '</p>';
+    if (fact.story) html += '<p style="margin:0 0 8px;padding:8px 10px;background:#f1e6c8;border-left:3px solid #d9a520;border-radius:4px;font-size:13px;color:#5c3d08">' + fact.story + '</p>';
+  });
+  body.innerHTML = html;
+}
+
+function defaultStoryDeck(){
+  const unlockedDecks = DECKS.map((d, i) => i).filter(i => isDeckUnlocked(i));
+  let best = unlockedDecks[0] || 0;
+  let bestCount = -1;
+  unlockedDecks.forEach(i => {
+    const count = DECKS[i].indices.filter(idx => progress.collectedFacts.includes(idx)).length;
+    if (count > bestCount){ bestCount = count; best = i; }
+  });
+  return best;
 }
 
 function renderGallery(){
@@ -1346,9 +1458,17 @@ function renderQuestPath(mode, modeState, weeks, totalDays){
 
 const BALANCE_THRESHOLD = 20;
 
+function activeCompanion(){
+  return progress.companions.length ? progress.companions[progress.companions.length - 1] : null;
+}
+
+function totalFoodSpent(){
+  return progress.companions.reduce((sum, c) => sum + (c.fed || 0), 0);
+}
+
 function foodAvailable(){
   const earned = Math.floor((progress.totalCorrect || 0) / CORRECT_PER_FOOD);
-  return Math.max(0, earned - (progress.companionFed || 0));
+  return Math.max(0, earned - totalFoodSpent());
 }
 
 function unmetBalanceModes(){
@@ -1356,42 +1476,43 @@ function unmetBalanceModes(){
 }
 
 function feedCompanion(){
-  if (!progress.companion) return;
-  const type = COMPANION_TYPES[progress.companion.type];
+  const companion = activeCompanion();
+  if (!companion) return;
+  const type = COMPANION_TYPES[companion.type];
   const maxStage = type.stages.length - 1;
   if (foodAvailable() < 1) return;
-  if (progress.companionFed >= maxStage) return;
-  const reachingFinalStage = progress.companionFed + 1 === maxStage;
+  if (companion.fed >= maxStage) return;
+  const reachingFinalStage = companion.fed + 1 === maxStage;
   if (reachingFinalStage && unmetBalanceModes().length > 0) return;
-  progress.companionFed += 1;
+  companion.fed += 1;
   saveProgress();
   renderCompanion();
 }
 
 function renderCompanion(){
   const row = document.getElementById('companionRow');
-  if (!progress.companion) { row.style.display = 'none'; return; }
+  const companion = activeCompanion();
+  if (!companion) { row.style.display = 'none'; return; }
   row.style.display = 'flex';
-  const type = COMPANION_TYPES[progress.companion.type];
+  const type = COMPANION_TYPES[companion.type];
   const maxStage = type.stages.length - 1;
-  const stageIdx = Math.min(progress.companionFed || 0, maxStage);
+  const stageIdx = Math.min(companion.fed || 0, maxStage);
   const isLegendary = stageIdx >= maxStage;
   document.getElementById('companionBadge').style.background = isLegendary ? type.legendaryBg : type.bg;
   document.getElementById('companionBadge').style.borderColor = isLegendary ? type.legendaryColor : type.color;
   document.getElementById('companionBadge').style.boxShadow = isLegendary ? '0 0 10px ' + type.legendaryColor + '80, 0 2px 3px rgba(0,0,0,0.25)' : '0 2px 3px rgba(0,0,0,0.25)';
   document.getElementById('companionIcon').className = 'ti ' + type.icon;
   document.getElementById('companionIcon').style.color = isLegendary ? type.legendaryColor : type.color;
-  document.getElementById('companionTitle').innerHTML = progress.companion.name + ' the ' + type.stages[stageIdx] + (isLegendary ? ' <i class="ti ti-sparkles" style="color:' + type.legendaryColor + '"></i>' : '');
+  document.getElementById('companionTitle').innerHTML = companion.name + ' the ' + type.stages[stageIdx] + (isLegendary ? ' <i class="ti ti-sparkles" style="color:' + type.legendaryColor + '"></i>' : '');
 
   const withinFood = (progress.totalCorrect || 0) % CORRECT_PER_FOOD;
   const fullyGrown = stageIdx >= maxStage;
-  const reachingFinalStage = progress.companionFed + 1 === maxStage;
+  const reachingFinalStage = companion.fed + 1 === maxStage;
   const unmet = unmetBalanceModes();
   const foodReady = foodAvailable() > 0;
 
   if (fullyGrown) {
-    document.getElementById('companionSubtitle').textContent = type.legendaryNote;
-    document.getElementById('companionFoodFill').style.width = '100%';
+    document.getElementById('companionSubtitle').innerHTML = type.legendaryNote + ' <a href="#" id="adoptNewCompanionLink" style="font-weight:700">Adopt a new companion?</a>';
   } else if (reachingFinalStage && foodReady && unmet.length > 0) {
     const names = unmet.map(k => MODES[k].label).join(' and ');
     document.getElementById('companionSubtitle').textContent = 'One more feeding to go — but first, practice a bit more ' + names + '.';
@@ -1400,6 +1521,7 @@ function renderCompanion(){
     document.getElementById('companionSubtitle').textContent = withinFood + '/' + CORRECT_PER_FOOD + ' correct answers until next feeding is ready';
     document.getElementById('companionFoodFill').style.width = Math.min(100, (withinFood / CORRECT_PER_FOOD) * 100) + '%';
   }
+  if (fullyGrown) document.getElementById('companionFoodFill').style.width = '100%';
 
   const feedBtn = document.getElementById('feedCompanionBtn');
   const blockedByBalance = reachingFinalStage && unmet.length > 0;
@@ -1407,7 +1529,34 @@ function renderCompanion(){
   feedBtn.disabled = !ready;
   feedBtn.style.opacity = ready ? '1' : '0.5';
   feedBtn.style.cursor = ready ? 'pointer' : 'not-allowed';
-  feedBtn.innerHTML = fullyGrown ? '<i class="ti ti-heart"></i> Grown' : '<i class="ti ti-meat"></i> Feed' + (foodAvailable() > 0 ? ' (' + foodAvailable() + ')' : '');
+  feedBtn.style.display = fullyGrown ? 'none' : 'block';
+  feedBtn.innerHTML = '<i class="ti ti-meat"></i> Feed' + (foodAvailable() > 0 ? ' (' + foodAvailable() + ')' : '');
+
+  if (fullyGrown){
+    const link = document.getElementById('adoptNewCompanionLink');
+    if (link) link.addEventListener('click', (e) => { e.preventDefault(); openCompanionScreen('adopt'); });
+  }
+}
+
+const CATEGORY_ILLUSTRATIONS = {
+  'Castles': '<svg viewBox="0 0 60 60"><rect x="10" y="26" width="40" height="26" fill="#a3906b"/><rect x="8" y="16" width="9" height="12" fill="#a3906b"/><rect x="24" y="16" width="9" height="12" fill="#a3906b"/><rect x="40" y="16" width="9" height="12" fill="#a3906b"/><rect x="26" y="36" width="8" height="16" fill="#5a4a30"/><rect x="14" y="32" width="6" height="6" fill="#5a4a30"/><rect x="38" y="32" width="6" height="6" fill="#5a4a30"/></svg>',
+  'Knights': '<svg viewBox="0 0 60 60"><path d="M30 10 L46 16 L46 30 Q46 44 30 52 Q14 44 14 30 L14 16 Z" fill="#8b6f3e"/><path d="M30 16 L40 20 L40 30 Q40 39 30 45 Q20 39 20 30 L20 20 Z" fill="#d9a520"/><rect x="27" y="21" width="6" height="18" fill="#5a4a30"/><rect x="21" y="27" width="18" height="5" fill="#5a4a30"/></svg>',
+  'Architecture': '<svg viewBox="0 0 60 60"><rect x="10" y="42" width="40" height="6" fill="#8b6f3e"/><rect x="14" y="20" width="6" height="22" fill="#a3906b"/><rect x="27" y="20" width="6" height="22" fill="#a3906b"/><rect x="40" y="20" width="6" height="22" fill="#a3906b"/><path d="M12 20 Q30 6 48 20 Z" fill="#a3906b"/></svg>',
+  'Arts': '<svg viewBox="0 0 60 60"><ellipse cx="30" cy="30" rx="18" ry="14" fill="#d9a520" stroke="#8b5e0f" stroke-width="2"/><circle cx="22" cy="26" r="2.5" fill="#a3382a"/><circle cx="30" cy="22" r="2.5" fill="#4a7a28"/><circle cx="38" cy="26" r="2.5" fill="#378add"/><circle cx="34" cy="34" r="2.5" fill="#5a4a30"/><path d="M40 34 Q46 38 44 44 Q40 46 38 40 Z" fill="#8b5e0f"/></svg>',
+  'Daily Life': '<svg viewBox="0 0 60 60"><rect x="16" y="30" width="28" height="20" fill="#a3906b"/><path d="M12 30 L30 14 L48 30 Z" fill="#8b5e0f"/><rect x="26" y="38" width="8" height="12" fill="#5a4a30"/><rect x="34" y="10" width="4" height="10" fill="#6b5730"/></svg>',
+  'Engineering': '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="14" fill="none" stroke="#8b5e0f" stroke-width="5"/><circle cx="30" cy="30" r="5" fill="#8b5e0f"/><rect x="27" y="8" width="6" height="9" fill="#8b5e0f"/><rect x="27" y="43" width="6" height="9" fill="#8b5e0f"/><rect x="8" y="27" width="9" height="6" fill="#8b5e0f"/><rect x="43" y="27" width="9" height="6" fill="#8b5e0f"/></svg>',
+  'Government': '<svg viewBox="0 0 60 60"><rect x="16" y="12" width="28" height="36" rx="3" fill="#f1e6c8" stroke="#8b6f3e" stroke-width="2"/><line x1="21" y1="22" x2="39" y2="22" stroke="#8b6f3e" stroke-width="2"/><line x1="21" y1="28" x2="39" y2="28" stroke="#8b6f3e" stroke-width="2"/><line x1="21" y1="34" x2="33" y2="34" stroke="#8b6f3e" stroke-width="2"/><circle cx="38" cy="42" r="7" fill="#a3382a"/></svg>',
+  'Ideas': '<svg viewBox="0 0 60 60"><path d="M18 14 L42 14 L42 34 L30 46 L18 34 Z" fill="#f1e6c8" stroke="#8b6f3e" stroke-width="2"/><line x1="22" y1="21" x2="38" y2="21" stroke="#8b6f3e" stroke-width="2"/><line x1="22" y1="27" x2="38" y2="27" stroke="#8b6f3e" stroke-width="2"/><path d="M46 12 L48 18 L54 20 L48 22 L46 28 L44 22 L38 20 L44 18 Z" fill="#d9a520"/></svg>',
+  'Journeys & Trade': '<svg viewBox="0 0 60 60"><path d="M12 38 L48 38 L42 48 L18 48 Z" fill="#8b5e0f"/><rect x="28" y="10" width="3" height="28" fill="#5a4a30"/><path d="M31 12 L46 22 L31 26 Z" fill="#e8d9ae" stroke="#8b6f3e" stroke-width="1.5"/></svg>',
+  'Language': '<svg viewBox="0 0 60 60"><path d="M14 46 L34 14 Q37 9 41 12 Q45 15 41 20 L21 48 L12 50 Z" fill="#f1e6c8" stroke="#8b6f3e" stroke-width="2"/><circle cx="42" cy="44" r="3" fill="#378add"/><path d="M40 44 Q44 48 42 52" fill="none" stroke="#378add" stroke-width="1.5"/></svg>',
+  'Leaders & Legacy': '<svg viewBox="0 0 60 60"><path d="M14 26 L22 40 L30 22 L38 40 L46 26 L44 42 L16 42 Z" fill="#d9a520" stroke="#8b5e0f" stroke-width="2"/><circle cx="14" cy="24" r="3" fill="#d9a520"/><circle cx="30" cy="20" r="3" fill="#d9a520"/><circle cx="46" cy="24" r="3" fill="#d9a520"/></svg>',
+  'Mythology': '<svg viewBox="0 0 60 60"><ellipse cx="26" cy="34" rx="14" ry="9" fill="#8b5e0f"/><path d="M38 30 Q52 20 50 32 Q46 34 40 34 Z" fill="#d9a520"/><path d="M16 28 Q6 18 14 16 Q20 20 20 28 Z" fill="#d9a520"/><circle cx="14" cy="32" r="3" fill="#f1e6c8"/><path d="M8 42 L14 34 L20 42 Z" fill="#8b5e0f"/></svg>',
+  'Sports': '<svg viewBox="0 0 60 60"><path d="M30 10 Q45 14 45 30 Q45 46 30 50 Q15 46 15 30 Q15 14 30 10 Z" fill="none" stroke="#4a7a28" stroke-width="4"/><circle cx="30" cy="30" r="7" fill="#d9a520"/></svg>',
+  'Tools & Trades': '<svg viewBox="0 0 60 60"><rect x="14" y="34" width="20" height="10" fill="#8b6f3e"/><rect x="30" y="14" width="7" height="26" fill="#5a4a30" transform="rotate(28 33 27)"/><rect x="36" y="10" width="12" height="9" fill="#8b5e0f" transform="rotate(28 42 14)"/></svg>',
+  'Tournaments': '<svg viewBox="0 0 60 60"><rect x="27" y="10" width="4" height="38" fill="#5a4a30"/><path d="M31 12 L48 18 L31 24 Z" fill="#a3382a"/><circle cx="18" cy="46" r="5" fill="#d9a520" stroke="#8b5e0f" stroke-width="2"/><circle cx="40" cy="46" r="5" fill="#d9a520" stroke="#8b5e0f" stroke-width="2"/></svg>'
+};
+function categoryIllustration(category){
+  return CATEGORY_ILLUSTRATIONS[category] || '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="18" fill="#d9a520" stroke="#8b5e0f" stroke-width="2"/></svg>';
 }
 
 function renderScrapbook(){
@@ -1440,7 +1589,7 @@ function renderScrapbook(){
       const card = document.createElement('div');
       card.style.cssText = 'background:#fffdf5;border:2px solid #b9963f;border-radius:10px;padding:12px;display:flex;gap:10px;align-items:flex-start;margin-bottom:8px';
       const storyHtml = fact.story ? '<div style="margin-top:8px;background:#f1e6c8;border-left:3px solid #d9a520;border-radius:4px;padding:6px 8px;font-size:12px;color:#5c3d08">' + fact.story + '</div>' : '';
-      card.innerHTML = '<i class="ti ' + fact.icon + '" style="font-size:20px;color:#8b5e0f;flex-shrink:0;margin-top:2px"></i><div style="font-size:13px;color:#3c2f1e;line-height:1.5"><b style="font-family:\'Cinzel\',serif">' + fact.title + '</b><span style="font-size:10px;color:#8b6f3e;font-weight:700;margin-left:6px">' + fact.category + '</span><br>' + fact.text + storyHtml + '</div>';
+      card.innerHTML = '<div style="width:44px;height:44px;flex-shrink:0;margin-top:2px">' + categoryIllustration(fact.category) + '</div><div style="font-size:13px;color:#3c2f1e;line-height:1.5"><b style="font-family:\'Cinzel\',serif">' + fact.title + '</b><span style="font-size:10px;color:#8b6f3e;font-weight:700;margin-left:6px">' + fact.category + '</span><br>' + fact.text + storyHtml + '</div>';
       grid.appendChild(card);
     });
 
@@ -1573,6 +1722,70 @@ function weightedPick(items, weightFn){
     if (r <= 0) return it;
   }
   return items[items.length - 1];
+}
+
+function buildDotArrayVisual(a, b){
+  const rows = Math.min(a, b);
+  const cols = Math.max(a, b);
+  if (rows === 0) return '';
+  let html = '<div style="display:flex;flex-direction:column;gap:3px;align-items:center">';
+  for (let r = 0; r < rows; r++){
+    html += '<div style="display:flex;gap:3px">';
+    for (let c = 0; c < cols; c++){
+      html += '<div style="width:9px;height:9px;border-radius:50%;background:#d9a520;border:1px solid #8b5e0f;flex-shrink:0"></div>';
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function buildNumberLineVisual(points){
+  const values = points.map(p => p.value);
+  const min = Math.min(...values), max = Math.max(...values);
+  const range = Math.max(1, max - min);
+  const width = 280, padding = 22, y = 48;
+  const xFor = (v) => padding + ((v - min) / range) * (width - 2 * padding);
+
+  let svg = '<svg viewBox="0 0 ' + width + ' 88" width="100%" style="max-width:280px;display:block;margin:0 auto">';
+  svg += '<line x1="' + padding + '" y1="' + y + '" x2="' + (width - padding) + '" y2="' + y + '" stroke="#8b6f3e" stroke-width="2"/>';
+
+  for (let i = 0; i < points.length - 1; i++){
+    const x1 = xFor(points[i].value), x2 = xFor(points[i + 1].value);
+    const midX = (x1 + x2) / 2;
+    const delta = Math.abs(points[i + 1].value - points[i].value);
+    const arcHeight = 24;
+    svg += '<path d="M ' + x1 + ' ' + y + ' Q ' + midX + ' ' + (y - arcHeight) + ' ' + x2 + ' ' + y + '" fill="none" stroke="#4a7a28" stroke-width="2"/>';
+    svg += '<text x="' + midX + '" y="' + (y - arcHeight - 5) + '" font-size="11" font-weight="700" fill="#2c4a12" text-anchor="middle">+' + delta + '</text>';
+  }
+  points.forEach(p => {
+    const x = xFor(p.value);
+    svg += '<circle cx="' + x + '" cy="' + y + '" r="4" fill="#d9a520" stroke="#8b5e0f" stroke-width="1.5"/>';
+    svg += '<text x="' + x + '" y="' + (y + 20) + '" font-size="11" font-weight="700" fill="#3c2f1e" text-anchor="middle">' + p.value + '</text>';
+  });
+  svg += '</svg>';
+  return svg;
+}
+
+function buildHintVisual(q){
+  if (q.exprText){
+    if (q.symbol === '+') return buildNumberLineVisual([{value: q.a}, {value: q.mid}, {value: q.answer}]);
+    return buildNumberLineVisual([{value: q.b}, {value: q.mid}, {value: q.answer}]);
+  }
+  if (q.symbol === '\u00D7'){
+    if (q.b === 0 || q.b === 1) return '';
+    return buildDotArrayVisual(q.a, q.b);
+  }
+  if (q.symbol === '+'){
+    if (q.b === 0) return '';
+    return buildNumberLineVisual([{value: q.a}, {value: q.answer}]);
+  }
+  // subtraction
+  if (q.b === 0) return '';
+  const hop1 = (10 - (q.b % 10)) % 10;
+  const mid = q.b + hop1;
+  if (hop1 === 0 || mid === q.a) return buildNumberLineVisual([{value: q.b}, {value: q.a}]);
+  return buildNumberLineVisual([{value: q.b}, {value: mid}, {value: q.a}]);
 }
 
 function buildMultHint(a, b, answer){
@@ -1880,9 +2093,11 @@ function answer(selected, btn){
     fb.textContent = 'Not quite — the answer was ' + q.answer + '.';
     fb.className = 'feedback bad';
     renderMiniTerritory();
-    const hintBox = document.getElementById('learnHint');
-    hintBox.innerHTML = '<i class="ti ti-bulb"></i> ' + buildLearnHint(q);
-    hintBox.style.display = 'block';
+    const visual = buildHintVisual(q);
+    document.getElementById('learnHintVisual').innerHTML = visual;
+    document.getElementById('learnHintVisual').style.display = visual ? 'block' : 'none';
+    document.getElementById('learnHintText').innerHTML = '<i class="ti ti-bulb"></i> ' + buildLearnHint(q);
+    document.getElementById('learnHint').style.display = 'block';
     document.getElementById('quizContinueBtn').style.display = 'block';
   }
 }
@@ -2026,9 +2241,10 @@ function finishDay(){
   }
 
   const foodBanner = document.getElementById('foodBanner');
-  if (foodGained > 0 && progress.companion){
+  const foodCompanion = activeCompanion();
+  if (foodGained > 0 && foodCompanion && (foodCompanion.fed || 0) < (COMPANION_TYPES[foodCompanion.type].stages.length - 1)){
     foodBanner.style.display = 'block';
-    document.getElementById('foodBannerText').textContent = '🍖 Food is ready for ' + progress.companion.name + '!';
+    document.getElementById('foodBannerText').textContent = '🍖 Food is ready for ' + foodCompanion.name + '!';
   } else {
     foodBanner.style.display = 'none';
   }
@@ -2125,7 +2341,7 @@ document.getElementById('resetCancelBtn').addEventListener('click', () => {
 document.getElementById('resetConfirmBtn').addEventListener('click', async () => {
   document.getElementById('resetConfirmBox').style.display = 'none';
   progress = {
-    playerName: '', onboarded: false, companion: null,
+    playerName: '', onboarded: false, companion: null, companions: [],
     activeMode: 'mult', xp: 0, coins: 0, lifetimeCoins: 0, badges: {}, bestStreak: 0, currentStreak: 0, craftedTools: [], collectedFacts: [],
     totalCorrect: 0, companionFed: 0, correctByMode: {mult:0, add:0, sub:0},
     weakFacts: {}, masteryCount: {}, mastered: {}, badgeCapDate: null, badgesEarnedToday: 0,
@@ -2144,15 +2360,6 @@ document.getElementById('resetConfirmBtn').addEventListener('click', async () =>
   document.getElementById('editNameWrap').style.display = 'none';
   document.getElementById('headerSubtitle').textContent = 'A quest to master arithmetic and become a legendary knight';
   document.getElementById('introScreen').style.display = 'block';
-});
-
-document.getElementById('saveBtn').addEventListener('click', async () => {
-  const fb = document.getElementById('saveFeedback');
-  fb.textContent = 'Saving…';
-  const ok = await saveProgress();
-  fb.textContent = ok ? 'Progress saved!' : "Couldn't save just now — try again in a moment.";
-  fb.style.color = ok ? '#6b9c3c' : '#c85c4d';
-  setTimeout(() => { fb.textContent = ''; }, 2500);
 });
 
 document.getElementById('exportBtn').addEventListener('click', () => {
@@ -2263,6 +2470,17 @@ document.getElementById('scrapbookBackBtn').addEventListener('click', () => {
   renderHallScreen();
 });
 
+document.getElementById('storyModeBtn').addEventListener('click', () => {
+  document.getElementById('scrapbookScreen').style.display = 'none';
+  document.getElementById('storyModeScreen').style.display = 'block';
+  renderStoryMode(defaultStoryDeck());
+});
+document.getElementById('storyModeBackBtn').addEventListener('click', () => {
+  document.getElementById('storyModeScreen').style.display = 'none';
+  document.getElementById('scrapbookScreen').style.display = 'block';
+  renderScrapbook();
+});
+
 document.getElementById('hallMasteryLink').addEventListener('click', (e) => {
   e.preventDefault();
   document.getElementById('hallScreen').style.display = 'none';
@@ -2275,18 +2493,30 @@ document.getElementById('masteryBackBtn').addEventListener('click', () => {
   renderHallScreen();
 });
 
+document.getElementById('hallStableLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('hallScreen').style.display = 'none';
+  document.getElementById('stableScreen').style.display = 'block';
+  renderStable();
+});
+document.getElementById('stableBackBtn').addEventListener('click', () => {
+  document.getElementById('stableScreen').style.display = 'none';
+  document.getElementById('hallScreen').style.display = 'block';
+  renderHallScreen();
+});
+
 function submitName(){
   const val = document.getElementById('nameInput').value.trim();
   if (!val) return;
   progress.playerName = val;
   saveProgress();
-  if (progress.companion && progress.onboarded) {
+  if (progress.companions.length > 0 && progress.onboarded) {
     showMap();
-  } else if (progress.companion) {
+  } else if (progress.companions.length > 0) {
     showMissionScreen();
   } else {
     document.getElementById('introScreen').style.display = 'none';
-    document.getElementById('companionScreen').style.display = 'block';
+    openCompanionScreen('onboard');
   }
 }
 document.getElementById('nameSubmitBtn').addEventListener('click', submitName);
@@ -2299,6 +2529,7 @@ document.getElementById('missionAcceptBtn').addEventListener('click', () => {
 });
 
 let selectedCompanionType = null;
+let companionScreenMode = 'onboard';
 function selectCompanionCard(type){
   selectedCompanionType = type;
   document.getElementById('chooseHorse').classList.toggle('selected', type === 'horse');
@@ -2307,10 +2538,52 @@ function selectCompanionCard(type){
 document.getElementById('chooseHorse').addEventListener('click', () => selectCompanionCard('horse'));
 document.getElementById('chooseFalcon').addEventListener('click', () => selectCompanionCard('falcon'));
 
+function openCompanionScreen(mode){
+  companionScreenMode = mode;
+  selectedCompanionType = null;
+  document.getElementById('chooseHorse').classList.remove('selected');
+  document.getElementById('chooseFalcon').classList.remove('selected');
+  document.getElementById('companionNameInput').value = '';
+  const heading = document.getElementById('companionScreenHeading');
+  const sub = document.getElementById('companionScreenSub');
+  if (mode === 'edit'){
+    const companion = activeCompanion();
+    heading.textContent = 'Give your companion a new look';
+    sub.textContent = 'Rename or reassign your current companion.';
+    if (companion){
+      document.getElementById('companionNameInput').value = companion.name || '';
+      selectCompanionCard(companion.type);
+    }
+  } else if (mode === 'adopt'){
+    heading.textContent = 'A new companion awaits';
+    sub.textContent = 'Your last one has grown into legend — choose a new friend to raise.';
+  } else {
+    heading.textContent = 'No knight rides alone';
+    sub.textContent = 'Choose a loyal companion to walk this road with you.';
+  }
+  document.getElementById('companionSubmitBtn').innerHTML = '<i class="ti ti-sword"></i> ' + (mode === 'edit' ? 'Save' : mode === 'adopt' ? 'Adopt companion' : 'Continue');
+  document.getElementById('mapScreen').style.display = 'none';
+  document.getElementById('companionScreen').style.display = 'block';
+}
+
 document.getElementById('companionSubmitBtn').addEventListener('click', () => {
   const name = document.getElementById('companionNameInput').value.trim();
   if (!selectedCompanionType || !name) return;
-  progress.companion = { type: selectedCompanionType, name };
+  if (companionScreenMode === 'edit'){
+    const companion = activeCompanion();
+    if (companion){ companion.type = selectedCompanionType; companion.name = name; }
+    saveProgress();
+    showMap();
+    return;
+  }
+  if (companionScreenMode === 'adopt'){
+    progress.companions.push({ type: selectedCompanionType, name, fed: 0 });
+    saveProgress();
+    showMap();
+    return;
+  }
+  // onboard
+  progress.companions.push({ type: selectedCompanionType, name, fed: 0 });
   saveProgress();
   if (progress.onboarded) {
     showMap();
@@ -2359,12 +2632,7 @@ document.getElementById('parentGateAnswer').addEventListener('keydown', (e) => {
 
 document.getElementById('editCompanionLink').addEventListener('click', (e) => {
   e.preventDefault();
-  if (progress.companion) {
-    document.getElementById('companionNameInput').value = progress.companion.name || '';
-    selectCompanionCard(progress.companion.type);
-  }
-  document.getElementById('mapScreen').style.display = 'none';
-  document.getElementById('companionScreen').style.display = 'block';
+  openCompanionScreen('edit');
 });
 
 document.getElementById('feedCompanionBtn').addEventListener('click', feedCompanion);
