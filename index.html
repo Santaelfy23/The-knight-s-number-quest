@@ -350,8 +350,11 @@
 
     <div id="jousterCardUnlocked" style="display:none;background:linear-gradient(180deg,#ffe8a8,#ffc94d);border:3px solid #d9a520;border-radius:10px;padding:12px;margin-bottom:10px;text-align:center;box-shadow:0 3px 0 #8b5e0f">
       <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:800;color:#6b4a06"><i class="ti ti-horse"></i> The Jousting Arena</div>
-      <p style="font-size:12px;color:#6b4a06;margin:4px 0 8px">Ready to ride, lance in hand?</p>
+      <p style="font-size:12px;color:#6b4a06;margin:4px 0 8px" id="joustCardRemaining">Reward unlocked!</p>
       <button class="primary" id="enterJoustBtn" style="margin:0;background:linear-gradient(180deg,#fff8e8,#f3e6c4);border-color:#8b5e0f;color:#6b4a06;box-shadow:0 4px 0 #8b5e0f">Enter the Joust! <i class="ti ti-sword"></i></button>
+    </div>
+    <div id="jousterCardWaiting" style="display:none;background:#f1e6c8;border:2px dashed #d9a520;border-radius:10px;padding:10px 12px;margin-bottom:10px;text-align:center">
+      <p style="font-size:12px;color:#6b5730;margin:0"><i class="ti ti-horse"></i> Complete today's quest target (any 3 of your 4 subjects) to unlock 3 jousts!</p>
     </div>
     <div id="jousterCardLocked" style="display:none;background:#f1e6c8;border:2px dashed #b0a888;border-radius:10px;padding:10px 12px;margin-bottom:10px;text-align:center">
       <p style="font-size:12px;color:#8a8265;margin:0"><i class="ti ti-lock"></i> Craft your first weapon in the Treasury to unlock the Jousting Arena!</p>
@@ -483,16 +486,24 @@
 
   <div id="joustScreen" class="card" style="display:none;text-align:center">
     <h2 style="font-family:'Cinzel',serif;color:#3c2f1e;margin-top:0">The Jousting Arena</h2>
-    <p style="font-size:13px;color:#6b5730;margin:0 0 10px" id="joustInstructions">Pass 1 of 3 — tap STRIKE when the lance reaches the gold zone!</p>
+    <p style="font-size:13px;color:#6b5730;margin:0 0 4px" id="joustOpponentLine">You vs. <b id="joustOpponentName">Sir Boldheart</b></p>
+    <p style="font-size:13px;color:#6b5730;margin:0 0 10px" id="joustInstructions">Pass 1 of 3 — tap STRIKE when the knights meet in the middle!</p>
+    <div style="display:flex;justify-content:center;align-items:center;gap:16px;margin-bottom:10px;font-family:'Cinzel',serif;font-weight:800;font-size:16px">
+      <span style="color:#2c4a12"><i class="ti ti-shield"></i> You: <span id="joustPlayerScore">0</span></span>
+      <span style="color:#6b5730;font-size:12px">vs</span>
+      <span style="color:#8a2d1f"><i class="ti ti-swords"></i> <span id="joustBotScore">0</span> :Bot</span>
+    </div>
     <div style="display:flex;justify-content:center;gap:8px;margin-bottom:12px" id="joustPassIndicators"></div>
     <div style="position:relative;height:64px;background:#e3ddc9;border:3px solid #6b4f24;border-radius:10px;overflow:hidden;margin-bottom:14px">
       <div id="joustTargetZone" style="position:absolute;top:0;bottom:0;background:rgba(217,165,32,0.45);border-left:2px dashed #8b5e0f;border-right:2px dashed #8b5e0f"></div>
       <div id="joustTargetCore" style="position:absolute;top:0;bottom:0;background:rgba(74,122,40,0.55)"></div>
-      <div id="joustMarker" style="position:absolute;top:8px;font-size:30px;color:#3c2f1e;transform:translateX(-50%)"><i class="ti ti-sword"></i></div>
-      <div style="position:absolute;right:6px;top:8px;font-size:26px;color:#8b5e0f"><i class="ti ti-shield"></i></div>
+      <div style="position:absolute;left:0;top:0;bottom:0;width:2px;background:#8b6f3e;opacity:0.4"></div>
+      <div style="position:absolute;right:0;top:0;bottom:0;width:2px;background:#8b6f3e;opacity:0.4"></div>
+      <div id="joustPlayerKnight" style="position:absolute;top:6px;font-size:28px;color:#2c4a12;transform:translateX(-50%)"><i class="ti ti-horse"></i></div>
+      <div id="joustBotKnight" style="position:absolute;top:6px;font-size:28px;color:#8a2d1f;transform:translateX(-50%) scaleX(-1)"><i class="ti ti-horse"></i></div>
     </div>
     <button class="primary" id="joustStrikeBtn">STRIKE! <i class="ti ti-bolt"></i></button>
-    <div id="joustFeedback" style="min-height:26px;font-size:16px;font-weight:800;margin:8px 0"></div>
+    <div id="joustFeedback" style="min-height:44px;font-size:15px;font-weight:800;margin:8px 0"></div>
     <div id="joustResultsSummary" style="display:none">
       <div style="font-size:44px;margin:8px 0" id="joustResultIcon"></div>
       <h2 style="font-family:'Cinzel',serif;color:#3c2f1e;margin:4px 0" id="joustResultTitle"></h2>
@@ -2303,6 +2314,8 @@ const DAILY_BADGE_CAP = 5;
 const JOUST_PASSES_PER_SESSION = 3;
 const JOUST_MAX_SESSIONS_PER_DAY = 3;
 const JOUST_DURATION_MS = 1700;
+const JOUST_BOT_NAMES = ['Sir Boldheart', 'Sir Ironclad', 'The Crimson Knight', 'Lady Stormrider', 'Sir Oakenshield'];
+const JOUST_RANK = { perfect: 2, good: 1, miss: 0 };
 
 function hasWeapon(){
   return progress.craftedTools.some(id => {
@@ -2311,13 +2324,27 @@ function hasWeapon(){
   });
 }
 
+function todayTargetComplete(){
+  return progress.dailyStreak.streakCountedDate === todayKey();
+}
+
 function renderJoustCard(){
-  const unlocked = hasWeapon();
-  document.getElementById('jousterCardUnlocked').style.display = unlocked ? 'block' : 'none';
-  document.getElementById('jousterCardLocked').style.display = unlocked ? 'none' : 'block';
+  const owns = hasWeapon();
+  const targetDone = todayTargetComplete();
+  const remaining = joustSessionsRemainingToday();
+  document.getElementById('jousterCardLocked').style.display = !owns ? 'block' : 'none';
+  document.getElementById('jousterCardWaiting').style.display = (owns && !targetDone) ? 'block' : 'none';
+  document.getElementById('jousterCardUnlocked').style.display = (owns && targetDone) ? 'block' : 'none';
+  if (owns && targetDone){
+    document.getElementById('joustCardRemaining').textContent = remaining > 0
+      ? 'Reward unlocked — ' + remaining + ' joust' + (remaining === 1 ? '' : 's') + ' left today!'
+      : "You've used today's jousts — come back tomorrow!";
+    document.getElementById('enterJoustBtn').style.display = remaining > 0 ? 'block' : 'none';
+  }
 }
 
 function joustSessionsRemainingToday(){
+  if (!todayTargetComplete()) return 0;
   const today = todayKey();
   if (progress.joustSessionDate !== today) return JOUST_MAX_SESSIONS_PER_DAY;
   return Math.max(0, JOUST_MAX_SESSIONS_PER_DAY - (progress.joustSessionsToday || 0));
@@ -2329,11 +2356,22 @@ function judgeJoustHit(percent, coreStart, coreEnd, zoneStart, zoneEnd){
   return 'miss';
 }
 
+function judgeJoustBotResult(){
+  const roll = Math.random();
+  if (roll < 0.15) return 'perfect';
+  if (roll < 0.65) return 'good';
+  return 'miss';
+}
+
 let joustSession = null;
 let joustAnimFrame = null;
 
 function startJoustSession(){
-  joustSession = { pass: 0, results: [] };
+  const botName = JOUST_BOT_NAMES[randInt(0, JOUST_BOT_NAMES.length - 1)];
+  joustSession = { pass: 0, results: [], botResults: [], botName, playerScore: 0, botScore: 0 };
+  document.getElementById('joustOpponentName').textContent = botName;
+  document.getElementById('joustPlayerScore').textContent = '0';
+  document.getElementById('joustBotScore').textContent = '0';
   document.getElementById('joustResultsSummary').style.display = 'none';
   document.getElementById('joustAgainBtn').style.display = 'none';
   document.getElementById('joustStrikeBtn').style.display = 'block';
@@ -2342,13 +2380,9 @@ function startJoustSession(){
 }
 
 function startJoustPass(){
-  const track = document.getElementById('joustTargetZone').parentElement.clientWidth || 280;
-  const zoneWidth = 22; // percent width of the forgiving "good" zone
-  const coreWidth = 8;  // percent width of the "perfect" core, centered in the zone
-  const zoneStart = 30 + Math.random() * 35; // randomize position each pass, keep away from extreme edges
-  const zoneEnd = zoneStart + zoneWidth;
-  const coreStart = zoneStart + (zoneWidth - coreWidth) / 2;
-  const coreEnd = coreStart + coreWidth;
+  // Fixed, centered zone: the knights always meet in the middle, tap when they arrive there
+  const zoneStart = 38, zoneEnd = 62;
+  const coreStart = 45, coreEnd = 55;
 
   joustSession.zoneStart = zoneStart;
   joustSession.zoneEnd = zoneEnd;
@@ -2357,7 +2391,7 @@ function startJoustPass(){
   joustSession.resolved = false;
   joustSession.startTime = performance.now ? performance.now() : Date.now();
 
-  document.getElementById('joustInstructions').textContent = 'Pass ' + (joustSession.pass + 1) + ' of ' + JOUST_PASSES_PER_SESSION + ' — tap STRIKE when the lance reaches the gold zone!';
+  document.getElementById('joustInstructions').textContent = 'Pass ' + (joustSession.pass + 1) + ' of ' + JOUST_PASSES_PER_SESSION + ' — tap STRIKE when the knights meet in the middle!';
   document.getElementById('joustFeedback').textContent = '';
   document.getElementById('joustStrikeBtn').disabled = false;
   renderJoustPassIndicators();
@@ -2365,15 +2399,16 @@ function startJoustPass(){
   const zoneEl = document.getElementById('joustTargetZone');
   const coreEl = document.getElementById('joustTargetCore');
   zoneEl.style.left = zoneStart + '%';
-  zoneEl.style.width = zoneWidth + '%';
+  zoneEl.style.width = (zoneEnd - zoneStart) + '%';
   coreEl.style.left = coreStart + '%';
-  coreEl.style.width = coreWidth + '%';
+  coreEl.style.width = (coreEnd - coreStart) + '%';
 
   function step(now){
     if (!joustSession || joustSession.resolved) return;
     const elapsed = now - joustSession.startTime;
     const percent = Math.min(100, (elapsed / JOUST_DURATION_MS) * 100);
-    document.getElementById('joustMarker').style.left = percent + '%';
+    document.getElementById('joustPlayerKnight').style.left = percent + '%';
+    document.getElementById('joustBotKnight').style.left = (100 - percent) + '%';
     if (percent >= 100){
       resolveJoustPass(100);
       return;
@@ -2403,18 +2438,34 @@ function renderJoustPassIndicators(){
   }
 }
 
+const JOUST_RESULT_LABEL = { perfect: '\uD83C\uDFAF Perfect', good: '\u2694\uFE0F Good', miss: 'Missed' };
+
 function resolveJoustPass(percent){
   if (!joustSession || joustSession.resolved) return;
   joustSession.resolved = true;
   if (joustAnimFrame) cancelAnimationFrame(joustAnimFrame);
   const result = judgeJoustHit(percent, joustSession.coreStart, joustSession.coreEnd, joustSession.zoneStart, joustSession.zoneEnd);
+  const botResult = judgeJoustBotResult();
   joustSession.results.push(result);
+  joustSession.botResults.push(botResult);
   document.getElementById('joustStrikeBtn').disabled = true;
 
+  let outcomeLine;
+  if (JOUST_RANK[result] > JOUST_RANK[botResult]){
+    joustSession.playerScore += 1;
+    outcomeLine = 'You win this pass!';
+  } else if (JOUST_RANK[result] < JOUST_RANK[botResult]){
+    joustSession.botScore += 1;
+    outcomeLine = joustSession.botName + ' wins this pass!';
+  } else {
+    outcomeLine = "It's a tie this pass!";
+  }
+  document.getElementById('joustPlayerScore').textContent = joustSession.playerScore;
+  document.getElementById('joustBotScore').textContent = joustSession.botScore;
+
   const fb = document.getElementById('joustFeedback');
-  if (result === 'perfect'){ fb.textContent = '🎯 Perfect strike!'; fb.style.color = '#8b5e0f'; }
-  else if (result === 'good'){ fb.textContent = '⚔️ Good hit!'; fb.style.color = '#2c4a12'; }
-  else { fb.textContent = 'Missed the shield!'; fb.style.color = '#8a2d1f'; }
+  fb.innerHTML = 'You: ' + JOUST_RESULT_LABEL[result] + ' &nbsp;\u00B7&nbsp; ' + joustSession.botName + ': ' + JOUST_RESULT_LABEL[botResult] + '<br>' + outcomeLine;
+  fb.style.color = JOUST_RANK[result] >= JOUST_RANK[botResult] ? '#2c4a12' : '#8a2d1f';
   renderJoustPassIndicators();
 
   setTimeout(() => {
@@ -2424,13 +2475,13 @@ function resolveJoustPass(percent){
     } else {
       finishJoustSession();
     }
-  }, 1100);
+  }, 1600);
 }
 
 document.getElementById('joustStrikeBtn').addEventListener('click', () => {
   if (!joustSession || joustSession.resolved) return;
-  const marker = document.getElementById('joustMarker');
-  const percent = parseFloat(marker.style.left) || 0;
+  const knight = document.getElementById('joustPlayerKnight');
+  const percent = parseFloat(knight.style.left) || 0;
   resolveJoustPass(percent);
 });
 
@@ -2440,6 +2491,8 @@ function finishJoustSession(){
   const perfects = results.filter(r => r === 'perfect').length;
   const goods = results.filter(r => r === 'good').length;
   const misses = results.filter(r => r === 'miss').length;
+  const wonMatch = joustSession.playerScore > joustSession.botScore;
+  const tiedMatch = joustSession.playerScore === joustSession.botScore;
 
   if (!progress.joustStats) progress.joustStats = { perfects: 0, goods: 0, misses: 0, sessionsPlayed: 0 };
   progress.joustStats.perfects += perfects;
@@ -2452,8 +2505,7 @@ function finishJoustSession(){
   progress.joustSessionsToday += 1;
 
   let coinsEarned = 5;
-  const allGoodOrBetter = results.every(r => r === 'perfect' || r === 'good');
-  if (allGoodOrBetter) coinsEarned += 5;
+  if (wonMatch) coinsEarned += 5;
   progress.coins += coinsEarned;
   progress.lifetimeCoins += coinsEarned;
 
@@ -2467,13 +2519,12 @@ function finishJoustSession(){
 
   document.getElementById('joustResultsSummary').style.display = 'block';
   let title, icon;
-  if (perfects === JOUST_PASSES_PER_SESSION){ title = 'Champion of the Joust!'; icon = '<i class="ti ti-trophy" style="color:#8b5e0f"></i>'; }
-  else if (misses === 0){ title = 'A fine joust!'; icon = '<i class="ti ti-shield-check" style="color:#4a7a28"></i>'; }
-  else if (perfects > 0 || goods > 0){ title = 'A worthy attempt!'; icon = '<i class="ti ti-sword" style="color:#8b5e0f"></i>'; }
-  else { title = 'Better luck next ride!'; icon = '<i class="ti ti-horse" style="color:#6b5730"></i>'; }
+  if (wonMatch){ title = 'Victory over ' + joustSession.botName + '!'; icon = '<i class="ti ti-trophy" style="color:#8b5e0f"></i>'; }
+  else if (tiedMatch){ title = 'A well-fought tie!'; icon = '<i class="ti ti-shield-check" style="color:#4a7a28"></i>'; }
+  else { title = joustSession.botName + ' wins this time!'; icon = '<i class="ti ti-horse" style="color:#6b5730"></i>'; }
   document.getElementById('joustResultIcon').innerHTML = icon;
   document.getElementById('joustResultTitle').textContent = title;
-  document.getElementById('joustResultDetail').textContent = perfects + ' perfect, ' + goods + ' good, ' + misses + ' missed' + (newBadge ? ' — new badge: Jousting Champion!' : '');
+  document.getElementById('joustResultDetail').textContent = 'Final score — You: ' + joustSession.playerScore + ', ' + joustSession.botName + ': ' + joustSession.botScore + (newBadge ? ' — new badge: Jousting Champion!' : '');
   document.getElementById('joustResultCoins').innerHTML = '<i class="ti ti-coin"></i> +' + coinsEarned + ' coins';
 
   const remaining = joustSessionsRemainingToday();
@@ -2680,7 +2731,8 @@ function finishDay(){
   const dailyStreakBanner = document.getElementById('dailyStreakBanner');
   if (session.newDailyStreak){
     dailyStreakBanner.style.display = 'block';
-    document.getElementById('dailyStreakBannerText').textContent = '🔥 All 3 subjects done today — daily streak: ' + session.newDailyStreak + ' day' + (session.newDailyStreak === 1 ? '' : 's') + '!';
+    const joustNote = hasWeapon() ? ' 🐴 3 jousts unlocked for today!' : '';
+    document.getElementById('dailyStreakBannerText').textContent = "🔥 Today's target complete — daily streak: " + session.newDailyStreak + ' day' + (session.newDailyStreak === 1 ? '' : 's') + '!' + joustNote;
   } else {
     dailyStreakBanner.style.display = 'none';
   }
