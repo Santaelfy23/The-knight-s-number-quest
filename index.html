@@ -1648,6 +1648,8 @@ function updateDailyStreak(mode){
     ds.best = Math.max(ds.best, ds.current);
     ds.streakCountedDate = today;
     session.newDailyStreak = ds.current;
+    progress.joustSessionDate = today;
+    progress.joustSessionsToday = 0;
     if (ds.current % 7 === 0){
       ds.weeksConquered += 1;
       session.newWeekConquered = ds.weeksConquered;
