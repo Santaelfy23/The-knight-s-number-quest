@@ -1067,6 +1067,7 @@ function normalizeProgress(){
   if (typeof progress.badgeCapDate !== 'string' && progress.badgeCapDate !== null) progress.badgeCapDate = null;
   if (typeof progress.badgesEarnedToday !== 'number') progress.badgesEarnedToday = 0;
   if (typeof progress.joustSessionDate !== 'string' && progress.joustSessionDate !== null) progress.joustSessionDate = null;
+  if (typeof progress.joustRewardGrantedDate !== 'string' && progress.joustRewardGrantedDate !== null) progress.joustRewardGrantedDate = null;
   if (typeof progress.joustSessionsToday !== 'number') progress.joustSessionsToday = 0;
   if (!progress.joustStats || typeof progress.joustStats !== 'object') progress.joustStats = { perfects: 0, goods: 0, misses: 0, sessionsPlayed: 0 };
   if (!progress.dailyStreak || typeof progress.dailyStreak !== 'object') {
@@ -2345,8 +2346,19 @@ function renderJoustCard(){
   }
 }
 
+function ensureJoustRewardGranted(){
+  const today = todayKey();
+  if (todayTargetComplete() && progress.joustRewardGrantedDate !== today){
+    progress.joustRewardGrantedDate = today;
+    progress.joustSessionDate = today;
+    progress.joustSessionsToday = 0;
+    saveProgress();
+  }
+}
+
 function joustSessionsRemainingToday(){
   if (!todayTargetComplete()) return 0;
+  ensureJoustRewardGranted();
   const today = todayKey();
   if (progress.joustSessionDate !== today) return JOUST_MAX_SESSIONS_PER_DAY;
   return Math.max(0, JOUST_MAX_SESSIONS_PER_DAY - (progress.joustSessionsToday || 0));
@@ -2806,7 +2818,7 @@ document.getElementById('resetConfirmBtn').addEventListener('click', async () =>
     activeMode: 'mult', xp: 0, coins: 0, lifetimeCoins: 0, badges: {}, bestStreak: 0, currentStreak: 0, craftedTools: [], collectedFacts: [],
     totalCorrect: 0, companionFed: 0, correctByMode: {mult:0, add:0, sub:0, div:0},
     weakFacts: {}, masteryCount: {}, mastered: {}, badgeCapDate: null, badgesEarnedToday: 0,
-    joustSessionDate: null, joustSessionsToday: 0, joustStats: { perfects: 0, goods: 0, misses: 0, sessionsPlayed: 0 },
+    joustSessionDate: null, joustSessionsToday: 0, joustRewardGrantedDate: null, joustStats: { perfects: 0, goods: 0, misses: 0, sessionsPlayed: 0 },
     dailyStreak: { current: 0, best: 0, weeksConquered: 0, lastActiveDate: null, streakCountedDate: null, categoriesToday: {mult:false, add:false, sub:false, div:false} },
     modes: { mult:{completedDays:[],currentDay:1}, add:{completedDays:[],currentDay:1}, sub:{completedDays:[],currentDay:1}, div:{completedDays:[],currentDay:1} }
   };
