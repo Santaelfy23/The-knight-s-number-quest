@@ -361,6 +361,7 @@
       <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:800;color:#6b4a06"><i class="ti ti-horse"></i> The Jousting Arena</div>
       <p style="font-size:12px;color:#6b4a06;margin:4px 0 8px" id="joustCardRemaining">Reward unlocked!</p>
       <button class="primary" id="enterJoustBtn" style="margin:0;background:linear-gradient(180deg,#fff8e8,#f3e6c4);border-color:#8b5e0f;color:#6b4a06;box-shadow:0 4px 0 #8b5e0f">Enter the Joust! <i class="ti ti-sword"></i></button>
+      <button id="buyExtraJoustBtn" style="display:none;width:100%;margin-top:8px;padding:8px;font-size:12px;font-weight:700;border-radius:8px;border:2px solid #8b5e0f;background:#fffdf5;color:#6b4a06;cursor:pointer">Buy 1 more joust — <i class="ti ti-coin"></i> 10 coins</button>
     </div>
     <div id="jousterCardWaiting" style="display:none;background:#f1e6c8;border:2px dashed #d9a520;border-radius:10px;padding:10px 12px;margin-bottom:10px;text-align:center">
       <p style="font-size:12px;color:#6b5730;margin:0"><i class="ti ti-horse"></i> Complete today's quest target (any 3 of your 4 subjects) to unlock 3 jousts!</p>
@@ -486,11 +487,66 @@
       <button class="primary" id="craftCelebrationBtn">Excellent! <i class="ti ti-sparkles"></i></button>
     </div>
     <div id="arsenalMainView">
+      <div class="section-label" style="text-align:center"><i class="ti ti-building-bank"></i> The Bank</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <a href="#" id="openSavingsBtn" style="flex:1;text-decoration:none;background:#e6f1fb;border:2px solid #378add;border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:22px;color:#185fa5"><i class="ti ti-coins"></i></div>
+          <div style="font-family:'Cinzel',serif;font-weight:800;color:#185fa5;font-size:12px;margin-top:2px">Savings</div>
+          <div id="dashSavingsAmount" style="font-size:11px;color:#0c447c;font-weight:700"></div>
+        </a>
+        <a href="#" id="openGivingBtn" style="flex:1;text-decoration:none;background:#eaf6e0;border:2px solid #6b9c3c;border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:22px;color:#2c4a12"><i class="ti ti-heart"></i></div>
+          <div style="font-family:'Cinzel',serif;font-weight:800;color:#2c4a12;font-size:12px;margin-top:2px">Giving</div>
+          <div id="dashGivingAmount" style="font-size:11px;color:#2c4a12;font-weight:700"></div>
+        </a>
+      </div>
+
+      <div class="section-label" style="text-align:center"><i class="ti ti-sword"></i> Spend</div>
       <p style="text-align:center;font-size:13px;color:#6b5730">Every correct answer earns coins for the treasury — spend them on any tool, but the mightiest ones cost more.</p>
       <p style="text-align:center;font-size:13px;font-weight:700" id="arsenalPoints"></p>
       <div class="arsenal-grid" id="arsenalGrid"></div>
       <button class="primary" id="arsenalBackBtn">Back to the map</button>
     </div>
+  </div>
+
+  <div id="savingsScreen" class="card" style="display:none">
+    <h2 style="font-family:'Cinzel',serif;text-align:center;color:#3c2f1e;margin-top:0"><i class="ti ti-coins"></i> Savings Jar</h2>
+    <p style="text-align:center;font-size:13px;color:#6b5730">Coins left here grow a little bigger every day!</p>
+    <p id="savingsBalanceText" style="text-align:center;font-size:16px;font-weight:800;color:#0c447c;margin:4px 0"></p>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+      <button id="save10Btn" style="flex:1;min-width:70px;padding:8px;font-size:12px;font-weight:700;border-radius:8px;border:2px solid #378add;background:#fffdf5;color:#185fa5;cursor:pointer">Save 10</button>
+      <button id="save25Btn" style="flex:1;min-width:70px;padding:8px;font-size:12px;font-weight:700;border-radius:8px;border:2px solid #378add;background:#fffdf5;color:#185fa5;cursor:pointer">Save 25</button>
+      <button id="saveAllBtn" style="flex:1;min-width:70px;padding:8px;font-size:12px;font-weight:700;border-radius:8px;border:2px solid #378add;background:#fffdf5;color:#185fa5;cursor:pointer">Save All</button>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+      <button id="withdraw10Btn" style="flex:1;min-width:70px;padding:8px;font-size:12px;font-weight:700;border-radius:8px;border:2px solid #8b6f3e;background:#fffdf5;color:#5c3d08;cursor:pointer">Take 10</button>
+      <button id="withdraw25Btn" style="flex:1;min-width:70px;padding:8px;font-size:12px;font-weight:700;border-radius:8px;border:2px solid #8b6f3e;background:#fffdf5;color:#5c3d08;cursor:pointer">Take 25</button>
+      <button id="withdrawAllBtn" style="flex:1;min-width:70px;padding:8px;font-size:12px;font-weight:700;border-radius:8px;border:2px solid #8b6f3e;background:#fffdf5;color:#5c3d08;cursor:pointer">Take All</button>
+    </div>
+    <div class="section-label" style="text-align:center"><i class="ti ti-coins"></i> How it's grown</div>
+    <div style="background:#e6f1fb;border:2px solid #378add;border-radius:10px;padding:10px;margin-bottom:6px" id="savingsChartWrap"></div>
+    <p id="savingsProjectionText" style="font-size:12px;color:#0c447c;text-align:center;margin:0 0 10px"></p>
+    <div class="section-label" style="text-align:center"><i class="ti ti-coins"></i> What a year would look like</div>
+    <div style="background:#eaf6e0;border:2px solid #4a7a28;border-radius:10px;padding:10px;margin-bottom:14px" id="savingsProjectionChartWrap"></div>
+    <button class="primary" id="savingsBackBtn">Back to the Bank</button>
+  </div>
+
+  <div id="givingScreen" class="card" style="display:none">
+    <h2 style="font-family:'Cinzel',serif;text-align:center;color:#3c2f1e;margin-top:0"><i class="ti ti-heart"></i> Giving Jar</h2>
+    <p style="text-align:center;font-size:13px;color:#6b5730">Giving coins away doesn't buy you anything — but it helps the kingdom, and that matters too.</p>
+    <p id="givingJarText" style="text-align:center;font-size:16px;font-weight:800;color:#2c4a12;margin:4px 0 2px"></p>
+    <p id="givingTotalText" style="text-align:center;font-size:12px;color:#4a7a28;margin:0 0 10px"></p>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+      <button id="give5Btn" style="flex:1;min-width:60px;padding:8px;font-size:12px;font-weight:700;border-radius:8px;border:2px solid #6b9c3c;background:#fffdf5;color:#2c4a12;cursor:pointer">Give 5</button>
+      <button id="give10Btn" style="flex:1;min-width:60px;padding:8px;font-size:12px;font-weight:700;border-radius:8px;border:2px solid #6b9c3c;background:#fffdf5;color:#2c4a12;cursor:pointer">Give 10</button>
+      <button id="give25Btn" style="flex:1;min-width:60px;padding:8px;font-size:12px;font-weight:700;border-radius:8px;border:2px solid #6b9c3c;background:#fffdf5;color:#2c4a12;cursor:pointer">Give 25</button>
+    </div>
+    <button id="cashOutGivingBtn" style="width:100%;padding:9px;font-size:13px;font-weight:800;border-radius:8px;border:2px solid #4a7a28;background:linear-gradient(180deg,#b9e88f,#8fc95a);color:#223e0e;cursor:pointer">Choose a cause & give it away! <i class="ti ti-heart"></i></button>
+    <div id="charityPicker" style="display:none;margin-top:8px"></div>
+    <p id="givingFeedback" style="font-size:12px;font-weight:700;color:#2c4a12;min-height:16px;margin:6px 0 12px;text-align:center"></p>
+    <div class="section-label" style="text-align:center"><i class="ti ti-scroll"></i> Your Giving Board</div>
+    <div id="givingHistoryBoard" style="margin-bottom:14px"></div>
+    <button class="primary" id="givingBackBtn">Back to the Bank</button>
   </div>
 
   <div id="joustScreen" class="card" style="display:none;text-align:center">
@@ -713,7 +769,10 @@ const BADGE_DEFS = [
   {id:'streak-20', name:'Unstoppable', icon:'<i class="ti ti-bolt"></i>'},
   {id:'perfect', name:'Perfect run', icon:'<i class="ti ti-star"></i>'},
   {id:'castle', name:'Castle reached', icon:'<i class="ti ti-building-castle"></i>'},
-  {id:'joust-champion', name:'Jousting Champion', icon:'<i class="ti ti-trophy"></i>'}
+  {id:'joust-champion', name:'Jousting Champion', icon:'<i class="ti ti-trophy"></i>'},
+  {id:'give-kind-heart', name:'Kind Heart', icon:'<i class="ti ti-heart"></i>'},
+  {id:'give-generous-knight', name:'Generous Knight', icon:'<i class="ti ti-heart"></i>'},
+  {id:'give-kingdom-hero', name:"Kingdom's Hero", icon:'<i class="ti ti-heart"></i>'}
 ];
 
 const MASTERY_TOPICS = BADGE_DEFS.filter(b => b.id.startsWith('table-') || b.id.startsWith('add-') || b.id.startsWith('sub-') || b.id.startsWith('div-'));
@@ -984,6 +1043,12 @@ let progress = {
   mastered: {},
   badgeCapDate: null,
   badgesEarnedToday: 0,
+  savings: { balance: 0, lastInterestDate: null, history: [] },
+  givingTotal: 0,
+  givingJar: { balance: 0 },
+  givingByCharity: {},
+  givingHistory: [],
+  customCharities: [],
   joustSessionDate: null,
   joustSessionsToday: 0,
   joustStats: { perfects: 0, goods: 0, misses: 0, sessionsPlayed: 0 },
@@ -1075,9 +1140,21 @@ function normalizeProgress(){
   if (!progress.mastered || typeof progress.mastered !== 'object') progress.mastered = {};
   if (typeof progress.badgeCapDate !== 'string' && progress.badgeCapDate !== null) progress.badgeCapDate = null;
   if (typeof progress.badgesEarnedToday !== 'number') progress.badgesEarnedToday = 0;
+  if (!progress.savings || typeof progress.savings !== 'object') progress.savings = { balance: 0, lastInterestDate: null };
+  if (typeof progress.savings.balance !== 'number' || progress.savings.balance < 0) progress.savings.balance = 0;
+  if (typeof progress.savings.lastInterestDate !== 'string' && progress.savings.lastInterestDate !== null) progress.savings.lastInterestDate = null;
+  if (typeof progress.givingTotal !== 'number') progress.givingTotal = 0;
+  if (!Array.isArray(progress.savings.history)) progress.savings.history = [];
+  if (!progress.givingJar || typeof progress.givingJar !== 'object') progress.givingJar = { balance: 0 };
+  if (typeof progress.givingJar.balance !== 'number' || progress.givingJar.balance < 0) progress.givingJar.balance = 0;
+  if (!progress.givingByCharity || typeof progress.givingByCharity !== 'object') progress.givingByCharity = {};
+  if (!Array.isArray(progress.givingHistory)) progress.givingHistory = [];
+  if (!Array.isArray(progress.customCharities)) progress.customCharities = [];
+  progress.customCharities = progress.customCharities.filter(c => c && typeof c.id === 'string' && typeof c.name === 'string');
   if (typeof progress.joustSessionDate !== 'string' && progress.joustSessionDate !== null) progress.joustSessionDate = null;
   if (typeof progress.joustRewardGrantedDate !== 'string' && progress.joustRewardGrantedDate !== null) progress.joustRewardGrantedDate = null;
   if (typeof progress.joustSessionsToday !== 'number') progress.joustSessionsToday = 0;
+  if (typeof progress.joustBonusSessionsToday !== 'number') progress.joustBonusSessionsToday = 0;
   if (!progress.joustStats || typeof progress.joustStats !== 'object') progress.joustStats = { perfects: 0, goods: 0, misses: 0, sessionsPlayed: 0 };
   if (!progress.dailyStreak || typeof progress.dailyStreak !== 'object') {
     progress.dailyStreak = { current: 0, best: 0, weeksConquered: 0, lastActiveDate: null, streakCountedDate: null, categoriesToday: {mult:false, add:false, sub:false, div:false} };
@@ -1142,6 +1219,181 @@ function achievedLevel(){
 }
 function totalBadges(){ return Object.values(progress.badges).reduce((a,b)=>a+b,0); }
 function affordableLockedTools(){ return TOOLS.filter(t => !progress.craftedTools.includes(t.id) && progress.coins >= t.cost); }
+
+/* ================= THE BANK: Save / Spend / Give ================= */
+const SAVINGS_ANNUAL_RATE = 0.10; // 10% per year — a realistic savings rate
+const SAVINGS_DAILY_RATE = Math.pow(1 + SAVINGS_ANNUAL_RATE, 1/365) - 1; // equivalent daily compounding rate, ≈0.0261%/day
+const GIVING_MILESTONES = [
+  { amt: 25, id: 'give-kind-heart', name: 'Kind Heart' },
+  { amt: 75, id: 'give-generous-knight', name: 'Generous Knight' },
+  { amt: 150, id: 'give-kingdom-hero', name: "Kingdom's Hero" }
+];
+
+function applySavingsInterest(){
+  const history = progress.savings.history;
+  if (!progress.savings.lastInterestDate){
+    if (history && history.length > 0){
+      progress.savings.lastInterestDate = history[0].date;
+    } else {
+      progress.savings.lastInterestDate = todayKey();
+      return;
+    }
+  }
+  const last = new Date(progress.savings.lastInterestDate + 'T00:00:00Z');
+  const today = new Date(todayKey() + 'T00:00:00Z');
+  const daysPassed = Math.max(0, Math.round((today - last) / 86400000));
+  if (daysPassed > 0){
+    if (progress.savings.balance > 0){
+      progress.savings.balance = progress.savings.balance * Math.pow(1 + SAVINGS_DAILY_RATE, daysPassed);
+    }
+    progress.savings.lastInterestDate = todayKey();
+    logSavingsHistory();
+  }
+}
+
+function logSavingsHistory(){
+  if (!Array.isArray(progress.savings.history)) progress.savings.history = [];
+  const today = todayKey();
+  const last = progress.savings.history[progress.savings.history.length - 1];
+  const precise = Math.round(progress.savings.balance * 100) / 100;
+  if (last && last.date === today){
+    last.balance = precise;
+  } else {
+    progress.savings.history.push({ date: today, balance: precise });
+  }
+  if (progress.savings.history.length > 60) progress.savings.history.shift();
+}
+
+function buildSavingsGrowthChart(history){
+  if (!history || history.length < 2){
+    return '<p style="text-align:center;font-size:11px;color:#6b8fb0;margin:4px 0">Save some coins to start your growth chart!</p>';
+  }
+  const values = history.map(h => h.balance);
+  const maxV = Math.max(...values, 1);
+  const minV = Math.min(...values, 0);
+  const range = Math.max(1, maxV - minV);
+  const width = 260, height = 90, padding = 10;
+  const xFor = (i) => padding + (i / (history.length - 1)) * (width - 2 * padding);
+  const yFor = (v) => height - padding - ((v - minV) / range) * (height - 2 * padding);
+
+  let path = 'M ' + xFor(0) + ' ' + yFor(values[0]);
+  for (let i = 1; i < values.length; i++) path += ' L ' + xFor(i) + ' ' + yFor(values[i]);
+
+  let svg = '<svg viewBox="0 0 ' + width + ' ' + height + '" width="100%" style="max-width:260px;display:block;margin:0 auto">';
+  svg += '<path d="' + path + '" fill="none" stroke="#378add" stroke-width="2.5"/>';
+  history.forEach((h, i) => {
+    svg += '<circle cx="' + xFor(i) + '" cy="' + yFor(h.balance) + '" r="3" fill="#185fa5"/>';
+  });
+  svg += '<text x="' + padding + '" y="12" font-size="10" font-weight="700" fill="#185fa5">' + values[0].toFixed(2) + '</text>';
+  svg += '<text x="' + (width - padding) + '" y="12" font-size="10" font-weight="700" fill="#185fa5" text-anchor="end">' + values[values.length - 1].toFixed(2) + '</text>';
+  svg += '</svg>';
+  return svg;
+}
+
+function savingsProjectionText(balance){
+  if (balance <= 0) return '';
+  const in7 = (balance * Math.pow(1 + SAVINGS_DAILY_RATE, 7)).toFixed(2);
+  const in30 = (balance * Math.pow(1 + SAVINGS_DAILY_RATE, 30)).toFixed(2);
+  return 'If you leave it: <b>' + in7 + '</b> coins in 7 days, <b>' + in30 + '</b> coins in 30 days!';
+}
+
+function buildSavingsProjectionChart(balance){
+  if (balance <= 0){
+    return '<p style="text-align:center;font-size:11px;color:#6b8fb0;margin:4px 0">Save some coins to see what a year of growth would look like!</p>';
+  }
+  const months = 12;
+  const points = [];
+  for (let m = 0; m <= months; m++){
+    const days = m * 30;
+    points.push(balance * Math.pow(1 + SAVINGS_DAILY_RATE, days));
+  }
+  const maxV = Math.max(...points, 1);
+  const minV = Math.min(...points, 0);
+  const range = Math.max(1, maxV - minV);
+  const width = 260, height = 90, padding = 10;
+  const xFor = (i) => padding + (i / months) * (width - 2 * padding);
+  const yFor = (v) => height - padding - ((v - minV) / range) * (height - 2 * padding);
+
+  let path = 'M ' + xFor(0) + ' ' + yFor(points[0]);
+  for (let i = 1; i <= months; i++) path += ' L ' + xFor(i) + ' ' + yFor(points[i]);
+
+  let svg = '<svg viewBox="0 0 ' + width + ' ' + height + '" width="100%" style="max-width:260px;display:block;margin:0 auto">';
+  svg += '<path d="' + path + '" fill="none" stroke="#4a7a28" stroke-width="2.5" stroke-dasharray="4,3"/>';
+  svg += '<circle cx="' + xFor(0) + '" cy="' + yFor(points[0]) + '" r="3.5" fill="#185fa5"/>';
+  svg += '<circle cx="' + xFor(months) + '" cy="' + yFor(points[months]) + '" r="3.5" fill="#4a7a28"/>';
+  svg += '<text x="' + padding + '" y="12" font-size="10" font-weight="700" fill="#185fa5">' + points[0].toFixed(2) + ' today</text>';
+  svg += '<text x="' + (width - padding) + '" y="12" font-size="10" font-weight="700" fill="#4a7a28" text-anchor="end">' + points[months].toFixed(2) + ' in 1 year</text>';
+  svg += '</svg>';
+  return svg;
+}
+
+function depositToSavings(amount){
+  amount = Math.min(Math.floor(amount), progress.coins);
+  if (amount <= 0) return;
+  progress.coins -= amount;
+  progress.savings.balance += amount;
+  logSavingsHistory();
+  saveProgress();
+}
+
+function withdrawFromSavings(amount){
+  const available = Math.floor(progress.savings.balance);
+  amount = Math.min(Math.floor(amount), available);
+  if (amount <= 0) return;
+  progress.savings.balance -= amount;
+  progress.coins += amount;
+  saveProgress();
+}
+
+const CHARITIES = [
+  { id: 'orphanage', name: 'The Village Orphanage', icon: 'ti-building' },
+  { id: 'harvest', name: 'Feed the Hungry', icon: 'ti-plant' },
+  { id: 'well', name: 'Build a Village Well', icon: 'ti-droplet' },
+  { id: 'shelter', name: 'The Animal Shelter', icon: 'ti-paw' },
+  { id: 'library', name: "The Kingdom's Library", icon: 'ti-book' }
+];
+
+function getCharityById(id){
+  return CHARITIES.find(c => c.id === id) || progress.customCharities.find(c => c.id === id) || { name: 'A good cause', icon: 'ti-heart' };
+}
+
+function addCustomCharity(name){
+  name = name.trim().slice(0, 30);
+  if (!name) return null;
+  const id = 'custom-' + Date.now();
+  const charity = { id, name, icon: 'ti-star-filled' };
+  progress.customCharities.push(charity);
+  saveProgress();
+  return charity;
+}
+
+function depositToGivingJar(amount){
+  amount = Math.min(Math.floor(amount), progress.coins);
+  if (amount <= 0) return;
+  progress.coins -= amount;
+  progress.givingJar.balance += amount;
+  saveProgress();
+}
+
+function cashOutGiving(charityId){
+  const amount = Math.floor(progress.givingJar.balance);
+  if (amount <= 0) return { amount: 0, newBadges: [] };
+  progress.givingJar.balance = 0;
+  progress.givingTotal += amount;
+  if (typeof progress.givingByCharity[charityId] !== 'number') progress.givingByCharity[charityId] = 0;
+  progress.givingByCharity[charityId] += amount;
+  progress.givingHistory.push({ date: todayKey(), charityId, amount });
+  if (progress.givingHistory.length > 30) progress.givingHistory.shift();
+  const newlyEarned = [];
+  GIVING_MILESTONES.forEach(m => {
+    if (progress.givingTotal >= m.amt && !progress.badges[m.id]){
+      progress.badges[m.id] = 1;
+      newlyEarned.push(m);
+    }
+  });
+  saveProgress();
+  return { amount, newBadges: newlyEarned };
+}
 
 function craftTool(toolId){
   const tool = TOOLS.find(t => t.id === toolId);
@@ -1218,7 +1470,7 @@ function renderHallSummary(){
 
 function renderHallScreen(){
   document.getElementById('hallBadgesSummary').textContent = totalBadges() + ' badges earned';
-  document.getElementById('hallTreasurySummary').textContent = progress.coins + ' to spend · ' + progress.lifetimeCoins + ' earned lifetime · ' + progress.craftedTools.length + '/' + TOOLS.length + ' tools owned';
+  document.getElementById('hallTreasurySummary').textContent = progress.coins + ' to spend · ' + Math.floor(progress.savings.balance) + ' saved · ' + progress.givingTotal + ' given · ' + progress.craftedTools.length + '/' + TOOLS.length + ' tools owned';
   document.getElementById('hallScrapbookSummary').textContent = progress.collectedFacts.length + '/' + FACTS.length + ' facts discovered';
   document.getElementById('hallMasterySummary').textContent = masteredCount() + '/' + MASTERY_TOPICS.length + ' topics mastered';
   const grownCount = progress.companions.filter(c => (c.fed || 0) >= COMPANION_TYPES[c.type].stages.length - 1).length;
@@ -1288,9 +1540,128 @@ function renderTrophyShelf(){
   });
 }
 
+function renderBankDashboard(){
+  document.getElementById('dashSavingsAmount').textContent = progress.savings.balance.toFixed(2) + ' coins';
+  document.getElementById('dashGivingAmount').textContent = progress.givingTotal + ' given';
+}
+
+function renderSavingsScreen(){
+  const preciseAmount = progress.savings.balance;
+  const savedAmount = Math.floor(preciseAmount);
+  document.getElementById('savingsBalanceText').innerHTML = '<i class="ti ti-coin"></i> ' + preciseAmount.toFixed(2) + ' coins saved';
+  document.getElementById('savingsChartWrap').innerHTML = buildSavingsGrowthChart(progress.savings.history);
+  document.getElementById('savingsProjectionText').innerHTML = savingsProjectionText(preciseAmount);
+  document.getElementById('savingsProjectionChartWrap').innerHTML = buildSavingsProjectionChart(preciseAmount);
+
+  const coins = progress.coins;
+  ['save10Btn','save25Btn','saveAllBtn'].forEach((id, i) => {
+    const need = i === 0 ? 10 : i === 1 ? 25 : 1;
+    const btn = document.getElementById(id);
+    const ok = coins >= need;
+    btn.disabled = !ok;
+    btn.style.opacity = ok ? '1' : '0.4';
+  });
+  ['withdraw10Btn','withdraw25Btn','withdrawAllBtn'].forEach((id, i) => {
+    const need = i === 0 ? 10 : i === 1 ? 25 : 1;
+    const btn = document.getElementById(id);
+    const ok = savedAmount >= need;
+    btn.disabled = !ok;
+    btn.style.opacity = ok ? '1' : '0.4';
+  });
+}
+
+function renderGivingScreen(){
+  const jarAmount = Math.floor(progress.givingJar.balance);
+  document.getElementById('givingJarText').innerHTML = '<i class="ti ti-coin"></i> ' + jarAmount + ' coin' + (jarAmount === 1 ? '' : 's') + ' ready to give';
+  document.getElementById('givingTotalText').textContent = progress.givingTotal + ' coin' + (progress.givingTotal === 1 ? '' : 's') + ' given so far, all time';
+  document.getElementById('cashOutGivingBtn').style.display = jarAmount > 0 ? 'block' : 'none';
+  if (jarAmount === 0) document.getElementById('charityPicker').style.display = 'none';
+
+  const coins = progress.coins;
+  ['give5Btn','give10Btn','give25Btn'].forEach((id, i) => {
+    const need = [5,10,25][i];
+    const btn = document.getElementById(id);
+    const ok = coins >= need;
+    btn.disabled = !ok;
+    btn.style.opacity = ok ? '1' : '0.4';
+  });
+  renderGivingHistoryBoard();
+}
+
+function renderGivingHistoryBoard(){
+  const board = document.getElementById('givingHistoryBoard');
+  board.innerHTML = '';
+  if (progress.givingHistory.length === 0){
+    board.innerHTML = '<p style="text-align:center;font-size:12px;color:#8a8265">Nothing given yet — fill the jar and choose a cause to start your board!</p>';
+    return;
+  }
+  const entries = progress.givingHistory.slice().reverse();
+  entries.forEach(entry => {
+    const charity = getCharityById(entry.charityId);
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;background:#fff4d6;border:2px solid #d9a520;border-radius:8px;padding:8px;margin-bottom:6px';
+    row.innerHTML = '<div style="width:30px;height:30px;border-radius:50%;background:#ffe8a8;border:2px solid #8b5e0f;display:flex;align-items:center;justify-content:center;font-size:14px;color:#6b4a06;flex-shrink:0"><i class="ti ' + charity.icon + '"></i></div>' +
+      '<div style="flex:1"><div style="font-size:12px;font-weight:700;color:#3c2f1e">Gave ' + entry.amount + ' to ' + charity.name + '</div><div style="font-size:10px;color:#8b6f3e">' + entry.date + '</div></div>' +
+      '<i class="ti ti-heart" style="color:#a3382a;font-size:14px"></i>';
+    board.appendChild(row);
+  });
+}
+
+function renderCharityCard(wrap, c){
+  const given = progress.givingByCharity[c.id] || 0;
+  const card = document.createElement('div');
+  card.style.cssText = 'display:flex;align-items:center;gap:8px;background:#fffdf5;border:2px solid #b9963f;border-radius:8px;padding:8px;margin-bottom:6px;cursor:pointer';
+  card.innerHTML = '<div style="width:32px;height:32px;border-radius:50%;background:#eaf6e0;border:2px solid #6b9c3c;display:flex;align-items:center;justify-content:center;font-size:15px;color:#2c4a12;flex-shrink:0"><i class="ti ' + c.icon + '"></i></div>' +
+    '<div style="flex:1"><div style="font-size:12px;font-weight:700;color:#3c2f1e">' + c.name + '</div><div style="font-size:10px;color:#6b5730">' + given + ' given so far</div></div>' +
+    '<i class="ti ti-chevron-right" style="color:#b0a888"></i>';
+  card.onclick = () => {
+    const result = cashOutGiving(c.id);
+    renderGivingScreen();
+    const fb = document.getElementById('givingFeedback');
+    if (result.newBadges.length > 0){
+      fb.textContent = '🎉 Gave ' + result.amount + ' to ' + c.name + '! New badge: ' + result.newBadges.map(b => b.name).join(', ') + '!';
+    } else {
+      fb.textContent = '🎉 Gave ' + result.amount + ' coins to ' + c.name + ' — thank you!';
+    }
+    setTimeout(() => { fb.textContent = ''; }, 4000);
+  };
+  wrap.appendChild(card);
+}
+
+function renderCharityPicker(){
+  const wrap = document.getElementById('charityPicker');
+  wrap.innerHTML = '';
+  CHARITIES.forEach(c => renderCharityCard(wrap, c));
+  progress.customCharities.forEach(c => renderCharityCard(wrap, c));
+
+  const addRow = document.createElement('div');
+  addRow.style.cssText = 'margin-top:6px';
+  addRow.innerHTML =
+    '<button id="addCauseToggleBtn" style="width:100%;padding:7px;font-size:12px;font-weight:700;border-radius:8px;border:2px dashed #6b9c3c;background:#fffdf5;color:#4a7a28;cursor:pointer">+ Add your own cause (like a school charity day!)</button>' +
+    '<div id="addCauseForm" style="display:none;margin-top:6px;gap:6px">' +
+      '<input id="addCauseInput" type="text" maxlength="30" placeholder="e.g. School Charity Day" style="flex:1;padding:7px;font-size:12px;border-radius:8px;border:2px solid #6b9c3c;box-sizing:border-box" />' +
+      '<button id="addCauseConfirmBtn" style="padding:7px 10px;font-size:12px;font-weight:700;border-radius:8px;border:2px solid #4a7a28;background:#8fc95a;color:#223e0e;cursor:pointer">Add</button>' +
+    '</div>';
+  wrap.appendChild(addRow);
+  document.getElementById('addCauseToggleBtn').addEventListener('click', () => {
+    const form = document.getElementById('addCauseForm');
+    form.style.display = form.style.display === 'none' ? 'flex' : 'none';
+  });
+  document.getElementById('addCauseConfirmBtn').addEventListener('click', () => {
+    const input = document.getElementById('addCauseInput');
+    const charity = addCustomCharity(input.value);
+    if (charity) renderCharityPicker();
+  });
+
+  wrap.style.display = 'block';
+}
+
 function renderArsenalGallery(){
   document.getElementById('craftCelebration').style.display = 'none';
   document.getElementById('arsenalMainView').style.display = 'block';
+  applySavingsInterest();
+  saveProgress();
+  renderBankDashboard();
   const grid = document.getElementById('arsenalGrid');
   grid.innerHTML = '';
   const balance = progress.coins;
@@ -2325,6 +2696,7 @@ const DAILY_BADGE_CAP = 5;
 /* ================= JOUSTING ARENA ================= */
 const JOUST_PASSES_PER_SESSION = 10;
 const JOUST_MAX_SESSIONS_PER_DAY = 3;
+const JOUST_EXTRA_COST = 10;
 const JOUST_DURATION_MS = 2600;
 const JOUST_BOT_NAMES = ['Sir Boldheart', 'Sir Ironclad', 'The Crimson Knight', 'Lady Stormrider', 'Sir Oakenshield'];
 const JOUST_RANK = { perfect: 2, good: 1, miss: 0 };
@@ -2350,8 +2722,17 @@ function renderJoustCard(){
   if (owns && targetDone){
     document.getElementById('joustCardRemaining').textContent = remaining > 0
       ? 'Reward unlocked — ' + remaining + ' joust' + (remaining === 1 ? '' : 's') + ' left today!'
-      : "You've used today's jousts — come back tomorrow!";
+      : "You've used today's jousts — come back tomorrow, or buy one more below!";
     document.getElementById('enterJoustBtn').style.display = remaining > 0 ? 'block' : 'none';
+    const buyBtn = document.getElementById('buyExtraJoustBtn');
+    if (remaining === 0){
+      buyBtn.style.display = 'block';
+      const canAfford = progress.coins >= JOUST_EXTRA_COST;
+      buyBtn.disabled = !canAfford;
+      buyBtn.style.opacity = canAfford ? '1' : '0.5';
+    } else {
+      buyBtn.style.display = 'none';
+    }
   }
 }
 
@@ -2361,6 +2742,7 @@ function ensureJoustRewardGranted(){
     progress.joustRewardGrantedDate = today;
     progress.joustSessionDate = today;
     progress.joustSessionsToday = 0;
+    progress.joustBonusSessionsToday = 0;
     saveProgress();
   }
 }
@@ -2370,7 +2752,18 @@ function joustSessionsRemainingToday(){
   ensureJoustRewardGranted();
   const today = todayKey();
   if (progress.joustSessionDate !== today) return JOUST_MAX_SESSIONS_PER_DAY;
-  return Math.max(0, JOUST_MAX_SESSIONS_PER_DAY - (progress.joustSessionsToday || 0));
+  const allowance = JOUST_MAX_SESSIONS_PER_DAY + (progress.joustBonusSessionsToday || 0);
+  return Math.max(0, allowance - (progress.joustSessionsToday || 0));
+}
+
+function buyExtraJoust(){
+  if (!todayTargetComplete()) return false;
+  if (progress.coins < JOUST_EXTRA_COST) return false;
+  ensureJoustRewardGranted();
+  progress.coins -= JOUST_EXTRA_COST;
+  progress.joustBonusSessionsToday = (progress.joustBonusSessionsToday || 0) + 1;
+  saveProgress();
+  return true;
 }
 
 function judgeJoustHit(percent, coreStart, coreEnd, zoneStart, zoneEnd){
@@ -2559,6 +2952,10 @@ function finishJoustSession(){
   if (remaining > 0){
     againBtn.style.display = 'block';
     againBtn.innerHTML = 'Joust again! (' + remaining + ' left today) <i class="ti ti-horse"></i>';
+  } else if (progress.coins >= JOUST_EXTRA_COST){
+    againBtn.style.display = 'block';
+    againBtn.innerHTML = 'Buy 1 more joust — <i class="ti ti-coin"></i> 10 coins';
+    document.getElementById('joustInstructions').textContent = "That's all your free jousts for today!";
   } else {
     againBtn.style.display = 'none';
     document.getElementById('joustInstructions').textContent = "That's all your jousts for today — come back tomorrow!";
@@ -2566,7 +2963,11 @@ function finishJoustSession(){
 }
 
 document.getElementById('joustAgainBtn').addEventListener('click', () => {
-  if (joustSessionsRemainingToday() > 0) startJoustSession();
+  if (joustSessionsRemainingToday() > 0){
+    startJoustSession();
+  } else if (buyExtraJoust()){
+    startJoustSession();
+  }
 });
 
 document.getElementById('enterJoustBtn').addEventListener('click', () => {
@@ -2579,6 +2980,9 @@ document.getElementById('enterJoustBtn').addEventListener('click', () => {
     document.getElementById('joustStrikeBtn').style.display = 'none';
     document.getElementById('joustPassIndicators').innerHTML = '';
   }
+});
+document.getElementById('buyExtraJoustBtn').addEventListener('click', () => {
+  if (buyExtraJoust()) renderJoustCard();
 });
 document.getElementById('joustBackLink').addEventListener('click', (e) => {
   e.preventDefault();
@@ -2831,7 +3235,8 @@ document.getElementById('resetConfirmBtn').addEventListener('click', async () =>
     activeMode: 'mult', xp: 0, coins: 0, lifetimeCoins: 0, badges: {}, bestStreak: 0, currentStreak: 0, craftedTools: [], collectedFacts: [],
     totalCorrect: 0, companionFed: 0, correctByMode: {mult:0, add:0, sub:0, div:0},
     weakFacts: {}, masteryCount: {}, mastered: {}, badgeCapDate: null, badgesEarnedToday: 0,
-    joustSessionDate: null, joustSessionsToday: 0, joustRewardGrantedDate: null, joustStats: { perfects: 0, goods: 0, misses: 0, sessionsPlayed: 0 },
+    joustSessionDate: null, joustSessionsToday: 0, joustBonusSessionsToday: 0, joustRewardGrantedDate: null, joustStats: { perfects: 0, goods: 0, misses: 0, sessionsPlayed: 0 },
+    savings: { balance: 0, lastInterestDate: null, history: [] }, givingTotal: 0, givingJar: { balance: 0 }, givingByCharity: {}, givingHistory: [], customCharities: [],
     dailyStreak: { current: 0, best: 0, weeksConquered: 0, lastActiveDate: null, streakCountedDate: null, categoriesToday: {mult:false, add:false, sub:false, div:false} },
     modes: { mult:{completedDays:[],currentDay:1}, add:{completedDays:[],currentDay:1}, sub:{completedDays:[],currentDay:1}, div:{completedDays:[],currentDay:1} }
   };
@@ -2944,6 +3349,42 @@ document.getElementById('arsenalBackBtn').addEventListener('click', () => {
   document.getElementById('hallScreen').style.display = 'block';
   renderHallScreen();
 });
+
+document.getElementById('openSavingsBtn').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('arsenalScreen').style.display = 'none';
+  document.getElementById('savingsScreen').style.display = 'block';
+  renderSavingsScreen();
+});
+document.getElementById('savingsBackBtn').addEventListener('click', () => {
+  document.getElementById('savingsScreen').style.display = 'none';
+  document.getElementById('arsenalScreen').style.display = 'block';
+  renderArsenalGallery();
+});
+document.getElementById('openGivingBtn').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('arsenalScreen').style.display = 'none';
+  document.getElementById('givingScreen').style.display = 'block';
+  document.getElementById('charityPicker').style.display = 'none';
+  renderGivingScreen();
+});
+document.getElementById('givingBackBtn').addEventListener('click', () => {
+  document.getElementById('givingScreen').style.display = 'none';
+  document.getElementById('arsenalScreen').style.display = 'block';
+  renderArsenalGallery();
+});
+
+document.getElementById('save10Btn').addEventListener('click', () => { depositToSavings(10); renderSavingsScreen(); });
+document.getElementById('save25Btn').addEventListener('click', () => { depositToSavings(25); renderSavingsScreen(); });
+document.getElementById('saveAllBtn').addEventListener('click', () => { depositToSavings(progress.coins); renderSavingsScreen(); });
+document.getElementById('withdraw10Btn').addEventListener('click', () => { withdrawFromSavings(10); renderSavingsScreen(); });
+document.getElementById('withdraw25Btn').addEventListener('click', () => { withdrawFromSavings(25); renderSavingsScreen(); });
+document.getElementById('withdrawAllBtn').addEventListener('click', () => { withdrawFromSavings(Math.floor(progress.savings.balance)); renderSavingsScreen(); });
+
+document.getElementById('give5Btn').addEventListener('click', () => { depositToGivingJar(5); renderGivingScreen(); });
+document.getElementById('give10Btn').addEventListener('click', () => { depositToGivingJar(10); renderGivingScreen(); });
+document.getElementById('give25Btn').addEventListener('click', () => { depositToGivingJar(25); renderGivingScreen(); });
+document.getElementById('cashOutGivingBtn').addEventListener('click', () => { renderCharityPicker(); });
 
 document.getElementById('hallScrapbookLink').addEventListener('click', (e) => {
   e.preventDefault();
