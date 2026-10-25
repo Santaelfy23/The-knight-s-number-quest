@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -370,6 +369,19 @@
       <p style="font-size:12px;color:#8a8265;margin:0"><i class="ti ti-lock"></i> Craft your first weapon in the Treasury to unlock the Jousting Arena!</p>
     </div>
 
+    <div id="battleCardUnlocked" style="display:none;background:linear-gradient(180deg,#f4b5ab,#e2887a);border:3px solid #a3382a;border-radius:10px;padding:12px;margin-bottom:10px;text-align:center;box-shadow:0 3px 0 #6b2016">
+      <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:800;color:#5a1a10"><i class="ti ti-flame"></i> Monster Battle</div>
+      <p style="font-size:12px;color:#5a1a10;margin:4px 0 8px" id="battleCardRemaining">Reward unlocked!</p>
+      <button class="primary" id="enterBattleBtn" style="margin:0;background:linear-gradient(180deg,#fff8e8,#f3e6c4);border-color:#6b2016;color:#5a1a10;box-shadow:0 4px 0 #6b2016">Face a monster! <i class="ti ti-swords"></i></button>
+      <button id="buyExtraBattleBtn" style="display:none;width:100%;margin-top:8px;padding:8px;font-size:12px;font-weight:700;border-radius:8px;border:2px solid #6b2016;background:#fffdf5;color:#5a1a10;cursor:pointer">Buy 1 more battle — <i class="ti ti-coin"></i> 10 coins</button>
+    </div>
+    <div id="battleCardWaiting" style="display:none;background:#f1e6c8;border:2px dashed #a3382a;border-radius:10px;padding:10px 12px;margin-bottom:10px;text-align:center">
+      <p style="font-size:12px;color:#6b5730;margin:0"><i class="ti ti-flame"></i> Complete today's quest target (any 3 of your 4 subjects) to unlock 3 monster battles!</p>
+    </div>
+    <div id="battleCardLocked" style="display:none;background:#f1e6c8;border:2px dashed #b0a888;border-radius:10px;padding:10px 12px;margin-bottom:10px;text-align:center">
+      <p style="font-size:12px;color:#8a8265;margin:0"><i class="ti ti-lock"></i> Craft your first weapon in the Treasury to unlock Monster Battles!</p>
+    </div>
+
     <div class="section-label"><i class="ti ti-map"></i> The kingdom</div>
     <div id="kingdomMap" class="kingdom-map"></div>
 
@@ -527,7 +539,8 @@
     <div style="background:#e6f1fb;border:2px solid #378add;border-radius:10px;padding:10px;margin-bottom:6px" id="savingsChartWrap"></div>
     <p id="savingsProjectionText" style="font-size:12px;color:#0c447c;text-align:center;margin:0 0 10px"></p>
     <div class="section-label" style="text-align:center"><i class="ti ti-coins"></i> What a year would look like</div>
-    <div style="background:#eaf6e0;border:2px solid #4a7a28;border-radius:10px;padding:10px;margin-bottom:14px" id="savingsProjectionChartWrap"></div>
+    <div style="background:#eaf6e0;border:2px solid #4a7a28;border-radius:10px;padding:10px;margin-bottom:6px" id="savingsProjectionChartWrap"></div>
+    <div style="background:#fff4d6;border:2px solid #d9a520;border-radius:10px;margin-bottom:14px" id="savingsPileWrap"></div>
     <button class="primary" id="savingsBackBtn">Back to the Bank</button>
   </div>
 
@@ -577,6 +590,38 @@
     </div>
     <button class="primary" id="joustAgainBtn" style="display:none;background:linear-gradient(180deg,#b9e88f,#8fc95a)">Joust again! <i class="ti ti-horse"></i></button>
     <div class="footer-link" style="margin-top:8px"><a href="#" id="joustBackLink">Back to the map</a></div>
+  </div>
+
+  <div id="battleScreen" class="card" style="display:none;text-align:center">
+    <h2 style="font-family:'Cinzel',serif;color:#3c2f1e;margin-top:0">Monster Battle</h2>
+    <p style="font-size:13px;color:#6b5730;margin:0 0 10px">You vs. <b id="battleMonsterName">Goblin Scout</b> <i id="battleMonsterIcon" class="ti ti-mask"></i></p>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px">
+      <span style="font-size:12px;font-weight:700;color:#2c4a12"><i class="ti ti-shield"></i> You</span>
+      <span style="font-size:12px;font-weight:700;color:#8a2d1f" id="battleMonsterHPLabel">Monster</span>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <div style="flex:1;height:16px;background:#e3ddc9;border:2px solid #4a7a28;border-radius:8px;overflow:hidden">
+        <div id="battlePlayerHPFill" style="height:100%;width:100%;background:linear-gradient(90deg,#c8e89f,#8fc95a);transition:width 0.4s"></div>
+      </div>
+      <div style="flex:1;height:16px;background:#e3ddc9;border:2px solid #a3382a;border-radius:8px;overflow:hidden">
+        <div id="battleMonsterHPFill" style="height:100%;width:100%;background:linear-gradient(90deg,#f4b5ab,#e2887a);transition:width 0.4s"></div>
+      </div>
+    </div>
+
+    <div class="knight-scene" id="battleScene"><i class="ti ti-sword"></i></div>
+    <div class="question-box"><div class="q" id="battleQuestionText">3 × 4</div></div>
+    <div class="options" id="battleOptionsGrid"></div>
+    <div id="battleFeedback" style="min-height:40px;font-size:14px;font-weight:800;margin:8px 0"></div>
+
+    <div id="battleResultsSummary" style="display:none">
+      <div style="font-size:44px;margin:8px 0" id="battleResultIcon"></div>
+      <h2 style="font-family:'Cinzel',serif;color:#3c2f1e;margin:4px 0" id="battleResultTitle"></h2>
+      <p style="font-size:13px;color:#6b5730" id="battleResultDetail"></p>
+      <div style="font-size:14px;font-weight:700;color:#8b5e0f" id="battleResultCoins"></div>
+    </div>
+    <button class="primary" id="battleAgainBtn" style="display:none;background:linear-gradient(180deg,#f4b5ab,#e2887a);border-color:#6b2016;color:#5a1a10;box-shadow:0 4px 0 #6b2016">Face another monster! <i class="ti ti-swords"></i></button>
+    <div class="footer-link" style="margin-top:8px"><a href="#" id="battleBackLink">Back to the map</a></div>
   </div>
 
   <div id="quizScreen" class="card">
@@ -658,7 +703,7 @@ const BADGES_PER_FACT = 3;
 const MULT_DAYS = [
   [2],[2],[5],[5],[10],[10],[2,5,10],
   [11],[11],[2],[10],[5],[2,5,10,11],
-  [3],[3],[4],[4],[11],[12],[2,3,4,5,10,11,12],
+  [3],[3],[4],[4],[11],[12],[2,4,5,10,11],[2,3,4,5,10,11,12],
   [6],[6],[9],[8],[8],[7],[1,2,3,4,5,6,7,8,9,10,11,12]
 ];
 
@@ -701,10 +746,10 @@ const DIV_DAYS = [
   {review:true, configs:[{stage:'formal',kind:'half',divisor:2},{stage:'formal',kind:'quarter',divisor:4},{stage:'visual',kind:'half',divisor:2},{stage:'visual',kind:'quarter',divisor:4}]},
   {stage:'visual', kind:'table', divisor:5},
   {stage:'formal', kind:'table', divisor:5},
+  {review:true, configs:[{stage:'formal',kind:'half',divisor:2},{stage:'formal',kind:'quarter',divisor:4},{stage:'formal',kind:'table',divisor:5}]},
   {stage:'visual', kind:'table', divisor:10},
   {stage:'formal', kind:'table', divisor:10},
   {review:true, configs:[{stage:'formal',kind:'table',divisor:5},{stage:'formal',kind:'table',divisor:10}]},
-  {review:true, configs:[{stage:'formal',kind:'half',divisor:2},{stage:'formal',kind:'quarter',divisor:4},{stage:'formal',kind:'table',divisor:5},{stage:'formal',kind:'table',divisor:10}]},
   {review:true, configs:[{stage:'formal',kind:'half',divisor:2},{stage:'formal',kind:'quarter',divisor:4},{stage:'formal',kind:'table',divisor:5},{stage:'formal',kind:'table',divisor:10}]}
 ];
 
@@ -770,6 +815,7 @@ const BADGE_DEFS = [
   {id:'perfect', name:'Perfect run', icon:'<i class="ti ti-star"></i>'},
   {id:'castle', name:'Castle reached', icon:'<i class="ti ti-building-castle"></i>'},
   {id:'joust-champion', name:'Jousting Champion', icon:'<i class="ti ti-trophy"></i>'},
+  {id:'monster-slayer', name:'Monster Slayer', icon:'<i class="ti ti-swords"></i>'},
   {id:'give-kind-heart', name:'Kind Heart', icon:'<i class="ti ti-heart"></i>'},
   {id:'give-generous-knight', name:'Generous Knight', icon:'<i class="ti ti-heart"></i>'},
   {id:'give-kingdom-hero', name:"Kingdom's Hero", icon:'<i class="ti ti-heart"></i>'}
@@ -898,13 +944,46 @@ const FACTS = [
   {title:"Gladiators \u2014 Ancient Rome's Sports Stars", category:"Sports", icon:'ti-shield', text:"Gladiators were highly trained athletes who performed in front of massive, roaring crowds at arenas like the Colosseum \u2014 and the most skilled ones became genuine superstars, complete with devoted fans, cool nicknames, and even merchandise like pottery decorated with their portraits. They trained hard at special schools called ludi, mastering specific fighting styles the same way athletes train for a sport today.", story:"", deck:'roman'},
   {title:"Rome's Lasting Legacy", category:"Ideas", icon:'ti-building-bank', text:"Even though the Western Roman Empire collapsed over 1,500 years ago, you're surrounded by its legacy every single day: our calendar, big chunks of modern legal systems, architecture styles used in buildings all over the world, engineering tricks like arches and concrete, and thousands of English words all trace straight back to ancient Rome.", story:"", deck:'roman'},
   {title:"The Fall of Rome", category:"Ideas", icon:'ti-building-bank', text:"Rome didn't vanish in one dramatic moment \u2014 it slowly weakened over many years from invasions, money troubles, and political chaos, until finally, in 476 AD, the last Western Roman emperor was removed from power. But here's the twist: the eastern half of the empire, later called the Byzantine Empire, kept right on going for almost another thousand years, ruled from its capital city, Constantinople.", story:"", deck:'roman'},
+  {title:"Murder Holes", category:"Castles", icon:'ti-building-castle', text:"Picture walking through a castle gateway when suddenly rocks start raining down from the ceiling! Many gatehouses had sneaky openings cut into the roof of the entrance passage, nicknamed murder holes. Defenders stood above and dropped stones on anyone who made it inside, or poured down water to put out fires attackers had lit against the wooden gate.", story:"\ud83c\udfac Myth Buster: Movies love to show defenders pouring boiling oil on enemies, but oil was expensive and precious, so it was rarely used \u2014 rocks and water were far more likely!", deck:'medieval2'},
+  {title:"The Portcullis", category:"Castles", icon:'ti-door-exit', text:"A portcullis was a giant gate of heavy wood and iron, with sharp spikes along the bottom, that slid down in grooves to slam an entrance shut in seconds \u2014 like a giant spiky curtain made of iron! Guards raised and lowered it with a big winch and chains, and some castles even had two portcullises, so anyone who slipped past the first could get trapped between them.", story:"\ud83e\ude99 True Story: The portcullis is still an official symbol of the UK Parliament today \u2014 look closely at a 1p coin and you'll spot a crowned castle gate with chains on the back!", deck:'medieval2'},
+  {title:"Arrow Slits", category:"Castles", icon:'ti-target', text:"Those skinny vertical windows in castle walls weren't there for sunlight \u2014 they were arrow slits, and they were a clever trick. From outside, the opening was tiny, making it almost impossible for an enemy to shoot an arrow through. But on the inside, the opening was wide, giving the archer plenty of room to move, aim, and fire. Tiny target for attackers, big comfy space for the defender!", story:"", deck:'medieval2'},
+  {title:"Battlements", category:"Castles", icon:'ti-building-castle', text:"Look at the top of a castle wall and you'll often see a zigzag pattern, like giant stone teeth. The solid parts are called merlons, and the gaps are called crenels \u2014 that's where the word 'crenellated' comes from! Archers hid behind the merlons for safety, then stepped into the gap to shoot, then ducked right back. Peek, shoot, hide, repeat!", story:"", deck:'medieval2'},
+  {title:"Castle Toilets", category:"Castles", icon:'ti-bath', text:"Time for the gross-but-awesome fact! Castle toilets were called garderobes \u2014 little rooms built into the thick walls with a stone or wooden seat over a long chute. Whatever went down the chute dropped into a pit, or sometimes straight down the outside wall and right into the moat. That's one more very good reason not to go for a swim in a castle moat!", story:"", deck:'medieval2'},
+  {title:"The Keep and the Real Dungeon", category:"Castles", icon:'ti-lock', text:"The strongest, tallest building in a castle was the keep, a giant fortified tower where the lord could make a last stand. The French word for it was donjon \u2014 and that's where we get our word dungeon! In real castles though, the lowest level of the keep was usually just a storeroom for food and supplies, with maybe a prisoner or two \u2014 a lot more pantry than spooky torture chamber.", story:"\ud83c\udff0 True Story: The White Tower, the oldest part of the Tower of London, is a keep started by William the Conqueror around 1078. It got its name because it was painted white in the 1240s!", deck:'medieval2'},
+  {title:"Walls Inside Walls", category:"Castles", icon:'ti-shield', text:"The cleverest castles had not one wall but two rings of walls, one inside the other, like a stone onion! The inner wall was built taller than the outer wall, so archers on BOTH walls could shoot at the same time. If enemies broke through the outer ring, they were still stuck in a deadly zone between the walls. These are called concentric castles.", story:"\ud83c\udfd0 True Story: Beaumaris Castle in Wales, begun by King Edward I in 1295, is one of the most perfect concentric castles ever designed \u2014 it's so symmetrical it looks like it was drawn with a ruler!", deck:'medieval2'},
+  {title:"The Master Mason", category:"Castles", icon:'ti-hammer', text:"Castles didn't build themselves! Kings hired a master mason, a super-skilled architect and engineer who planned the whole castle and bossed around hundreds of workers. Edward I's most famous master builder was James of St George, who came all the way from the Alps to design a string of mighty castles in Wales, including Conwy, Harlech, Caernarfon, and Beaumaris.", story:"", deck:'medieval2'},
+  {title:"Chainmail", category:"Knights", icon:'ti-shirt', text:"Before (and even alongside) plate armor, knights wore chainmail \u2014 a shirt made from thousands and thousands of tiny metal rings, each one linked through its neighbors and riveted shut. Making a single shirt took weeks of patient work. It weighed around 10 kg (about 22 pounds) and was great at stopping sword slashes, though knights wore a thick padded jacket underneath so the metal didn't dig into their skin.", story:"", deck:'medieval2'},
+  {title:"The Quintain", category:"Knights", icon:'ti-horse-toy', text:"How do you teach a young squire to hit a target while galloping on horseback? With a quintain! This was a wooden dummy on a spinning pole, with a heavy sandbag swinging from one arm. If the squire struck the dummy's shield nicely, great. But if he was too slow, the dummy spun around and WHACKED him in the back, sometimes knocking him right off his horse. Not the most graceful way to learn, but very effective!", story:"", deck:'medieval2'},
+  {title:"The Trebuchet", category:"Knights", icon:'ti-bolt', text:"The trebuchet was a monster of a catapult that worked like a giant seesaw. Workers loaded one end with a huge box of heavy rocks, and when the box dropped, the long arm swung up and flung a boulder through the air \u2014 sometimes weighing as much as a grown-up or more! The biggest trebuchets could smash walls from hundreds of meters away.", story:"\ud83c\udff0 True Story: In 1304, King Edward I built an enormous trebuchet nicknamed Warwolf to attack Stirling Castle in Scotland. Reports say the defenders tried to surrender, but Edward refused to accept it until his new giant weapon had a chance to try itself out first!", deck:'medieval2'},
+  {title:"Siege Towers and Battering Rams", category:"Knights", icon:'ti-swords', text:"When armies wanted to get INTO a castle, they got creative. A siege tower was a tall wooden tower on wheels, pushed right up against a wall so soldiers could climb up and storm across a bridge to the top \u2014 covered in wet animal hides so defenders couldn't set it on fire. A battering ram was a huge tree trunk, often with a metal tip, swung against the gate under a sturdy wooden roof that protected the crew from rocks dropped from above.", story:"", deck:'medieval2'},
+  {title:"Heralds", category:"Knights", icon:'ti-flag', text:"In a world of helmets and shields, who could keep track of everyone's coat of arms? Heralds! These officials knew the design of every family's coat of arms by heart. At tournaments, heralds announced each knight as he rode in and helped judge the contests. In wartime, a herald could carry messages between two enemy armies, and it was considered a terrible thing to harm one \u2014 that's where the word heraldry comes from.", story:"", deck:'medieval2'},
+  {title:"King Arthur and the Round Table", category:"Knights", icon:'ti-crown', text:"Here's a legend that's perfect for anyone named Arthur: King Arthur and his Knights of the Round Table! In the stories, Arthur had a round table so that no knight sat at the 'head,' and everyone was equal. Historians aren't sure Arthur was a real person \u2014 he might be based on a Briton war leader from around the year 500, but there's no proof, and the famous stories grew up hundreds of years later.", story:"\ud83e\ude91 True Story: A giant round table hangs on the wall of the Great Hall at Winchester Castle in England. It's 5.5 meters (18 feet) wide and weighs over a ton! Tree-ring dating shows it was made in the 1200s, and King Henry VIII later had it painted with a picture of King Arthur on the throne.", deck:'medieval2'},
+  {title:"Joan of Arc", category:"Knights", icon:'ti-sword', text:"Meet one of history's most amazing teenagers! Joan of Arc was a peasant girl from France who said she heard saints telling her to help save her country during a long war with England. At just 17 years old, she convinced the future king to let her ride with the army, and in 1429 she helped lift the Siege of Orl\u00e9ans in only nine days \u2014 a victory that turned the whole war around. Sadly her story ended when she was only 19, but France never forgot her, and she was made a saint in 1920.", story:"", deck:'medieval2'},
+  {title:"Archery Practice Was the Law!", category:"Knights", icon:'ti-target', text:"English kings were so keen on having great archers that they actually made laws about it! In 1363, King Edward III told people to practice archery on Sundays and holidays instead of playing other games. Several kings even tried to ban football because they thought it was distracting everyone from archery practice \u2014 imagine a king telling you to put the ball down and pick up a bow!", story:"", deck:'medieval2'},
+  {title:"Edible Plates", category:"Daily Life", icon:'ti-meat', text:"Medieval dinner tables had a clever invention: the trencher, a thick slice of stale bread used as a plate! Food was piled on top, and the bread soaked up all the tasty juices. After the meal, a rich person often gave the soggy trenchers to the poor, or to the dogs \u2014 which meant the dishwashing was done, and nobody went hungry!", story:"", deck:'medieval2'},
+  {title:"The Fancy Peacock", category:"Daily Life", icon:'ti-sparkles', text:"At the biggest feasts, cooks loved to show off with spectacular 'wow' dishes. One favorite was a roasted peacock dressed up to look alive! The cook carefully removed the skin with all its feathers, roasted the bird, then put the skin and feathers back on, sometimes even decorating the beak with gold leaf. When servants carried it into the Great Hall, guests gasped!", story:"", deck:'medieval2'},
+  {title:"Names from Jobs", category:"Daily Life", icon:'ti-scroll', text:"Do you know anyone with the last name Smith, Baker, Miller, Cooper, Fletcher, or Thatcher? Those names started as jobs! A smith worked metal, a baker baked bread, a miller ground grain, a cooper made barrels, and a fletcher made arrows. Other surnames came from where you lived (Hill, Wood), your father's name (Johnson), or even how you looked (Brown, Short) \u2014 your own last name might have a medieval story hiding inside it!", story:"", deck:'medieval2'},
+  {title:"Super Pointy Shoes", category:"Daily Life", icon:'ti-shirt', text:"Fashion in the late Middle Ages got wild. Fashionable men wore shoes with incredibly long, pointed toes called poulaines, sometimes stuffed so they'd stay stiff! They got so extreme that in 1463 an English law said ordinary people weren't allowed toes longer than about 5 cm (2 inches) \u2014 only the wealthiest nobles were allowed to wear the long ones.", story:"", deck:'medieval2'},
+  {title:"Peasant Homes", category:"Daily Life", icon:'ti-plant', text:"A typical peasant home was small and simple: walls of woven sticks plastered with a gooey mix of mud, straw, and clay (called wattle and daub), a thatched roof, and a dirt floor. A fire burned in the middle of the single main room, with smoke drifting out through a hole in the roof. In cold winters, families sometimes shared their home with their animals \u2014 the cow or pigs sleeping at one end, like a built-in heater!", story:"", deck:'medieval2'},
+  {title:"Medieval Games", category:"Daily Life", icon:'ti-circle', text:"Medieval kids and grown-ups loved games! Chess arrived in Europe from the Muslim world and became a big hit with nobles \u2014 but the medieval queen was a weak piece, only able to move one square diagonally, and didn't become the powerhouse she is today until the late 1400s. Another favorite was Nine Men's Morris, a strategy game played on a board of lines \u2014 people even scratched boards into church benches while waiting around!", story:"", deck:'medieval2'},
+  {title:"Windmills and Watermills", category:"Engineering", icon:'ti-cloud', text:"Grinding grain into flour by hand was exhausting, so medieval people harnessed nature to do the work. Watermills used flowing rivers to turn giant millstones, and the Domesday Book of 1086 counted more than 5,000 of them in England alone! Windmills appeared in Europe in the 1100s \u2014 early ones, called post mills, were built so the whole wooden building could be turned around on a big post to face the wind.", story:"", deck:'medieval2'},
+  {title:"Gargoyles and Cathedrals", category:"Architecture", icon:'ti-window', text:"Those grinning, snarling stone monsters on old cathedrals are called gargoyles, and they had a very practical job: they were water spouts! Rain ran along the roof, then shot out of the gargoyle's mouth, far away from the walls so the stone wouldn't get damaged. The word comes from an old French word for 'throat,' which is also where we get 'gargle.' Building a cathedral took generations of workers, and some were never finished in the lifetimes of the people who started them.", story:"\u26ea True Story: Cologne Cathedral in Germany was started in 1248, and builders didn't finish it until 1880 \u2014 that's over 600 years!", deck:'medieval2'},
+  {title:"The Domesday Book", category:"Government", icon:'ti-book', text:"In 1086, William the Conqueror wanted to know exactly what he owned, so he sent officials all over England to write down who owned each piece of land, how many farm animals there were, and how many mills, ploughs, and fishponds they had. The result was the Domesday Book. A writer at the time grumbled that the officials were so thorough that not even a single ox, cow, or pig was left out!", story:"\ud83d\udcdc True Story: The Domesday Book still exists today, almost 1,000 years later, and is kept safe at the National Archives in Kew, London.", deck:'medieval2'},
+  {title:"Magna Carta", category:"Government", icon:'ti-scroll', text:"In 1215, a group of angry barons forced the unpopular King John to meet them in a meadow called Runnymede, beside the River Thames. There, he agreed to a long list of rules called Magna Carta, Latin for 'Great Charter.' Its big idea was that even the king had to obey the law. King John didn't actually sign it \u2014 he pressed his royal seal into wax \u2014 and he wasn't happy about it, so fighting soon broke out again!", story:"\ud83c\udff0 True Story: Four original copies of the 1215 Magna Carta survive today: two in the British Library, one at Lincoln Cathedral, and one at Salisbury Cathedral.", deck:'medieval2'},
+  {title:"Viking Longships", category:"Journeys & Trade", icon:'ti-sailboat', text:"Vikings were brilliant sailors from Scandinavia, and their secret weapon was the longship: a sleek wooden boat with a shallow bottom, so it could sail across open sea AND glide right up rivers or onto beaches. Powered by both a sail and rows of oarsmen, longships could appear out of nowhere! And one more myth buster: there's no real evidence Vikings wore horned helmets.", story:"\u26f5 True Story: Around the year 1000, Vikings sailed all the way across the Atlantic and built a small settlement in Newfoundland, Canada \u2014 nearly 500 years before Columbus. Archaeologists found it at a site called L'Anse aux Meadows.", deck:'medieval2'},
+  {title:"Marco Polo's Epic Journey", category:"Journeys & Trade", icon:'ti-road', text:"Imagine setting off on a trip and not coming home for 24 years! In 1271, a young Venetian named Marco Polo set out with his father and uncle on an incredible journey along the Silk Road to China, where he met the powerful ruler Kublai Khan. When he finally returned to Venice in 1295, he had stories of paper money, black rocks that burned (coal), and cities bigger than any in Europe \u2014 his book about his travels was so amazing that many people didn't believe it was true!", story:"", deck:'medieval2'},
+  {title:"The Canterbury Tales", category:"Language", icon:'ti-books', text:"Imagine a road trip where everyone tells stories to pass the time \u2014 that's the idea behind The Canterbury Tales, written by Geoffrey Chaucer in the late 1300s. A group of pilgrims travel from London to the holy city of Canterbury and agree to have a storytelling contest, with a free dinner for the winner. Chaucer planned about 120 tales but only finished about 24 before he died \u2014 even so, it became one of the most famous books in English history, written in everyday English instead of fancy Latin or French.", story:"", deck:'medieval2'},
+  {title:"The Printing Press", category:"Ideas", icon:'ti-edit', text:"Remember the monks who spent months copying a single book by hand? Around 1450, a German inventor named Johannes Gutenberg changed everything with his printing press. It used tiny metal letters that could be arranged, inked, pressed onto paper, and then reused again and again \u2014 suddenly a workshop could make hundreds of copies of a book in the time it once took a scribe to make one!", story:"\ud83d\udcda True Story: Gutenberg's first big project was a Bible, printed around 1455. Only about 180 copies were made, and around 50 still exist today. By the year 1500, printing presses across Europe had made millions of books.", deck:'medieval2'},
 ];
 
 const DECK_META = {
-  medieval: {name:'Medieval Knights & Castles', icon:'ti-building-castle'},
-  greek:    {name:'Ancient Greece', icon:'ti-building-bank'},
-  roman:    {name:'Ancient Rome', icon:'ti-building'}
+  medieval:  {name:'Medieval Knights & Castles', icon:'ti-building-castle'},
+  greek:     {name:'Ancient Greece', icon:'ti-building-bank'},
+  roman:     {name:'Ancient Rome', icon:'ti-building'},
+  medieval2: {name:'Medieval Knights & Castles II', icon:'ti-building-castle'}
 };
+/* Bonus decks that are always available, independent of the main deck-unlock chain */
+const ALWAYS_UNLOCKED_DECKS = ['medieval2'];
 const DECKS = (() => {
   const order = [];
   const byId = {};
@@ -922,7 +1001,10 @@ function isDeckFullyCollected(deck){
   return deck.indices.every(i => progress.collectedFacts.includes(i));
 }
 function isDeckUnlocked(deckIdx){
+  const deck = DECKS[deckIdx];
+  if (deck && ALWAYS_UNLOCKED_DECKS.includes(deck.id)) return true;
   for (let i = 0; i < deckIdx; i++){
+    if (ALWAYS_UNLOCKED_DECKS.includes(DECKS[i].id)) continue;
     if (!isDeckFullyCollected(DECKS[i])) return false;
   }
   return true;
@@ -1052,6 +1134,11 @@ let progress = {
   joustSessionDate: null,
   joustSessionsToday: 0,
   joustStats: { perfects: 0, goods: 0, misses: 0, sessionsPlayed: 0 },
+  battleSessionDate: null,
+  battleSessionsToday: 0,
+  battleBonusSessionsToday: 0,
+  battleRewardGrantedDate: null,
+  battleStats: { wins: 0, losses: 0, sessionsPlayed: 0, monstersDefeated: 0 },
   dailyStreak: { current: 0, best: 0, weeksConquered: 0, lastActiveDate: null, streakCountedDate: null, categoriesToday: {mult:false, add:false, sub:false, div:false} },
   modes: {
     mult: { completedDays: [], currentDay: 1 },
@@ -1156,6 +1243,11 @@ function normalizeProgress(){
   if (typeof progress.joustSessionsToday !== 'number') progress.joustSessionsToday = 0;
   if (typeof progress.joustBonusSessionsToday !== 'number') progress.joustBonusSessionsToday = 0;
   if (!progress.joustStats || typeof progress.joustStats !== 'object') progress.joustStats = { perfects: 0, goods: 0, misses: 0, sessionsPlayed: 0 };
+  if (typeof progress.battleSessionDate !== 'string' && progress.battleSessionDate !== null) progress.battleSessionDate = null;
+  if (typeof progress.battleRewardGrantedDate !== 'string' && progress.battleRewardGrantedDate !== null) progress.battleRewardGrantedDate = null;
+  if (typeof progress.battleSessionsToday !== 'number') progress.battleSessionsToday = 0;
+  if (typeof progress.battleBonusSessionsToday !== 'number') progress.battleBonusSessionsToday = 0;
+  if (!progress.battleStats || typeof progress.battleStats !== 'object') progress.battleStats = { wins: 0, losses: 0, sessionsPlayed: 0, monstersDefeated: 0 };
   if (!progress.dailyStreak || typeof progress.dailyStreak !== 'object') {
     progress.dailyStreak = { current: 0, best: 0, weeksConquered: 0, lastActiveDate: null, streakCountedDate: null, categoriesToday: {mult:false, add:false, sub:false, div:false} };
   } else {
@@ -1266,28 +1358,66 @@ function logSavingsHistory(){
 
 function buildSavingsGrowthChart(history){
   if (!history || history.length < 2){
-    return '<p style="text-align:center;font-size:11px;color:#6b8fb0;margin:4px 0">Save some coins to start your growth chart!</p>';
+    return '<p style="text-align:center;font-size:11px;color:#8b6f3e;margin:4px 0">Save some coins to start your growth chart!</p>';
   }
   const values = history.map(h => h.balance);
   const maxV = Math.max(...values, 1);
   const minV = Math.min(...values, 0);
   const range = Math.max(1, maxV - minV);
-  const width = 260, height = 90, padding = 10;
+  const width = 260, height = 100, padding = 10, baseline = height - 22;
   const xFor = (i) => padding + (i / (history.length - 1)) * (width - 2 * padding);
-  const yFor = (v) => height - padding - ((v - minV) / range) * (height - 2 * padding);
+  const yFor = (v) => baseline - ((v - minV) / range) * (baseline - padding);
 
   let path = 'M ' + xFor(0) + ' ' + yFor(values[0]);
   for (let i = 1; i < values.length; i++) path += ' L ' + xFor(i) + ' ' + yFor(values[i]);
+  const areaPath = path + ' L ' + xFor(values.length - 1) + ' ' + baseline + ' L ' + xFor(0) + ' ' + baseline + ' Z';
 
   let svg = '<svg viewBox="0 0 ' + width + ' ' + height + '" width="100%" style="max-width:260px;display:block;margin:0 auto">';
-  svg += '<path d="' + path + '" fill="none" stroke="#378add" stroke-width="2.5"/>';
+  svg += '<defs><linearGradient id="coinGrowGrad" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0%" stop-color="#ffd166" stop-opacity="0.85"/>' +
+    '<stop offset="100%" stop-color="#ffd166" stop-opacity="0.05"/>' +
+    '</linearGradient></defs>';
+  svg += '<path d="' + areaPath + '" fill="url(#coinGrowGrad)"/>';
+  svg += '<path d="' + path + '" fill="none" stroke="#d9a520" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
   history.forEach((h, i) => {
-    svg += '<circle cx="' + xFor(i) + '" cy="' + yFor(h.balance) + '" r="3" fill="#185fa5"/>';
+    const cx = xFor(i), cy = yFor(h.balance);
+    svg += '<circle cx="' + cx + '" cy="' + cy + '" r="5.5" fill="#ffe8a8" stroke="#8b5e0f" stroke-width="1.5"/>';
+    svg += '<circle cx="' + cx + '" cy="' + cy + '" r="2" fill="#d9a520"/>';
   });
-  svg += '<text x="' + padding + '" y="12" font-size="10" font-weight="700" fill="#185fa5">' + values[0].toFixed(2) + '</text>';
-  svg += '<text x="' + (width - padding) + '" y="12" font-size="10" font-weight="700" fill="#185fa5" text-anchor="end">' + values[values.length - 1].toFixed(2) + '</text>';
+  svg += '<text x="' + padding + '" y="' + (height - 4) + '" font-size="10" font-weight="700" fill="#6b4a06">' + values[0].toFixed(2) + '</text>';
+  svg += '<text x="' + (width - padding) + '" y="' + (height - 4) + '" font-size="10" font-weight="700" fill="#6b4a06" text-anchor="end">' + values[values.length - 1].toFixed(2) + '</text>';
   svg += '</svg>';
   return svg;
+}
+
+function coinIconHTML(size){
+  size = size || 16;
+  return '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;flex-shrink:0;' +
+    'background:radial-gradient(circle at 35% 30%,#fff2c8,#d9a520 75%);border:1.5px solid #8b5e0f;' +
+    'box-shadow:inset 0 0 0 2px rgba(255,255,255,0.4)"></div>';
+}
+
+function buildCoinPileComparison(startAmount, endAmount, startLabel, endLabel){
+  const maxIcons = 14;
+  const bigger = Math.max(startAmount, endAmount, 0.01);
+  const startCount = Math.max(1, Math.round((startAmount / bigger) * maxIcons));
+  const endCount = Math.max(1, Math.round((endAmount / bigger) * maxIcons));
+
+  function pile(count, amount, label){
+    const cols = Math.min(5, count);
+    let coins = '<div style="display:flex;flex-wrap:wrap-reverse;flex-direction:row-reverse;gap:2px;justify-content:center;align-content:flex-end;width:' + (cols * 20) + 'px;min-height:70px">';
+    for (let i = 0; i < count; i++) coins += coinIconHTML(16);
+    coins += '</div>';
+    return '<div style="text-align:center;flex:1">' + coins +
+      '<div style="font-size:11px;font-weight:700;color:#6b4a06;margin-top:4px">' + label + '</div>' +
+      '<div style="font-size:13px;font-weight:800;color:#3c2f1e">' + amount.toFixed(2) + '</div></div>';
+  }
+
+  return '<div style="display:flex;align-items:flex-end;justify-content:center;gap:16px;padding:8px 4px">' +
+    pile(startCount, startAmount, startLabel) +
+    '<div style="font-size:22px;color:#8b6f3e;padding-bottom:24px">→</div>' +
+    pile(endCount, endAmount, endLabel) +
+    '</div>';
 }
 
 function savingsProjectionText(balance){
@@ -1299,7 +1429,7 @@ function savingsProjectionText(balance){
 
 function buildSavingsProjectionChart(balance){
   if (balance <= 0){
-    return '<p style="text-align:center;font-size:11px;color:#6b8fb0;margin:4px 0">Save some coins to see what a year of growth would look like!</p>';
+    return '<p style="text-align:center;font-size:11px;color:#4a7a28;margin:4px 0">Save some coins to see what a year of growth would look like!</p>';
   }
   const months = 12;
   const points = [];
@@ -1310,19 +1440,27 @@ function buildSavingsProjectionChart(balance){
   const maxV = Math.max(...points, 1);
   const minV = Math.min(...points, 0);
   const range = Math.max(1, maxV - minV);
-  const width = 260, height = 90, padding = 10;
+  const width = 260, height = 100, padding = 10, baseline = height - 22;
   const xFor = (i) => padding + (i / months) * (width - 2 * padding);
-  const yFor = (v) => height - padding - ((v - minV) / range) * (height - 2 * padding);
+  const yFor = (v) => baseline - ((v - minV) / range) * (baseline - padding);
 
   let path = 'M ' + xFor(0) + ' ' + yFor(points[0]);
   for (let i = 1; i <= months; i++) path += ' L ' + xFor(i) + ' ' + yFor(points[i]);
+  const areaPath = path + ' L ' + xFor(months) + ' ' + baseline + ' L ' + xFor(0) + ' ' + baseline + ' Z';
 
   let svg = '<svg viewBox="0 0 ' + width + ' ' + height + '" width="100%" style="max-width:260px;display:block;margin:0 auto">';
-  svg += '<path d="' + path + '" fill="none" stroke="#4a7a28" stroke-width="2.5" stroke-dasharray="4,3"/>';
-  svg += '<circle cx="' + xFor(0) + '" cy="' + yFor(points[0]) + '" r="3.5" fill="#185fa5"/>';
-  svg += '<circle cx="' + xFor(months) + '" cy="' + yFor(points[months]) + '" r="3.5" fill="#4a7a28"/>';
-  svg += '<text x="' + padding + '" y="12" font-size="10" font-weight="700" fill="#185fa5">' + points[0].toFixed(2) + ' today</text>';
-  svg += '<text x="' + (width - padding) + '" y="12" font-size="10" font-weight="700" fill="#4a7a28" text-anchor="end">' + points[months].toFixed(2) + ' in 1 year</text>';
+  svg += '<defs><linearGradient id="coinProjGrad" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0%" stop-color="#8fc95a" stop-opacity="0.7"/>' +
+    '<stop offset="100%" stop-color="#8fc95a" stop-opacity="0.05"/>' +
+    '</linearGradient></defs>';
+  svg += '<path d="' + areaPath + '" fill="url(#coinProjGrad)"/>';
+  svg += '<path d="' + path + '" fill="none" stroke="#4a7a28" stroke-width="2.5" stroke-dasharray="5,4" stroke-linecap="round"/>';
+  svg += '<circle cx="' + xFor(0) + '" cy="' + yFor(points[0]) + '" r="5.5" fill="#e6f1fb" stroke="#185fa5" stroke-width="1.5"/>';
+  svg += '<circle cx="' + xFor(0) + '" cy="' + yFor(points[0]) + '" r="2" fill="#185fa5"/>';
+  svg += '<circle cx="' + xFor(months) + '" cy="' + yFor(points[months]) + '" r="6.5" fill="#ffe8a8" stroke="#8b5e0f" stroke-width="1.5"/>';
+  svg += '<circle cx="' + xFor(months) + '" cy="' + yFor(points[months]) + '" r="2.5" fill="#d9a520"/>';
+  svg += '<text x="' + padding + '" y="' + (height - 4) + '" font-size="10" font-weight="700" fill="#185fa5">' + points[0].toFixed(2) + ' today</text>';
+  svg += '<text x="' + (width - padding) + '" y="' + (height - 4) + '" font-size="10" font-weight="700" fill="#6b4a06" text-anchor="end">' + points[months].toFixed(2) + ' in 1 year</text>';
   svg += '</svg>';
   return svg;
 }
@@ -1552,6 +1690,9 @@ function renderSavingsScreen(){
   document.getElementById('savingsChartWrap').innerHTML = buildSavingsGrowthChart(progress.savings.history);
   document.getElementById('savingsProjectionText').innerHTML = savingsProjectionText(preciseAmount);
   document.getElementById('savingsProjectionChartWrap').innerHTML = buildSavingsProjectionChart(preciseAmount);
+  document.getElementById('savingsPileWrap').innerHTML = preciseAmount > 0
+    ? buildCoinPileComparison(preciseAmount, preciseAmount * Math.pow(1 + SAVINGS_DAILY_RATE, 365), 'Today', 'In 1 year')
+    : '';
 
   const coins = progress.coins;
   ['save10Btn','save25Btn','saveAllBtn'].forEach((id, i) => {
@@ -1722,6 +1863,7 @@ function renderMap() {
   renderHallSummary();
   renderTrophyShelf();
   renderJoustCard();
+  renderBattleCard();
   renderDailyStreak();
 
   const mode = progress.activeMode;
@@ -2490,6 +2632,7 @@ function buildDivQuestions(day){
     });
   }
   assignWordProblems('div', qs);
+  if (isReview) assignTypedQuestion(qs);
   return qs;
 }
 
@@ -2541,6 +2684,7 @@ function buildQuestions(mode, day) {
     qs.push({ a: fact.a, b: fact.b, c: fact.c, mid: fact.mid, exprText: fact.exprText || null, symbol: fact.symbol, answer: finalAnswer, options: finalOptions, key, mode, table: mode==='mult' ? fact.a : undefined, type: config.type, limit: config.limit, wordProblem: null, pattern });
   }
   assignWordProblems(mode, qs);
+  if (reviewDay) assignTypedQuestion(qs);
   return qs;
 }
 
@@ -2553,6 +2697,16 @@ function assignWordProblems(mode, qs){
     const q = qs[i];
     q.wordProblem = mode === 'div' ? buildDivWordProblem(q.a, q.b) : buildWordProblem(mode, q.a, q.b);
   });
+}
+
+/* On checkpoint/review days, make one question "type the answer in" instead of multiple-choice,
+   so review days actually confirm recall rather than letting him pick from 4 options. */
+const TYPED_QUESTIONS_PER_REVIEW = 1;
+function assignTypedQuestion(qs){
+  const eligible = qs.map((q, i) => i).filter(i => !qs[i].exprText && !qs[i].pattern && !qs[i].wordProblem && !qs[i].divVisual);
+  if (eligible.length === 0) return;
+  const shuffled = eligible.sort(() => Math.random() - 0.5).slice(0, TYPED_QUESTIONS_PER_REVIEW);
+  shuffled.forEach(i => { qs[i].typed = true; });
 }
 
 function badgeForDay(mode, day){
@@ -2627,13 +2781,43 @@ function renderQuestion(){
   document.getElementById('streakFlame').textContent = streakMessage(progress.currentStreak || 0);
   const grid = document.getElementById('optionsGrid');
   grid.innerHTML = '';
-  q.options.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'opt-btn';
-    btn.textContent = opt;
-    btn.onclick = () => answer(opt, btn);
-    grid.appendChild(btn);
-  });
+  if (q.typed) {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;padding:6px 0';
+    const label = document.createElement('div');
+    label.textContent = '✍️ No options this time — type the answer!';
+    label.style.cssText = 'font-size:12px;color:#8b6f3e;font-weight:700';
+    const input = document.createElement('input');
+    input.id = 'typedAnswerInput';
+    input.type = 'number';
+    input.inputMode = 'numeric';
+    input.placeholder = '?';
+    input.style.cssText = 'width:140px;text-align:center;font-size:22px;font-weight:800;padding:10px;border-radius:10px;border:3px solid #8b6f3e;color:#3c2f1e';
+    const checkBtn = document.createElement('button');
+    checkBtn.className = 'primary';
+    checkBtn.textContent = 'Check ⚔️';
+    const submit = () => {
+      if (input.value === '') return;
+      const val = parseInt(input.value, 10);
+      if (isNaN(val)) return;
+      answer(val, null);
+    };
+    checkBtn.onclick = submit;
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
+    wrap.appendChild(label);
+    wrap.appendChild(input);
+    wrap.appendChild(checkBtn);
+    grid.appendChild(wrap);
+    setTimeout(() => input.focus(), 50);
+  } else {
+    q.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.textContent = opt;
+      btn.onclick = () => answer(opt, btn);
+      grid.appendChild(btn);
+    });
+  }
   document.getElementById('knightScene').innerHTML = '<i class="ti ti-horse-toy"></i>';
 }
 
@@ -2648,6 +2832,9 @@ function advanceQuestion(){
 function answer(selected, btn){
   const q = session.questions[session.qIndex];
   document.querySelectorAll('.opt-btn').forEach(b => b.onclick = null);
+  const typedInput = document.getElementById('typedAnswerInput');
+  if (typedInput) { typedInput.disabled = true; }
+  document.querySelectorAll('#optionsGrid button').forEach(b => { b.onclick = null; });
   const fb = document.getElementById('feedback');
   session.responseTimes.push(Date.now() - (session.qStartTime || Date.now()));
   if (selected === q.answer){
@@ -2660,7 +2847,8 @@ function answer(selected, btn){
       progress.weakFacts[q.key].misses -= 1;
       if (progress.weakFacts[q.key].misses <= 0) delete progress.weakFacts[q.key];
     }
-    btn.classList.add('correct');
+    if (btn) btn.classList.add('correct');
+    else if (typedInput) typedInput.style.borderColor = '#4a7a28';
     fb.textContent = '⚔️ Hooray! The knight moves forward!';
     fb.className = 'feedback good';
     document.getElementById('knightScene').innerHTML = '<i class="ti ti-shield-check"></i>';
@@ -2677,7 +2865,8 @@ function answer(selected, btn){
         misses: (existing ? existing.misses : 0) + 2
       };
     }
-    btn.classList.add('wrong');
+    if (btn) btn.classList.add('wrong');
+    else if (typedInput) typedInput.style.borderColor = '#a3382a';
     document.querySelectorAll('.opt-btn').forEach(b => { if (parseInt(b.textContent) === q.answer) b.classList.add('correct'); });
     fb.textContent = 'Not quite — the answer was ' + q.answer + '.';
     fb.className = 'feedback bad';
@@ -2993,6 +3182,284 @@ document.getElementById('joustBackLink').addEventListener('click', (e) => {
   renderMap();
 });
 
+/* ================= MONSTER BATTLE ================= */
+const BATTLE_ROUNDS_MAX = 8;
+const BATTLE_MAX_SESSIONS_PER_DAY = 3;
+const BATTLE_EXTRA_COST = 10;
+const BATTLE_PLAYER_HP = 100;
+const MONSTERS = [
+  {name: 'Goblin Scout',  icon: 'ti-mask',     hp: 70,  dmg: 14},
+  {name: 'Forest Troll',  icon: 'ti-paw',      hp: 85,  dmg: 16},
+  {name: 'Stone Giant',   icon: 'ti-mountain', hp: 100, dmg: 18},
+  {name: 'Fire Dragon',   icon: 'ti-flame',    hp: 115, dmg: 20}
+];
+const WEAPON_DAMAGE_BONUS = { 'wooden-sword': 0, 'steel-sword': 2, 'war-bow': 3, 'golden-sword': 5, 'legendary-blade': 7, 'mythril-blade': 9 };
+const ARMOR_DEFENSE_BONUS = { 'small-shield': 0, 'chainmail': 2, 'dragon-shield': 4, 'royal-armor': 6, 'mythril-armor': 8 };
+
+function bestGearBonus(bonusMap){
+  return progress.craftedTools.reduce((best, id) => Math.max(best, bonusMap[id] || 0), 0);
+}
+
+function renderBattleCard(){
+  const owns = hasWeapon();
+  const targetDone = todayTargetComplete();
+  const remaining = battleSessionsRemainingToday();
+  document.getElementById('battleCardLocked').style.display = !owns ? 'block' : 'none';
+  document.getElementById('battleCardWaiting').style.display = (owns && !targetDone) ? 'block' : 'none';
+  document.getElementById('battleCardUnlocked').style.display = (owns && targetDone) ? 'block' : 'none';
+  if (owns && targetDone){
+    document.getElementById('battleCardRemaining').textContent = remaining > 0
+      ? 'Reward unlocked — ' + remaining + ' battle' + (remaining === 1 ? '' : 's') + ' left today!'
+      : "You've used today's battles — come back tomorrow, or buy one more below!";
+    document.getElementById('enterBattleBtn').style.display = remaining > 0 ? 'block' : 'none';
+    const buyBtn = document.getElementById('buyExtraBattleBtn');
+    if (remaining === 0){
+      buyBtn.style.display = 'block';
+      const canAfford = progress.coins >= BATTLE_EXTRA_COST;
+      buyBtn.disabled = !canAfford;
+      buyBtn.style.opacity = canAfford ? '1' : '0.5';
+    } else {
+      buyBtn.style.display = 'none';
+    }
+  }
+}
+
+function ensureBattleRewardGranted(){
+  const today = todayKey();
+  if (todayTargetComplete() && progress.battleRewardGrantedDate !== today){
+    progress.battleRewardGrantedDate = today;
+    progress.battleSessionDate = today;
+    progress.battleSessionsToday = 0;
+    progress.battleBonusSessionsToday = 0;
+    saveProgress();
+  }
+}
+
+function battleSessionsRemainingToday(){
+  if (!todayTargetComplete()) return 0;
+  ensureBattleRewardGranted();
+  const today = todayKey();
+  if (progress.battleSessionDate !== today) return BATTLE_MAX_SESSIONS_PER_DAY;
+  const allowance = BATTLE_MAX_SESSIONS_PER_DAY + (progress.battleBonusSessionsToday || 0);
+  return Math.max(0, allowance - (progress.battleSessionsToday || 0));
+}
+
+function buyExtraBattle(){
+  if (!todayTargetComplete()) return false;
+  if (progress.coins < BATTLE_EXTRA_COST) return false;
+  ensureBattleRewardGranted();
+  progress.coins -= BATTLE_EXTRA_COST;
+  progress.battleBonusSessionsToday = (progress.battleBonusSessionsToday || 0) + 1;
+  saveProgress();
+  return true;
+}
+
+/* Builds one plain arithmetic question from whichever subject/day Arthur is actually
+   practicing right now, so battles double as extra practice at his real level. */
+function buildBattleQuestion(){
+  const modeKeys = Object.keys(MODES);
+  const mode = modeKeys[randInt(0, modeKeys.length - 1)];
+  const modeState = progress.modes[mode];
+  const totalDays = MODES[mode].days.length;
+  const day = Math.max(1, Math.min(modeState.currentDay, totalDays));
+  const dayEntry = MODES[mode].days[day - 1];
+
+  if (mode === 'div'){
+    const base = dayEntry.review ? dayEntry.configs[randInt(0, dayEntry.configs.length - 1)] : dayEntry;
+    const config = { stage: 'formal', kind: base.kind, divisor: base.divisor };
+    const fact = genDivFact(config);
+    return {
+      mode, a: fact.dividend, b: fact.divisor, symbol: '÷', answer: fact.quotient,
+      key: 'div|' + config.kind + '|' + config.divisor + '|' + fact.dividend
+    };
+  }
+  const config = pickConfig(dayEntry, mode);
+  let fact = generateNumberFact(config, mode);
+  // Battles want a single clean fact, not a triple-add/sub expression
+  if (fact.exprText) fact = generateNumberFact(mode === 'mult' ? config : { type: 'single', limit: config.limit }, mode);
+  const key = factKey(mode, config, fact.a, fact.b);
+  return { mode, a: fact.a, b: fact.b, symbol: fact.symbol, answer: fact.answer, key };
+}
+
+function buildBattleOptions(answer){
+  const opts = new Set([answer]);
+  let guard = 0;
+  while (opts.size < 4 && guard < 40){
+    guard++;
+    const delta = randInt(-10, 10);
+    const candidate = answer + delta;
+    if (candidate >= 0 && candidate !== answer) opts.add(candidate);
+  }
+  return Array.from(opts).sort(() => Math.random() - 0.5);
+}
+
+let battleSession = null;
+
+function startBattleSession(){
+  const monster = MONSTERS[randInt(0, MONSTERS.length - 1)];
+  const weaponBonus = bestGearBonus(WEAPON_DAMAGE_BONUS);
+  const armorBonus = bestGearBonus(ARMOR_DEFENSE_BONUS);
+  battleSession = {
+    monster, weaponBonus, armorBonus,
+    playerHP: BATTLE_PLAYER_HP, monsterHP: monster.hp, round: 0, wins: 0, losses: 0
+  };
+  document.getElementById('battleMonsterName').textContent = monster.name;
+  document.getElementById('battleMonsterIcon').className = 'ti ' + monster.icon;
+  document.getElementById('battleScene').innerHTML = '<i class="ti ti-sword"></i>';
+  document.getElementById('battleResultsSummary').style.display = 'none';
+  document.getElementById('battleAgainBtn').style.display = 'none';
+  document.getElementById('battleAgainBtn').textContent = '';
+  document.getElementById('battleFeedback').textContent = '';
+  updateBattleHPBars();
+  renderBattleQuestion();
+}
+
+function updateBattleHPBars(){
+  const playerPct = Math.max(0, Math.round((battleSession.playerHP / BATTLE_PLAYER_HP) * 100));
+  const monsterPct = Math.max(0, Math.round((battleSession.monsterHP / battleSession.monster.hp) * 100));
+  document.getElementById('battlePlayerHPFill').style.width = playerPct + '%';
+  document.getElementById('battleMonsterHPFill').style.width = monsterPct + '%';
+  document.getElementById('battleMonsterHPLabel').innerHTML = battleSession.monster.name + ' <i class="ti ' + battleSession.monster.icon + '"></i>';
+}
+
+function renderBattleQuestion(){
+  const q = buildBattleQuestion();
+  battleSession.currentQuestion = q;
+  battleSession.qStartTime = Date.now();
+  document.getElementById('battleQuestionText').textContent = q.a + ' ' + q.symbol + ' ' + q.b;
+  document.getElementById('battleFeedback').textContent = '';
+  const grid = document.getElementById('battleOptionsGrid');
+  grid.innerHTML = '';
+  buildBattleOptions(q.answer).forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = opt;
+    btn.onclick = () => answerBattle(opt);
+    grid.appendChild(btn);
+  });
+}
+
+function answerBattle(selected){
+  const bs = battleSession;
+  if (!bs || bs.resolved) return;
+  const q = bs.currentQuestion;
+  document.querySelectorAll('#battleOptionsGrid .opt-btn').forEach(b => b.onclick = null);
+  const fb = document.getElementById('battleFeedback');
+  const correct = selected === q.answer;
+
+  if (progress.weakFacts[q.key] && correct){
+    progress.weakFacts[q.key].misses -= 1;
+    if (progress.weakFacts[q.key].misses <= 0) delete progress.weakFacts[q.key];
+  } else if (!correct && q.mode !== 'div'){
+    const existing = progress.weakFacts[q.key];
+    progress.weakFacts[q.key] = { mode: q.mode, table: q.mode === 'mult' ? q.a : undefined, type: q.type, limit: q.limit, a: q.a, b: q.b, misses: (existing ? existing.misses : 0) + 2 };
+  }
+
+  if (correct){
+    const dmg = randInt(8, 12) + bs.weaponBonus;
+    bs.monsterHP = Math.max(0, bs.monsterHP - dmg);
+    document.getElementById('battleScene').innerHTML = '<i class="ti ti-swords"></i>';
+    fb.textContent = '⚔️ Hit! ' + bs.monster.name + ' takes ' + dmg + ' damage!';
+    fb.style.color = '#2c4a12';
+  } else {
+    const dmg = Math.max(2, bs.monster.dmg - bs.armorBonus);
+    bs.playerHP = Math.max(0, bs.playerHP - dmg);
+    document.getElementById('battleScene').innerHTML = '<i class="ti ti-shield-x"></i>';
+    fb.textContent = 'Not quite (answer was ' + q.answer + ') — ' + bs.monster.name + ' strikes back for ' + dmg + '!';
+    fb.style.color = '#8a2d1f';
+  }
+  updateBattleHPBars();
+  bs.round++;
+
+  if (bs.monsterHP <= 0){
+    finishBattleSession('win');
+  } else if (bs.playerHP <= 0){
+    finishBattleSession('lose');
+  } else if (bs.round >= BATTLE_ROUNDS_MAX){
+    finishBattleSession(bs.monsterHP < bs.playerHP ? 'win' : 'lose');
+  } else {
+    setTimeout(renderBattleQuestion, 1300);
+  }
+}
+
+function finishBattleSession(outcome){
+  const bs = battleSession;
+  bs.resolved = true;
+  document.getElementById('battleOptionsGrid').innerHTML = '';
+
+  if (!progress.battleStats || typeof progress.battleStats !== 'object') progress.battleStats = { wins: 0, losses: 0, sessionsPlayed: 0, monstersDefeated: 0 };
+  progress.battleStats.sessionsPlayed += 1;
+  if (outcome === 'win'){ progress.battleStats.wins += 1; progress.battleStats.monstersDefeated += 1; }
+  else { progress.battleStats.losses += 1; }
+
+  const today = todayKey();
+  if (progress.battleSessionDate !== today){ progress.battleSessionDate = today; progress.battleSessionsToday = 0; }
+  progress.battleSessionsToday += 1;
+
+  let coinsEarned = 5;
+  if (outcome === 'win') coinsEarned += 8;
+  progress.coins += coinsEarned;
+  progress.lifetimeCoins += coinsEarned;
+
+  let newBadge = false;
+  if (outcome === 'win' && !progress.badges['monster-slayer']){
+    progress.badges['monster-slayer'] = 1;
+    newBadge = true;
+  }
+
+  saveProgress();
+
+  document.getElementById('battleResultsSummary').style.display = 'block';
+  let title, icon;
+  if (outcome === 'win'){ title = 'Victory over the ' + bs.monster.name + '!'; icon = '<i class="ti ti-trophy" style="color:#8b5e0f"></i>'; }
+  else { title = 'The ' + bs.monster.name + ' got the better of you this time!'; icon = '<i class="ti ti-shield-x" style="color:#8a2d1f"></i>'; }
+  document.getElementById('battleResultIcon').innerHTML = icon;
+  document.getElementById('battleResultTitle').textContent = title;
+  document.getElementById('battleResultDetail').textContent = (newBadge ? 'New badge: Monster Slayer! ' : '') + 'Try again to keep your streak going.';
+  document.getElementById('battleResultCoins').innerHTML = '<i class="ti ti-coin"></i> +' + coinsEarned + ' coins';
+
+  const remaining = battleSessionsRemainingToday();
+  const againBtn = document.getElementById('battleAgainBtn');
+  if (remaining > 0){
+    againBtn.style.display = 'block';
+    againBtn.innerHTML = 'Face another monster! (' + remaining + ' left today) <i class="ti ti-swords"></i>';
+  } else if (progress.coins >= BATTLE_EXTRA_COST){
+    againBtn.style.display = 'block';
+    againBtn.innerHTML = 'Buy 1 more battle — <i class="ti ti-coin"></i> 10 coins';
+  } else {
+    againBtn.style.display = 'none';
+  }
+}
+
+document.getElementById('battleAgainBtn').addEventListener('click', () => {
+  if (battleSessionsRemainingToday() > 0){
+    startBattleSession();
+  } else if (buyExtraBattle()){
+    startBattleSession();
+  }
+});
+
+document.getElementById('enterBattleBtn').addEventListener('click', () => {
+  document.getElementById('mapScreen').style.display = 'none';
+  document.getElementById('battleScreen').style.display = 'block';
+  if (battleSessionsRemainingToday() > 0){
+    startBattleSession();
+  } else {
+    document.getElementById('battleFeedback').textContent = "That's all your battles for today — come back tomorrow!";
+    document.getElementById('battleOptionsGrid').innerHTML = '';
+  }
+});
+document.getElementById('buyExtraBattleBtn').addEventListener('click', () => {
+  if (buyExtraBattle()) renderBattleCard();
+});
+document.getElementById('battleBackLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  battleSession = null;
+  document.getElementById('battleScreen').style.display = 'none';
+  document.getElementById('mapScreen').style.display = 'block';
+  renderMap();
+});
+
 function awardBadge(id){
   const today = todayKey();
   if (progress.badgeCapDate !== today){
@@ -3162,7 +3629,7 @@ function finishDay(){
   const dailyStreakBanner = document.getElementById('dailyStreakBanner');
   if (session.newDailyStreak){
     dailyStreakBanner.style.display = 'block';
-    const joustNote = hasWeapon() ? ' 🐴 3 jousts unlocked for today!' : '';
+    const joustNote = hasWeapon() ? ' 🐴 3 jousts + ⚔️ 3 monster battles unlocked for today!' : '';
     document.getElementById('dailyStreakBannerText').textContent = "🔥 Today's target complete — daily streak: " + session.newDailyStreak + ' day' + (session.newDailyStreak === 1 ? '' : 's') + '!' + joustNote;
   } else {
     dailyStreakBanner.style.display = 'none';
@@ -3236,6 +3703,7 @@ document.getElementById('resetConfirmBtn').addEventListener('click', async () =>
     totalCorrect: 0, companionFed: 0, correctByMode: {mult:0, add:0, sub:0, div:0},
     weakFacts: {}, masteryCount: {}, mastered: {}, badgeCapDate: null, badgesEarnedToday: 0,
     joustSessionDate: null, joustSessionsToday: 0, joustBonusSessionsToday: 0, joustRewardGrantedDate: null, joustStats: { perfects: 0, goods: 0, misses: 0, sessionsPlayed: 0 },
+    battleSessionDate: null, battleSessionsToday: 0, battleBonusSessionsToday: 0, battleRewardGrantedDate: null, battleStats: { wins: 0, losses: 0, sessionsPlayed: 0, monstersDefeated: 0 },
     savings: { balance: 0, lastInterestDate: null, history: [] }, givingTotal: 0, givingJar: { balance: 0 }, givingByCharity: {}, givingHistory: [], customCharities: [],
     dailyStreak: { current: 0, best: 0, weeksConquered: 0, lastActiveDate: null, streakCountedDate: null, categoriesToday: {mult:false, add:false, sub:false, div:false} },
     modes: { mult:{completedDays:[],currentDay:1}, add:{completedDays:[],currentDay:1}, sub:{completedDays:[],currentDay:1}, div:{completedDays:[],currentDay:1} }
